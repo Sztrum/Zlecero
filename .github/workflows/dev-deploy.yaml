@@ -1,0 +1,44 @@
+name: Dev Deploy
+
+on: [push, pull_request]
+
+jobs:
+  dev-deployment:
+
+    runs-on: ubuntu-latest
+
+    if: github.repository == 'username/repo-name' && github.ref == 'refs/heads/main'
+
+    strategy:
+      fail-fast: true
+
+    steps:
+
+      - name: Deploy
+        uses: appleboy/ssh-action@master
+        with:
+          host: "host.test"
+          USERNAME: "debian"
+          PASSWORD: ${{ secrets.DEV_DEPLOY_PASSWORD }}
+          PORT: 22
+          script: |
+            bash -l -c '
+              echo "Running: cd /var/www/app-name"
+              cd /var/www/app-name
+              echo "Running: git fetch origin"
+              git fetch origin
+              echo "Running: git reset origin --hard"
+              git reset origin --hard
+              echo "Running: composer install"
+              composer install
+              echo "Running: php artisan migrate --force"
+              php artisan migrate --force
+              echo "Running: php artisan config:clear"
+              php artisan config:clear
+              echo "Running: php artisan cache:clear"
+              php artisan cache:clear
+              echo "Running: php artisan route:clear"
+              php artisan route:clear
+              echo "Running: php artisan view:clear"
+              php artisan view:clear
+            '

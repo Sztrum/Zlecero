@@ -1,0 +1,21 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\V1\Modules\User\Domain\Exceptions;
+
+use App\V1\Core\Domain\Exceptions\DomainException;
+
+class UserEmailIsNotVerifiedException extends DomainException
+{
+    public function __construct(
+        string $message = '',
+        array $replace = []
+    ) {
+        if ($message === '') {
+            $message = __('user::exceptions.other.user_email_is_not_verified', $replace);
+        }
+
+        parent::__construct($message, $replace);
+    }
+}
