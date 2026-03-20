@@ -6,8 +6,6 @@ namespace App\V1\Modules\User\Domain\Models;
 
 use App\V1\Core\Domain\Models\Model;
 use App\V1\Core\Infrastructure\Packages\Sanctum\Models\PersonalAccessToken;
-use App\V1\Modules\Company\Domain\Models\Company;
-use App\V1\Modules\Company\Domain\Models\CompanyInvitation;
 use App\V1\Modules\User\Domain\Events\UserHasBeenCreatedEvent;
 use DateTimeInterface;
 use Illuminate\Auth\Authenticatable;
@@ -35,8 +33,6 @@ use Laravel\Sanctum\NewAccessToken;
  * @property string|null                                                                                                   $remember_token
  * @property \Illuminate\Support\Carbon|null                                                                               $created_at
  * @property \Illuminate\Support\Carbon|null                                                                               $updated_at
- * @property \Illuminate\Database\Eloquent\Collection<int, Company>                                                        $companies
- * @property int|null                                                                                                      $companies_count
  * @property \Illuminate\Notifications\DatabaseNotificationCollection<int, \Illuminate\Notifications\DatabaseNotification> $notifications
  * @property int|null                                                                                                      $notifications_count
  * @property \Illuminate\Database\Eloquent\Collection<int, PersonalAccessToken>                                            $tokens
@@ -52,10 +48,6 @@ use Laravel\Sanctum\NewAccessToken;
  * @method static \Illuminate\Database\Eloquent\Builder|User                                                                    wherePassword($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User                                                                    whereRememberToken($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User                                                                    whereUpdatedAt($value)
- * @property \Illuminate\Database\Eloquent\Collection<int, CompanyInvitation>                                              $receivedCompanyInvitations
- * @property int|null                                                                                                      $received_company_invitations_count
- * @property \Illuminate\Database\Eloquent\Collection<int, CompanyInvitation>                                              $sentCompanyInvitations
- * @property int|null                                                                                                      $sent_company_invitations_count
  * @mixin \Eloquent
  */
 class User extends Model implements

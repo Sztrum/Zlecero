@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\V1\Modules\User\Domain\Aggregates;
 
 use App\V1\Modules\Auth\Domain\Exceptions\AuthException;
-use App\V1\Modules\Company\Domain\Models\Company;
 use App\V1\Modules\User\Domain\Exceptions\ErrorWhileResetPasswordException;
 use App\V1\Modules\User\Domain\Exceptions\InvalidEmailVerificationHashException;
 use App\V1\Modules\User\Domain\Exceptions\UserEmailAlreadyVerifiedException;
@@ -26,18 +25,6 @@ readonly class UserAggregate
         private UserRepository $repository,
         private Hasher         $hasher
     ) {
-    }
-
-    public function determineIfGivenUserCanListChildrenCompanies(
-        User $user,
-        Company $company,
-    ): bool {
-        // TODO: determine if user can list children companies of given company
-
-        //        throw_if(
-        //            $userId !== $authorizedUserId,
-        //            new UserNotFoundException()
-        //        );
     }
 
     /**

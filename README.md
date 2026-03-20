@@ -1,49 +1,63 @@
-### Laradock Configuration
+# Laravel Boilerplate Template
 
-1. Add Laradock as a submodule:
+Laravel 11 boilerplate with a modular `app/V1` structure, basic auth-related modules, Vite frontend tooling, and optional Laradock setup.
+
+## Requirements
+
+- PHP 8.3+
+- Composer
+- Node.js 22+
+- MySQL or compatible database
+
+## Quick start
+
+1. Install dependencies:
    ```bash
-   git submodule add -f https://github.com/Laradock/laradock.git
+   composer install
+   npm install
    ```
-2. Copy the contents of `.laradock` to the `laradock` directory, overwriting existing files.
-3. Inside `laradock`, copy `.env.example` to `.env`.
-4. In the `.env` file, set the following:
+2. Copy environment file:
+   ```bash
+   cp .env.example .env
    ```
-   PHP_VERSION=8.3
-   PHP_WORKER_INSTALL_REDIS=true
-   PHP_WORKER_INSTALL_GD=true
-   PHP_FPM_INSTALL_EXIF=true
-   WORKSPACE_INSTALL_IMAGEMAGICK=true
-   PHP_FPM_INSTALL_IMAGEMAGICK=true
-   PHP_WORKER_INSTALL_IMAGEMAGICK=true
-   PHP_FPM_INSTALL_GHOSTSCRIPT=true
-   PHP_WORKER_INSTALL_GHOSTSCRIPT=true
-   PHP_WORKER_INSTALL_ZIP_ARCHIVE=true
-   WORKSPACE_INSTALL_SOAP=true
-   PHP_FPM_INSTALL_SOAP=true
-   PHP_WORKER_INSTALL_SOAP=true
-   WORKSPACE_NODE_VERSION=18
+3. Adjust database, app URL, mail, and any local service settings in `.env`.
+4. Generate application key:
+   ```bash
+   php artisan key:generate
    ```
-5. For Windows, set `DOCKER_SYNC_STRATEGY=unison` in `.env`. On macOS, leave `native_osx`.
-6. Set the project-specific settings:
+5. Run migrations:
+   ```bash
+   php artisan migrate
    ```
-   COMPOSE_PROJECT_NAME=app-api
-   DATA_PATH_HOST=~/.laradock/app-api
+6. Start local development:
+   ```bash
+   php artisan serve
+   npm run dev
    ```
-7. Run: 
+
+## Optional Laradock setup
+
+1. Clone Laradock next to the project:
+   ```bash
+   git clone https://github.com/Laradock/laradock.git laradock
+   ```
+2. Copy local overrides:
+   ```bash
+   cp -rT .laradock laradock
+   ```
+3. Copy `laradock/.env.example` to `laradock/.env`.
+4. Set a project-specific Laradock name, for example:
+   ```dotenv
+   COMPOSE_PROJECT_NAME=laravel_boilerplate_template
+   DATA_PATH_HOST=~/.laradock/laravel_boilerplate_template
+   ```
+5. Start containers:
    ```bash
    sh start.sh
    ```
-   to start the Docker containers.
 
-## Project configuration
+## Notes
 
-1. Run `composer install` command.
-2. Copy `.env.example` to `.env` file and fill required data.
-3. Create 2 databases, first for main application, second for telescope.
-4. Run `php artisan migrate` command.
-5. Run `npm install` command.
-
-### Configure auto artisan commands after git pull
-
-1. Copy `.git-sample/hooks/post-merge` file to `.git/hooks/post-merge` you can use `cp .git-sample/hooks/post-merge .git/hooks/post-merge` command.
-2. Also run `chmod +x .git/hooks/post-merge` command.
+- Telescope is enabled by default in `.env.example`.
+- The repository is intended to be used as a starter template for client projects.
+- Before publishing as a public template, review `.env`, branding, mail settings, and any project-specific documentation.
