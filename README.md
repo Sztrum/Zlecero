@@ -1,4 +1,4 @@
-# Laravel Boilerplate Template
+# Zlecero
 
 Laravel 13 boilerplate with a modular `app/V1` structure, basic auth-related modules, Vite frontend tooling, and optional Laradock setup.
 
