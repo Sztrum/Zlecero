@@ -1,7 +1,7 @@
 # AGENTS_PROJECT_RULES.md
 
 ## Version
-v1.0.0
+v1.1.0
 
 ## Scope
 Repository-specific rules for the Zlecero Laravel project.
@@ -62,6 +62,7 @@ Read documents in this exact order before implementation:
 - For this repository, add new translation keys in the owning Polish translation scope in the same task; other languages may remain unchanged unless explicitly requested.
 - Keep controller context prefixes explicit: `Api`, `Front`, or `Admin`.
 - Keep module names and namespaces aligned with existing `app/V1/Modules/**` structure.
+- Keep module routes inside module-owned route service providers registered by the owning module service provider; do not introduce root `routes/**` files for module routes.
 
 ## Migration Rules
 - New migrations must be created with `php artisan make:migration <migration-name>`.
