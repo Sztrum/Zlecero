@@ -4,12 +4,14 @@ declare(strict_types=1);
 
 namespace App\V1\Core\Domain\Exceptions;
 
+use Closure;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Exceptions\Handler;
 use Illuminate\Http\Exceptions\ThrottleRequestsException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\HttpException;
@@ -19,10 +21,16 @@ use Throwable;
 
 class ExceptionHandler extends Handler
 {
+    /**
+     * @var list<class-string<Throwable>>
+     */
     protected $dontReport = [
         RouteNotFoundException::class,
     ];
 
+    /**
+     * @var list<string>
+     */
     protected $dontFlash = [
         'current_password',
         'password',
@@ -31,20 +39,14 @@ class ExceptionHandler extends Handler
 
     public function render($request, Throwable $e): Response|JsonResponse|RedirectResponse
     {
-        $isDebug = config('app.debug');
-
-        return $isDebug
-            ? $this->buildJsonResponse($e, true)
-            : $this->buildJsonResponse($e);
+        return $this->buildJsonResponse($e, config('app.debug') === true);
     }
 
     private function buildJsonResponse(Throwable $e, bool $isDebug = false): JsonResponse
     {
-        $exceptionMap = $this->getExceptionMap($isDebug);
-
-        foreach ($exceptionMap as $exceptionClass => $response) {
+        foreach ($this->getExceptionMap() as $exceptionClass => $response) {
             if ($e instanceof $exceptionClass) {
-                $responseData = is_callable($response) ? $response($e) : $response;
+                $responseData = $response instanceof Closure ? $response($e) : $response;
 
                 if ($isDebug) {
                     $responseData['data'] = $this->getDebugData($e);
@@ -52,7 +54,7 @@ class ExceptionHandler extends Handler
 
                 return new JsonResponse(
                     $responseData,
-                    $responseData['status'] ?? Response::HTTP_INTERNAL_SERVER_ERROR,
+                    $responseData['status'],
                     [],
                     JSON_UNESCAPED_UNICODE
                 );
@@ -76,28 +78,40 @@ class ExceptionHandler extends Handler
         return new JsonResponse($responseData, $responseData['status'], [], JSON_UNESCAPED_UNICODE);
     }
 
+    /**
+     * @return array{exception: class-string<Throwable>, file: string, line: int, trace: array<int, mixed>}
+     */
     private function getDebugData(Throwable $e): array
     {
         return [
-            'exception' => get_class($e),
+            'exception' => $e::class,
             'file' => $e->getFile(),
             'line' => $e->getLine(),
             'trace' => $e->getTrace(),
         ];
     }
 
-    private function getExceptionMap(bool $isDebug): array
+    /**
+     * @return array<class-string<Throwable>, array{status: int, message: mixed}|Closure(Throwable): array{status: int, message: mixed, errors?: mixed}>
+     */
+    private function getExceptionMap(): array
     {
         return [
             ThrottleRequestsException::class => [
                 'status' => Response::HTTP_TOO_MANY_REQUESTS,
                 'message' => __('core::validation.throttle'),
             ],
-            ValidationException::class => fn ($e) => [
-                'status' => $e->status,
-                'message' => __('core::validation.invalid_data'),
-                'errors' => $e->errors(),
-            ],
+            ValidationException::class => function (Throwable $e): array {
+                if (! $e instanceof ValidationException) {
+                    return $this->buildThrowableResponse($e);
+                }
+
+                return [
+                    'status' => $e->status,
+                    'message' => __('core::validation.invalid_data'),
+                    'errors' => $e->errors(),
+                ];
+            },
             ModelNotFoundException::class => [
                 'status' => Response::HTTP_NOT_FOUND,
                 'message' => __('core::domain.model_not_found'),
@@ -106,14 +120,31 @@ class ExceptionHandler extends Handler
                 'status' => Response::HTTP_NOT_FOUND,
                 'message' => __('core::domain.model_not_found'),
             ],
-            HttpException::class => fn ($e) => [
-                'status' => $e->getStatusCode(),
-                'message' => $e->getMessage(),
-            ],
+            HttpException::class => function (Throwable $e): array {
+                if (! $e instanceof HttpException) {
+                    return $this->buildThrowableResponse($e);
+                }
+
+                return [
+                    'status' => $e->getStatusCode(),
+                    'message' => $e->getMessage(),
+                ];
+            },
             AuthenticationException::class => [
                 'status' => Response::HTTP_UNAUTHORIZED,
                 'message' => __('core::domain.unauthenticated'),
             ],
+        ];
+    }
+
+    /**
+     * @return array{status: int, message: string}
+     */
+    private function buildThrowableResponse(Throwable $e): array
+    {
+        return [
+            'status' => $e->getCode() ?: Response::HTTP_INTERNAL_SERVER_ERROR,
+            'message' => $e->getMessage(),
         ];
     }
 }

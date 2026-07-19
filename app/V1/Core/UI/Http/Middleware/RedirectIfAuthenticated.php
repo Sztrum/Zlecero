@@ -4,28 +4,26 @@ declare(strict_types=1);
 
 namespace App\V1\Core\UI\Http\Middleware;
 
-use App\V1\Core\Application\Providers\RouteServiceProvider;
 use Closure;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Symfony\Component\HttpFoundation\Response;
 
 class RedirectIfAuthenticated
 {
+    private const HOME = '/';
+
     /**
-     * Handle an incoming request.
-     *
-     * @param  Request                                                                                          $request
-     * @param  Closure(\Illuminate\Http\Request): (\Illuminate\Http\Response|\Illuminate\Http\RedirectResponse) $next
-     * @param  string|null                                                                                      ...$guards
-     * @return \Illuminate\Http\Response|\Illuminate\Http\RedirectResponse
+     * @param Closure(Request): Response $next
      */
-    public function handle(Request $request, Closure $next, ...$guards)
+    public function handle(Request $request, Closure $next, ?string ...$guards): Response|RedirectResponse
     {
         $guards = empty($guards) ? [null] : $guards;
 
         foreach ($guards as $guard) {
             if (Auth::guard($guard)->check()) {
-                return redirect(RouteServiceProvider::HOME);
+                return redirect(self::HOME);
             }
         }
 

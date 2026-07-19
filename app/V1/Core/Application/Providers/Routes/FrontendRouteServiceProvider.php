@@ -7,9 +7,9 @@ namespace App\V1\Core\Application\Providers\Routes;
 use App\V1\Core\Application\Providers\ModuleServiceProvider;
 use Illuminate\Contracts\Routing\Registrar;
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider;
-use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use ReflectionClass;
+use RuntimeException;
 
 abstract class FrontendRouteServiceProvider extends RouteServiceProvider
 {
@@ -26,22 +26,27 @@ abstract class FrontendRouteServiceProvider extends RouteServiceProvider
     {
         $routeProviderReflection = new ReflectionClass($this);
 
-        return Collection::make($this->app->getProviders(ModuleServiceProvider::class))
-            ->filter(function (ModuleServiceProvider $moduleServiceProvider) use ($routeProviderReflection) {
-                $routeProviderNamespace = $routeProviderReflection->getNamespaceName();
-                $moduleProviderNamespace = (new ReflectionClass($moduleServiceProvider))->getNamespaceName();
+        foreach ($this->app->getProviders(ModuleServiceProvider::class) as $moduleServiceProvider) {
+            if (! $moduleServiceProvider instanceof ModuleServiceProvider) {
+                continue;
+            }
 
-                $routeProviderSegments = explode('\\', $routeProviderNamespace);
-                $moduleProviderSegments = explode('\\', $moduleProviderNamespace);
+            $routeProviderNamespace = $routeProviderReflection->getNamespaceName();
+            $moduleProviderNamespace = (new ReflectionClass($moduleServiceProvider))->getNamespaceName();
 
-                foreach ($moduleProviderSegments as $index => $segment) {
-                    if (!isset($routeProviderSegments[$index]) || $routeProviderSegments[$index] !== $segment) {
-                        return false;
-                    }
+            $routeProviderSegments = explode('\\', $routeProviderNamespace);
+            $moduleProviderSegments = explode('\\', $moduleProviderNamespace);
+
+            foreach ($moduleProviderSegments as $index => $segment) {
+                if (!isset($routeProviderSegments[$index]) || $routeProviderSegments[$index] !== $segment) {
+                    continue 2;
                 }
+            }
 
-                return true;
-            })->first();
+            return $moduleServiceProvider;
+        }
+
+        throw new RuntimeException('Module provider not found for route provider ' . static::class);
     }
 
     public function getModulePrefix(): string
@@ -73,6 +78,9 @@ abstract class FrontendRouteServiceProvider extends RouteServiceProvider
 
     abstract protected function registerRoutes(Registrar $router): void;
 
+    /**
+     * @return list<string>
+     */
     protected function middlewares(): array
     {
         return ['web'];

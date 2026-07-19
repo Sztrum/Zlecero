@@ -56,6 +56,9 @@ class LaravelCommandBus implements CommandBusInterface
         }
     }
 
+    /**
+     * @param array<class-string, class-string> $map
+     */
     public function map(array $map): void
     {
         $this->bus->map($map);

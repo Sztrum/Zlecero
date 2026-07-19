@@ -12,5 +12,8 @@ interface CommandBusInterface
 
     public function dispatchManyWithTransaction(CommandInterface ...$commands): void;
 
+    /**
+     * @param array<class-string, class-string> $map
+     */
     public function map(array $map): void;
 }

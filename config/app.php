@@ -1,5 +1,8 @@
 <?php
 
+$appPreviousKeys = env('APP_PREVIOUS_KEYS', '');
+$appPreviousKeys = is_string($appPreviousKeys) ? $appPreviousKeys : '';
+
 return [
 
     /*
@@ -101,7 +104,7 @@ return [
 
     'previous_keys' => [
         ...array_filter(
-            explode(',', env('APP_PREVIOUS_KEYS', ''))
+            explode(',', $appPreviousKeys)
         ),
     ],
 

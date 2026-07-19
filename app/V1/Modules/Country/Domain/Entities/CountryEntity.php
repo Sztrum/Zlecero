@@ -9,17 +9,25 @@ use Illuminate\Contracts\Support\Jsonable;
 use JsonException;
 use JsonSerializable;
 
+/**
+ * @implements Arrayable<string, mixed>
+ */
 readonly class CountryEntity implements Arrayable, JsonSerializable, Jsonable
 {
+    /**
+     * @param list<string> $phone
+     * @param list<string> $currency
+     * @param list<string> $languages
+     */
     public function __construct(
         private string $code,
         private string $name,
         private string $native,
-        private array  $phone,
+        private array $phone,
         private string $continent,
         private string $capital,
-        private array  $currency,
-        private array  $languages,
+        private array $currency,
+        private array $languages,
     ) {
     }
 
@@ -38,6 +46,9 @@ readonly class CountryEntity implements Arrayable, JsonSerializable, Jsonable
         return $this->native;
     }
 
+    /**
+     * @return list<string>
+     */
     public function getPhone(): array
     {
         return $this->phone;
@@ -53,11 +64,17 @@ readonly class CountryEntity implements Arrayable, JsonSerializable, Jsonable
         return $this->capital;
     }
 
+    /**
+     * @return list<string>
+     */
     public function getCurrency(): array
     {
         return $this->currency;
     }
 
+    /**
+     * @return list<string>
+     */
     public function getLanguages(): array
     {
         return $this->languages;
@@ -68,6 +85,9 @@ readonly class CountryEntity implements Arrayable, JsonSerializable, Jsonable
         return in_array($code, $this->languages, true);
     }
 
+    /**
+     * @return array{code: string, name: string, native: string, phone: list<string>, continent: string, capital: string, currency: list<string>, languages: list<string>}
+     */
     public function toArray(): array
     {
         return [
@@ -87,6 +107,9 @@ readonly class CountryEntity implements Arrayable, JsonSerializable, Jsonable
         return $this->toJson();
     }
 
+    /**
+     * @param array{code: string, name: string, native: string, phone: list<string>, continent: string, capital: string, currency: list<string>, languages: list<string>} $data
+     */
     public static function fromArray(array $data): self
     {
         return new self(
@@ -102,18 +125,17 @@ readonly class CountryEntity implements Arrayable, JsonSerializable, Jsonable
     }
 
     /**
-     * @throws JsonException
+     * @return array<string, mixed>
      */
-    public function jsonSerialize(): string|bool
+    public function jsonSerialize(): array
     {
-        return json_encode($this->toArray(), JSON_THROW_ON_ERROR);
+        return $this->toArray();
     }
 
     /**
-     * @param  mixed         $options
      * @throws JsonException
      */
-    public function toJson($options = 0): bool|string
+    public function toJson($options = 0): string
     {
         return json_encode($this->toArray(), JSON_THROW_ON_ERROR | $options);
     }

@@ -6,23 +6,22 @@ namespace App\V1\Core\Infrastructure\Packages\Sanctum\Models;
 
 use Eloquent;
 use Illuminate\Contracts\Encryption\DecryptException;
+use Illuminate\Database\Eloquent\Model as BaseModel;
 use Illuminate\Support\Str;
 use Laravel\Sanctum\PersonalAccessToken as SanctumPersonalAccessToken;
 
 /**
- * 
- *
- * @property string                                                    $id
- * @property string                                                    $tokenable_type
- * @property string                                                    $tokenable_id
- * @property string                                                    $name
- * @property string                                                    $token
- * @property array|null                                                $abilities
- * @property \Illuminate\Support\Carbon|null                           $last_used_at
- * @property \Illuminate\Support\Carbon|null                           $expires_at
- * @property \Illuminate\Support\Carbon|null                           $created_at
- * @property \Illuminate\Support\Carbon|null                           $updated_at
- * @property \Illuminate\Database\Eloquent\Model|Eloquent              $tokenable
+ * @property string $id
+ * @property string $tokenable_type
+ * @property string $tokenable_id
+ * @property string $name
+ * @property string $token
+ * @property array<array-key, mixed>|null $abilities
+ * @property \Illuminate\Support\Carbon|null $last_used_at
+ * @property \Illuminate\Support\Carbon|null $expires_at
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property \Illuminate\Database\Eloquent\Model|Eloquent $tokenable
  * @method static \Illuminate\Database\Eloquent\Builder|PersonalAccessToken newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|PersonalAccessToken newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|PersonalAccessToken query()
@@ -54,17 +53,19 @@ class PersonalAccessToken extends SanctumPersonalAccessToken
     public static function findToken($token): ?self
     {
         try {
-            return parent::findToken(decrypt($token));
+            $decryptedToken = decrypt($token);
+
+            return is_string($decryptedToken) ? parent::findToken($decryptedToken) : null;
         } catch (DecryptException) {
             return parent::findToken($token);
         }
     }
 
-    protected static function boot()
+    protected static function boot(): void
     {
         parent::boot();
 
-        static::creating(function ($model) {
+        static::creating(static function (BaseModel $model): void {
             $model->{$model->getKeyName()} = (string) Str::uuid();
         });
     }

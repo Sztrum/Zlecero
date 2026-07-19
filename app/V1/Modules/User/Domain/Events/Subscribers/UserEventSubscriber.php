@@ -13,7 +13,7 @@ class UserEventSubscriber
     public function subscribe(Dispatcher $dispatcher): void
     {
         $dispatcher->listen(
-            events: [UserHasBeenCreatedEvent::class, ResendEmailConfirmationEvent::class],
+            events: [UserHasBeenCreatedEvent::class],
             listener: SendEmailConfirmationListener::class
         );
     }

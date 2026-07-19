@@ -13,20 +13,21 @@ use App\V1\Modules\User\Domain\Aggregates\UserAggregate;
 use App\V1\Modules\User\Domain\Models\User;
 use App\V1\Modules\User\Infrastructure\Repositories\UserRepository;
 use Illuminate\Contracts\Auth\PasswordBroker as PasswordBrokerContract;
+use RuntimeException;
 use Throwable;
 
 readonly class ResetPasswordCommandHandler implements CommandHandlerInterface
 {
     public function __construct(
-        private CommandBusInterface    $commandBus,
-        private UserRepository         $userRepository,
+        private CommandBusInterface $commandBus,
+        private UserRepository $userRepository,
         private PasswordBrokerContract $passwordBroker,
-        private UserAggregate          $userAggregate
+        private UserAggregate $userAggregate
     ) {
     }
 
     /**
-     * @param  ResetPasswordCommand $command
+     * @param ResetPasswordCommand $command
      * @throws Throwable
      */
     public function handle(CommandInterface $command): void
@@ -39,14 +40,30 @@ readonly class ResetPasswordCommandHandler implements CommandHandlerInterface
                 'password' => $command->password,
                 'token' => $command->token,
             ],
-            fn (User $user, $password) => $this->commandBus->dispatch(
-                new SetNewPasswordCommand(
-                    $user->id,
-                    $user->getRememberToken(),
-                    $password
-                )
-            )
+            function (User $user, mixed $password): void {
+                if (!is_string($password)) {
+                    throw new RuntimeException('Reset password broker password must be a string.');
+                }
+
+                $rememberToken = $user->getRememberToken();
+
+                if (!is_string($rememberToken)) {
+                    throw new RuntimeException('Reset password remember token must be a string.');
+                }
+
+                $this->commandBus->dispatch(
+                    new SetNewPasswordCommand(
+                        $user->id,
+                        $rememberToken,
+                        $password
+                    )
+                );
+            }
         );
+
+        if (!is_string($status)) {
+            throw new RuntimeException('Reset password status must be a string.');
+        }
 
         $this->userAggregate->verifyResetPasswordStatus($status);
     }

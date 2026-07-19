@@ -10,10 +10,13 @@ use Throwable;
 
 class HttpException extends SymfonyHttpException
 {
+    /**
+     * @param array<string, string|string[]> $headers
+     */
     public function __construct(
         string $message = '',
         public int $statusCode = Response::HTTP_INTERNAL_SERVER_ERROR,
-        Throwable $previous = null,
+        ?Throwable $previous = null,
         array $headers = [],
         int $code = 0
     ) {

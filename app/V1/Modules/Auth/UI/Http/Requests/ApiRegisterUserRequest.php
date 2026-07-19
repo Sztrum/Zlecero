@@ -8,19 +8,14 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class ApiRegisterUserRequest extends FormRequest
 {
+    /**
+     * @return array<string, mixed>
+     */
     public function rules(): array
     {
         return [
-            'name' => [
-                'string',
-                'required',
-            ],
-            'email' => [
-                'string',
-                'required',
-                'email:rfc,dns',
-                'unique:users'
-            ],
+            'name' => ['string', 'required'],
+            'email' => ['string', 'required', 'email:rfc,dns', 'unique:users'],
         ];
     }
 }

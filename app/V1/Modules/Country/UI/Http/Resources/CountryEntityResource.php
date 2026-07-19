@@ -6,9 +6,13 @@ namespace App\V1\Modules\Country\UI\Http\Resources;
 
 use App\V1\Modules\Country\Domain\Entities\CountryEntity;
 use App\V1\Shared\UI\Http\Resources\ApiResponseResource;
+use RuntimeException;
 
 class CountryEntityResource extends ApiResponseResource
 {
+    /**
+     * @return array<string, mixed>
+     */
     public function getResourceData(): array
     {
         return [
@@ -25,20 +29,26 @@ class CountryEntityResource extends ApiResponseResource
 
     public function getResource(): CountryEntity
     {
-        /** @var CountryEntity $resource */
+        if (!$this->resource instanceof CountryEntity) {
+            throw new RuntimeException('CountryEntityResource requires a CountryEntity resource.');
+        }
+
         return $this->resource;
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function getRelationships(): array
     {
-        return $this->getRelationshipsNames()->mapWithKeys(fn (string $relationship) => [
-            $relationship => match ($relationship) {
-                //                'complaint_products' => new CollectionComplaintProductResource(
-                //                    $this->getResource()->complaintProducts,
-                //                    'names,configurations'
-                //                ),
+        $relationships = [];
+
+        foreach ($this->getRelationshipsNames() as $relationship) {
+            $relationships[$relationship] = match ($relationship) {
                 default => null,
-            },
-        ])->toArray();
+            };
+        }
+
+        return $relationships;
     }
 }

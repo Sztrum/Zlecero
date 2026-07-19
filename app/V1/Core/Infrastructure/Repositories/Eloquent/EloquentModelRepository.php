@@ -14,18 +14,30 @@ use Throwable;
 abstract class EloquentModelRepository implements ModelRepositoryInterface
 {
     abstract public function model(): Model;
+
     abstract public function moduleName(): string;
 
+    /**
+     * @return Builder<Model>
+     */
     protected function query(): Builder
     {
-        return $this->model()->query();
+        return $this->model()->newQuery();
     }
 
+    /**
+     * @param array<string, mixed> $params
+     */
     public function create(array $params): Model
     {
-        return $this->query()->create($params);
+        $model = $this->query()->create($params);
+
+        return $model;
     }
 
+    /**
+     * @param array<string, mixed> $params
+     */
     public function update(Model $model, array $params): Model
     {
         $model->fill($params)->save();
@@ -52,10 +64,14 @@ abstract class EloquentModelRepository implements ModelRepositoryInterface
 
     public function firstById(string $id): ?Model
     {
-        /** @var Model|null $model */
-        return $this->query()->find($id);
+        $model = $this->query()->find($id);
+
+        return $model;
     }
 
+    /**
+     * @return Collection<int, Model>
+     */
     public function all(): Collection
     {
         return $this->query()->get();

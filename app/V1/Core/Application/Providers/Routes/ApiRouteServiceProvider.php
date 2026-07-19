@@ -7,19 +7,15 @@ namespace App\V1\Core\Application\Providers\Routes;
 use App\V1\Core\Application\Providers\ModuleServiceProvider;
 use Illuminate\Contracts\Routing\Registrar;
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider;
-use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use ReflectionClass;
+use RuntimeException;
 
 abstract class ApiRouteServiceProvider extends RouteServiceProvider
 {
     public const VERSION = 'v1';
 
     public const PREFIX = '';
-
-    protected const PREFIX_PATTERN = '%s/%s';
-
-    protected const PATTERN = '%s';
 
     protected bool $pluralPrefix = true;
 
@@ -32,32 +28,43 @@ abstract class ApiRouteServiceProvider extends RouteServiceProvider
     {
         $routeProviderReflection = new ReflectionClass($this);
 
-        return Collection::make($this->app->getProviders(ModuleServiceProvider::class))
-            ->filter(function (ModuleServiceProvider $moduleServiceProvider) use ($routeProviderReflection) {
-                $routeProviderNamespace = $routeProviderReflection->getNamespaceName();
-                $moduleProviderNamespace = (new ReflectionClass($moduleServiceProvider))->getNamespaceName();
+        foreach ($this->app->getProviders(ModuleServiceProvider::class) as $moduleServiceProvider) {
+            if (! $moduleServiceProvider instanceof ModuleServiceProvider) {
+                continue;
+            }
 
-                $routeProviderSegments = explode('\\', $routeProviderNamespace);
-                $moduleProviderSegments = explode('\\', $moduleProviderNamespace);
+            $routeProviderNamespace = $routeProviderReflection->getNamespaceName();
+            $moduleProviderNamespace = (new ReflectionClass($moduleServiceProvider))->getNamespaceName();
 
-                foreach ($moduleProviderSegments as $index => $segment) {
-                    if (!isset($routeProviderSegments[$index]) || $routeProviderSegments[$index] !== $segment) {
-                        return false;
-                    }
+            $routeProviderSegments = explode('\\', $routeProviderNamespace);
+            $moduleProviderSegments = explode('\\', $moduleProviderNamespace);
+
+            foreach ($moduleProviderSegments as $index => $segment) {
+                if (!isset($routeProviderSegments[$index]) || $routeProviderSegments[$index] !== $segment) {
+                    continue 2;
                 }
+            }
 
-                return true;
-            })->first();
+            return $moduleServiceProvider;
+        }
+
+        throw new RuntimeException('Module provider not found for route provider ' . static::class);
     }
 
     public static function getRoutePrefix(): string
     {
-        return implode('/', [self::PREFIX, static::VERSION]);
+        return self::PREFIX . '/' . self::VERSION;
     }
 
     public static function getBaseUrl(): string
     {
-        return implode('/', [config('app.url'), trim(static::getRoutePrefix(), '/')]);
+        $appUrl = config('app.url');
+
+        if (! is_string($appUrl)) {
+            throw new RuntimeException('Configured app.url must be a string.');
+        }
+
+        return implode('/', [$appUrl, trim(static::getRoutePrefix(), '/')]);
     }
 
     public function getModulePrefix(): string
@@ -79,8 +86,8 @@ abstract class ApiRouteServiceProvider extends RouteServiceProvider
     public function getPrefix(): string
     {
         return $this->hasPrefix()
-            ? sprintf(static::PREFIX_PATTERN, static::getRoutePrefix(), $this->getModulePrefix())
-            : sprintf(static::PATTERN, static::getRoutePrefix());
+            ? static::getRoutePrefix() . '/' . $this->getModulePrefix()
+            : static::getRoutePrefix();
     }
 
     public function map(Registrar $router): void
@@ -94,6 +101,9 @@ abstract class ApiRouteServiceProvider extends RouteServiceProvider
 
     abstract protected function registerRoutes(Registrar $router): void;
 
+    /**
+     * @return list<string>
+     */
     protected function middlewares(): array
     {
         return ['api'];

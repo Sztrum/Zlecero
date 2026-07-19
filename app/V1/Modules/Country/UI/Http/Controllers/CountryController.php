@@ -9,7 +9,7 @@ use App\V1\Core\UI\Http\Controllers\ApiController;
 use App\V1\Modules\Country\Domain\Services\CountryService;
 use App\V1\Modules\Country\UI\Http\Resources\CollectionCountryEntityResource;
 use Illuminate\Contracts\Routing\ResponseFactory;
-use Illuminate\Support\Facades\Request;
+use Illuminate\Http\Request;
 
 class CountryController extends ApiController
 {
@@ -21,9 +21,8 @@ class CountryController extends ApiController
         parent::__construct($commandBus, $responseFactory);
     }
 
-    public function index(
-        Request $request,
-    ) {
+    public function index(Request $request): CollectionCountryEntityResource
+    {
         return new CollectionCountryEntityResource(
             resource: $this->countryService->getAllCountries()->toCollection()->values(),
             asResponse: true,

@@ -22,7 +22,7 @@ class CoreBladeServiceProvider extends ServiceProvider
 
     private function declareArrayErrorDirective(): void
     {
-        Blade::directive('arrayerror', function ($expression) {
+        Blade::directive('arrayerror', function (string $expression): string {
             return '
                 <?php
                     $__errorArgs = [' . $expression . '];
@@ -45,7 +45,7 @@ class CoreBladeServiceProvider extends ServiceProvider
             ';
         });
 
-        Blade::directive('endarrayerror', function () {
+        Blade::directive('endarrayerror', function (): string {
             return '
                 <?php
                         unset($message);

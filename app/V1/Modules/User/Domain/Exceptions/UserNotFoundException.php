@@ -8,6 +8,9 @@ use App\V1\Core\Domain\Exceptions\DomainException;
 
 class UserNotFoundException extends DomainException
 {
+    /**
+     *  array<string, bool|float|int|string|null> $replace
+     */
     public function __construct(
         string $message = '',
         array $replace = []

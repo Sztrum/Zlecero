@@ -1,7 +1,7 @@
 # AGENTS_PROJECT_RULES.md
 
 ## Version
-v1.1.0
+v1.2.0
 
 ## Scope
 Repository-specific rules for the Zlecero Laravel project.
@@ -81,6 +81,8 @@ Read documents in this exact order before implementation:
 - For backend/domain changes, run focused tests with `php artisan test --filter=...` when a focused target exists; otherwise run `php artisan test` when feasible.
 - For migrations, run `php artisan migrate` after adding migration files.
 - For frontend asset changes, run `npm install` only when dependencies changed, then run `npm run prod`.
+- Run `composer phpstan` for PHP static analysis whenever PHP code, config, database files, or tests change.
+- Do not use PHPStan baselines, ignore-error entries, or inline PHPStan suppressions as the default way to make analysis pass; fix the underlying typed contract or runtime assumption instead.
 - For PHP syntax-sensitive isolated edits, run `php -l <file>` when faster than the full test suite and still meaningful.
 - If verification cannot be run because of a missing dependency, unavailable service, or environment limitation, report the blocker and exact remediation.
 

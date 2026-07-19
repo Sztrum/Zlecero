@@ -10,10 +10,13 @@ use Throwable;
 
 class AuthException extends ForbiddenException
 {
+    /**
+     * @param array<string, string|string[]> $headers
+     */
     public function __construct(
-        string $message = null,
+        ?string $message = null,
         public int $statusCode = Response::HTTP_FORBIDDEN,
-        Throwable $previous = null,
+        ?Throwable $previous = null,
         array $headers = [],
         int $code = 0
     ) {

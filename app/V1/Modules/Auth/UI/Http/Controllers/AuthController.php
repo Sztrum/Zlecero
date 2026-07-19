@@ -21,14 +21,14 @@ use App\V1\Modules\Auth\UI\Http\Requests\ApiResetPasswordRequest;
 use App\V1\Modules\Auth\UI\Http\Requests\ApiSetNewPasswordRequest;
 use App\V1\Modules\Auth\UI\Http\Requests\ApiVerifyEmailRequest;
 use App\V1\Modules\User\Application\Commands\RegisterUserCommand;
-use App\V1\Modules\User\Domain\Models\User;
-use App\V1\Modules\User\Infrastructure\Repositories\UserRepository;
 use App\V1\Modules\User\UI\Http\Resources\UserResource;
 use Illuminate\Contracts\Routing\ResponseFactory;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Ramsey\Uuid\Uuid;
+use RuntimeException;
 use Symfony\Component\HttpFoundation\Response;
+use Throwable;
 
 class AuthController extends ApiController
 {
@@ -36,33 +36,29 @@ class AuthController extends ApiController
         CommandBusInterface $commandBus,
         private readonly ResponseFactory $responseFactory,
         private readonly AuthService $authService,
-        private readonly UserRepository $userRepository,
     ) {
         parent::__construct($commandBus, $responseFactory);
     }
 
-    public function login(
-        ApiLoginRequest $request,
-    ) {
+    public function login(ApiLoginRequest $request): JsonResponse
+    {
         $token = $this->authService->login(
             loginDataDTO: LoginDataDTO::from($request)
         );
 
         return $this->responseData([
-            'token' => $token->plainTextToken
+            'token' => $token->plainTextToken,
         ], __('auth::messages.auth_success'));
     }
 
-    public function logout(
-        Request $request,
-    ): JsonResponse {
-        /** @var User $user */
+    public function logout(Request $request): JsonResponse
+    {
         $user = $request->user();
-
-        /** @var PersonalAccessToken $accessToken */
         $accessToken = $user?->currentAccessToken();
 
-        $accessToken?->delete();
+        if ($accessToken instanceof PersonalAccessToken) {
+            $accessToken->delete();
+        }
 
         return $this->responseFactory->json([
             'status' => Response::HTTP_OK,
@@ -70,13 +66,12 @@ class AuthController extends ApiController
         ]);
     }
 
-    public function register(
-        ApiRegisterUserRequest $request
-    ): JsonResponse {
+    public function register(ApiRegisterUserRequest $request): JsonResponse
+    {
         $this->commandBus->dispatch(
             new RegisterUserCommand(
-                name: $request->validated('name'),
-                email: $request->validated('email'),
+                name: $this->validatedString($request, 'name'),
+                email: $this->validatedString($request, 'email'),
             )
         );
 
@@ -104,20 +99,20 @@ class AuthController extends ApiController
             'data' => [
                 'user_id' => $user_id,
                 'remember_token' => $rememberToken,
-            ]
+            ],
         ]);
     }
 
     public function newPassword(
         ApiSetNewPasswordRequest $request,
-        string                   $user_id,
-        string                   $remember_token,
+        string $user_id,
+        string $remember_token,
     ): JsonResponse {
         $this->commandBus->dispatch(
             new SetNewPasswordCommand(
                 user_id: $user_id,
                 remember_token: $remember_token,
-                password: $request->input('password')
+                password: $this->validatedString($request, 'password')
             ),
         );
 
@@ -127,17 +122,15 @@ class AuthController extends ApiController
         ]);
     }
 
-    public function forgotPassword(
-        ApiForgotPasswordRequest $request,
-    ): JsonResponse {
+    public function forgotPassword(ApiForgotPasswordRequest $request): JsonResponse
+    {
         try {
             $this->commandBus->dispatch(
                 new ForgotPasswordCommand(
-                    $request->get('email')
+                    $this->validatedString($request, 'email')
                 )
             );
         } catch (Throwable $e) {
-            // Ignore
         }
 
         return $this->responseFactory->json([
@@ -153,8 +146,8 @@ class AuthController extends ApiController
         $this->commandBus->dispatch(
             new ResetPasswordCommand(
                 remember_token: $remember_token,
-                token: $request->get('token'),
-                password: $request->input('password'),
+                token: $this->validatedString($request, 'token'),
+                password: $this->validatedString($request, 'password'),
             )
         );
 
@@ -164,12 +157,22 @@ class AuthController extends ApiController
         ]);
     }
 
-    public function profile(
-        Request $request
-    ): UserResource {
+    public function profile(Request $request): UserResource
+    {
         return new UserResource(
             resource: $request->user(),
             asResponse: true,
         );
+    }
+
+    private function validatedString(Request $request, string $key): string
+    {
+        $value = $request->input($key);
+
+        if (!is_string($value)) {
+            throw new RuntimeException("Validated request field [{$key}] must be a string.");
+        }
+
+        return $value;
     }
 }

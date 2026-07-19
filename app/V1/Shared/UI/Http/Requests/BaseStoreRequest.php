@@ -7,11 +7,15 @@ namespace App\V1\Shared\UI\Http\Requests;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\ValidationException;
+use Illuminate\Validation\Validator as LaravelValidator;
 
 abstract class BaseStoreRequest extends FormRequest
 {
     protected $stopOnFirstFailure = true;
 
+    /**
+     * @return array<string, mixed>
+     */
     public function rules(): array
     {
         return [
@@ -21,15 +25,14 @@ abstract class BaseStoreRequest extends FormRequest
 
     public function withValidator(Validator $validator): void
     {
-        $validator->after(function ($validator) {
-            $fields = $this->input('fields', []);
-            $name = $this->input('name', []);
-
+        $validator->after(function (LaravelValidator $validator): void {
+            $fields = $this->arrayInput('fields');
+            $name = $this->arrayInput('name');
             $nameFilled = false;
             $errorKey = '';
 
             foreach ($fields as $lang => $fieldData) {
-                if (!empty($fieldData['name'])) {
+                if (is_array($fieldData) && !empty($fieldData['name'])) {
                     $nameFilled = true;
 
                     break;
@@ -60,7 +63,9 @@ abstract class BaseStoreRequest extends FormRequest
         });
     }
 
-
+    /**
+     * @return array<string, mixed>
+     */
     protected function getContentSectionsRules(): array
     {
         return [
@@ -72,22 +77,32 @@ abstract class BaseStoreRequest extends FormRequest
         ];
     }
 
-    private function saveContentSectionsToSession()
+    private function saveContentSectionsToSession(): void
     {
         session()->flash('failedValidationContentSections', $this->get('content_sections'));
     }
 
-    protected function failedValidation(Validator $validator)
+    /**
+     * @throws ValidationException
+     */
+    protected function failedValidation(Validator $validator): void
     {
-        /** @var ValidationException $exception */
-        $exception = $validator->getException();
-
         if ($this->get('content_sections')) {
             $this->saveContentSectionsToSession();
         }
 
-        throw (new $exception($validator))
+        throw (new ValidationException($validator))
             ->errorBag($this->errorBag)
             ->redirectTo($this->getRedirectUrl());
+    }
+
+    /**
+     * @return array<array-key, mixed>
+     */
+    private function arrayInput(string $key): array
+    {
+        $value = $this->input($key, []);
+
+        return is_array($value) ? $value : [];
     }
 }

@@ -8,6 +8,7 @@
         "php": "^8.5",
         "ext-soap": "*",
         "barryvdh/laravel-ide-helper": "^3.1",
+        "intervention/image": "^4.2",
         "laravel/framework": "^13.20",
         "laravel/sanctum": "^4.3",
         "laravel/telescope": "^5.20",

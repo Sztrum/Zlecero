@@ -10,6 +10,7 @@ use App\V1\Modules\User\Domain\Models\User;
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
+use RuntimeException;
 
 class VerifyEmailMail extends Mailable
 {
@@ -22,6 +23,12 @@ class VerifyEmailMail extends Mailable
 
     public function build(FrontendEndpointService $frontendEndpointService): VerifyEmailMail
     {
+        $userId = $this->user->getKey();
+
+        if (!is_string($userId) && !is_int($userId)) {
+            throw new RuntimeException('User id for email verification URL must be a string or integer.');
+        }
+
         return $this->subject(
             __('user::emails.verify-email.subject')
         )
@@ -29,7 +36,7 @@ class VerifyEmailMail extends Mailable
             ->with([
                 'user' => $this->user,
                 'frontendUrl' => $frontendEndpointService->route(FrontEndRouteEnum::AUTH_VERIFY_EMAIL, [
-                    'user_id' => $this->user->getKey(),
+                    'user_id' => $userId,
                     'hash' => $this->user->generateHashToEmailVerification(),
                 ]),
             ]);

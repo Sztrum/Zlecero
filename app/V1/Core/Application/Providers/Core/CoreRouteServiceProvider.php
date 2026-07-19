@@ -9,6 +9,7 @@ use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Contracts\Routing\Registrar;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\RateLimiter;
+use RuntimeException;
 
 class CoreRouteServiceProvider extends ApiRouteServiceProvider
 {
@@ -24,10 +25,15 @@ class CoreRouteServiceProvider extends ApiRouteServiceProvider
     protected function configureRateLimiting(): void
     {
         RateLimiter::for('api', function (Request $request) {
-            $maxAttempts = (int) config('auth.throttle.default', 500);
+            $configuredMaxAttempts = config('auth.throttle.default', 500);
+
+            if (!is_int($configuredMaxAttempts)) {
+                throw new RuntimeException('Config auth.throttle.default must be an integer.');
+            }
+
             $user = $request->user();
 
-            return Limit::perMinute($maxAttempts)->by($user?->id ?: $request->ip());
+            return Limit::perMinute($configuredMaxAttempts)->by($user?->id ?: $request->ip());
         });
     }
 }
