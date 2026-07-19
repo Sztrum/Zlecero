@@ -1,0 +1,78 @@
+.fullscreen-loader
+{
+    @apply fixed inset-0 z-20;
+    @apply bg-neutral-100;
+    @apply flex items-center justify-center;
+}
+
+//.spinner-fullscreen {
+//    border: 90px solid;
+//    border-color: rgba(0, 87, 184, 0.15) rgba(0, 87, 184, 0.25) rgba(0, 87, 184, 0.35) rgba(0, 87, 184, 0.5);
+//    border-radius: 50%;
+//    display: inline-block;
+//    -webkit-animation: animloader34 0.8s linear infinite;
+//    animation: animloader34 0.8s linear infinite;
+//}
+//
+//@-webkit-keyframes animloader34 {
+//    0% {
+//        border-color: rgba(0, 87, 184, 0.15) rgba(0, 87, 184, 0.25) rgba(0, 87, 184, 0.35) rgba(0, 87, 184, 0.75);
+//    }
+//    33% {
+//        border-color: rgba(0, 87, 184, 0.75) rgba(0, 87, 184, 0.15) rgba(0, 87, 184, 0.25) rgba(0, 87, 184, 0.35);
+//    }
+//    66% {
+//        border-color: rgba(0, 87, 184, 0.35) rgba(0, 87, 184, 0.75) rgba(0, 87, 184, 0.15) rgba(0, 87, 184, 0.25);
+//    }
+//    100% {
+//        border-color: rgba(0, 87, 184, 0.25) rgba(0, 87, 184, 0.35) rgba(0, 87, 184, 0.75) rgba(0, 87, 184, 0.15);
+//    }
+//}
+//@keyframes animloader34 {
+//    0% {
+//        border-color: rgba(0, 87, 184, 0.15) rgba(0, 87, 184, 0.25) rgba(0, 87, 184, 0.35) rgba(0, 87, 184, 0.75);
+//    }
+//    33% {
+//        border-color: rgba(0, 87, 184, 0.75) rgba(0, 87, 184, 0.15) rgba(0, 87, 184, 0.25) rgba(0, 87, 184, 0.35);
+//    }
+//    66% {
+//        border-color: rgba(0, 87, 184, 0.35) rgba(0, 87, 184, 0.75) rgba(0, 87, 184, 0.15) rgba(0, 87, 184, 0.25);
+//    }
+//    100% {
+//        border-color: rgba(0, 87, 184, 0.25) rgba(0, 87, 184, 0.35) rgba(0, 87, 184, 0.75) rgba(0, 87, 184, 0.15);
+//    }
+//}
+
+.spinner-fullscreen {
+    border-right: 1rem solid #AFFFFF;
+    border-top: 1rem solid #74DBEF;
+    border-bottom: 1rem solid #5E88FC;
+    border-left: 1rem solid #264E86;
+    border-radius: 10%;
+    width: 10rem;
+    height: 10rem;
+    animation: fullscreen-spin 1.5s linear infinite;
+}
+
+@keyframes fullscreen-spin {
+    0% {
+        transform: rotate(0deg);
+    }
+    10%{
+        border-radius: 20%;
+        border-right: 1rem solid #0077b6;
+        border-top: 1rem solid #0096c7;
+        border-bottom: 1rem solid #00b4d8;
+        border-left: 1rem solid #48cae4;
+    }
+    80%{
+        border-radius: 70%;
+        border-right: 1rem solid #90e0ef;
+        border-top: 1rem solid #ade8f4;
+        border-bottom: 1rem solid #caf0f8;
+        border-left: 1rem solid #ffffff;
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}

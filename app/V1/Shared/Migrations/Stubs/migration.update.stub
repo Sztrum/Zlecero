@@ -1,0 +1,25 @@
+<?php
+
+use App\V1\Shared\Migrations\AbstractMigration;
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends AbstractMigration
+{
+    protected string $table_name = '{{ table }}';
+
+    public function up(): void
+    {
+        Schema::table($this->table_name, static function (Blueprint $table) {
+
+        });
+    }
+
+    public function down(): void
+    {
+        Schema::table($this->table_name, static function (Blueprint $table) {
+
+        });
+    }
+};

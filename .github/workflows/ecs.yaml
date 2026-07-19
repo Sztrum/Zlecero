@@ -1,0 +1,53 @@
+name: Code Style Refactor
+
+on: push
+
+jobs:
+  ecs-fix:
+
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: true
+
+    if: github.repository == 'SwierczKacper/app-api' && github.ref == 'refs/heads/main'
+
+    steps:
+
+      - uses: actions/checkout@v3
+        with:
+          ref: ${{ github.head_ref }}
+          fetch-depth: 0
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 8.3
+          extensions: simplexml, zip
+          coverage: pcov
+
+      - name: Install dependencies
+        run: composer install
+
+      - run: php vendor/bin/ecs check app --fix
+
+      - name: Check if there are any changes
+        id: verify_diff
+        run: |
+          git diff --quiet . || echo "changed=true" >> $GITHUB_OUTPUT
+
+      - name: Commit
+        if: steps.verify_diff.outputs.changed == 'true'
+        run: |
+          git config --local user.name "SwierczKacper"
+          git config --local user.email "swierczkacperkontakt@gmail.com"
+          git add .
+          git commit -m "Code style refactor"
+
+      - name: Push changes
+        if: steps.verify_diff.outputs.changed == 'true'
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          force: true
+          branch: ${{ github.ref }}
