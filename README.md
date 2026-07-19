@@ -85,51 +85,6 @@ Write-side behavior should follow command-based flow: controllers dispatch comma
 - MySQL or compatible database
 - Redis when using the Laradock setup or Redis-backed local services
 
-## Quick Start
-
-1. Install dependencies:
-
-   ```bash
-   composer install
-   npm install
-   ```
-
-2. Copy the environment file:
-
-   ```bash
-   cp .env.example .env
-   ```
-
-3. Adjust database, app URL, mail, Telescope, Redis, and any local service settings in `.env`.
-
-4. Generate the application key:
-
-   ```bash
-   php artisan key:generate
-   ```
-
-5. Run migrations:
-
-   ```bash
-   php artisan migrate
-   ```
-
-6. Start local development:
-
-   ```bash
-   php artisan serve
-   npm run dev
-   ```
-
-## Useful Commands
-
-```bash
-php artisan test
-npm run prod
-vendor/bin/ecs check app
-vendor/bin/ecs check app --fix
-```
-
 ## Laradock Configuration
 
 Important: disable Secure Boot in BIOS before using this setup.
@@ -204,6 +159,56 @@ Important: disable Secure Boot in BIOS before using this setup.
    ```bash
    sh start.sh
    ```
+
+## Project Configuration
+
+1. Install dependencies:
+
+   ```bash
+   composer install
+   npm install
+   ```
+
+2. Copy the environment file:
+
+   ```bash
+   cp .env.example .env
+   ```
+
+3. Create two databases, first for the main application and second for Telescope, then adjust database, app URL, mail, Telescope, Redis, and any local service settings in `.env`.
+
+   ```sql
+   CREATE DATABASE zlecero CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+   CREATE DATABASE zlecero_telescope CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+   ```
+
+4. Generate the application key:
+
+   ```bash
+   php artisan key:generate
+   ```
+
+5. Run migrations:
+
+   ```bash
+   php artisan migrate
+   ```
+
+6. Start local development:
+
+   ```bash
+   php artisan serve
+   npm run dev
+   ```
+
+## Useful Commands
+
+```bash
+php artisan test
+npm run prod
+vendor/bin/ecs check app
+vendor/bin/ecs check app --fix
+```
 
 ## Notes
 
