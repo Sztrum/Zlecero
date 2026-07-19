@@ -69,7 +69,7 @@ Write-side behavior should follow command-based flow: controllers dispatch comma
 
 ## Technology Stack
 
-- Backend/API: Laravel 11, PHP 8.3+
+- Backend/API: Laravel 12, PHP 8.5+
 - Database: MySQL or a compatible database
 - Authentication: Laravel Sanctum
 - Debugging/inspection: Laravel Telescope
@@ -79,7 +79,7 @@ Write-side behavior should follow command-based flow: controllers dispatch comma
 
 ## Requirements
 
-- PHP 8.3+
+- PHP 8.5+
 - Composer
 - Node.js 22+
 - MySQL or compatible database
@@ -106,7 +106,7 @@ Important: disable Secure Boot in BIOS before using this setup.
 4. In `laradock/.env`, set:
 
    ```dotenv
-   PHP_VERSION=8.3
+   PHP_VERSION=8.5
    PHP_WORKER_INSTALL_REDIS=true
    PHP_WORKER_INSTALL_GD=true
    PHP_FPM_INSTALL_EXIF=true
@@ -197,7 +197,6 @@ Important: disable Secure Boot in BIOS before using this setup.
 6. Start local development:
 
    ```bash
-   php artisan serve
    npm run dev
    ```
 
