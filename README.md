@@ -1,6 +1,78 @@
 # Zlecero
 
-Laravel 13 boilerplate with a modular `app/V1` structure, basic auth-related modules, Vite frontend tooling, and optional Laradock setup.
+Aplikacja webowa do obsługi zapytań, ofert, zleceń, maili i plików klientów w jednym panelu.
+
+Projekt jest skierowany do firm usługowo-produkcyjnych, które pracują głównie na mailach, telefonach i ręcznych procesach. Pierwszą niszą są drukarnie, firmy reklamowe, oklejanie aut, szyldy, folie i banery.
+
+Podstawowy flow aplikacji:
+
+```txt
+mail od klienta
+-> zapytanie
+-> oferta / wycena
+-> akceptacja klienta
+-> zlecenie
+-> status realizacji
+-> historia kontaktu
+```
+
+## Technologie
+
+- Backend/API: Laravel 13, PHP 8.5
+- Baza danych: MySQL 8
+- Cache/kolejki: Redis
+- Panel admina/pracownika: React, TypeScript, Tailwind, Vite
+- Panel klienta: React, TypeScript, Tailwind
+- Publiczny front SEO: Laravel Blade, Tailwind, Vite
+- Import maili: IMAP na start, pozniej Gmail API / Microsoft Graph
+
+## Architektura
+
+Projekt dziala jako modularny monolit w `app/V1/**`.
+
+Glowna zasada:
+
+```txt
+UI -> Application -> Domain
+Infrastructure = adaptery
+```
+
+Glowne moduly:
+
+```txt
+Auth
+Organization
+User
+Customer
+Mailbox
+Inquiry
+Offer
+Order
+Workflow
+CustomerPortal
+Notification
+ActivityLog
+```
+
+## MVP
+
+Pierwsza wersja obejmuje:
+
+- logowanie,
+- organizacje i uzytkownikow,
+- klientow,
+- import maili,
+- tworzenie zapytan z maili,
+- zalaczniki,
+- statusy,
+- notatki,
+- odpowiedz do klienta z panelu,
+- reczne tworzenie oferty,
+- wyslanie oferty,
+- akceptacje oferty przez link,
+- utworzenie zlecenia po akceptacji.
+
+W pierwszej wersji nie budujemy pelnego ERP, magazynu, faktur, ksiegowosci ani zaawansowanego wyceniatora.
 
 ## Requirements
 
@@ -9,7 +81,7 @@ Laravel 13 boilerplate with a modular `app/V1` structure, basic auth-related mod
 - Node.js 22+
 - MySQL or compatible database
 
-## Quick start
+## Quick Start
 
 1. Install dependencies:
    ```bash
@@ -35,7 +107,7 @@ Laravel 13 boilerplate with a modular `app/V1` structure, basic auth-related mod
    npm run dev
    ```
 
-## Laradock configuration
+## Laradock Configuration
 
 Important: disable Secure Boot in BIOS before using this setup.
 
@@ -83,8 +155,8 @@ Important: disable Secure Boot in BIOS before using this setup.
    - macOS: leave `DOCKER_SYNC_STRATEGY=native_osx`
 7. Set the project-specific values:
    ```dotenv
-   COMPOSE_PROJECT_NAME=reportseller-api
-   DATA_PATH_HOST=~/.laradock/reportseller-api
+   COMPOSE_PROJECT_NAME=zlecero
+   DATA_PATH_HOST=~/.laradock/zlecero
    ```
 8. Start the containers:
    ```bash
@@ -94,5 +166,5 @@ Important: disable Secure Boot in BIOS before using this setup.
 ## Notes
 
 - Telescope is enabled by default in `.env.example`.
-- The repository is intended to be used as a starter template for client projects.
-- Before publishing as a public template, review `.env`, branding, mail settings, and any project-specific documentation.
+- This repository contains the Laravel backend, public API, and SEO frontend.
+- The client and admin React frontends are planned as a separate project.
