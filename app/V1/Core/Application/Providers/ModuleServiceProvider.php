@@ -6,12 +6,17 @@ namespace App\V1\Core\Application\Providers;
 
 use InvalidArgumentException;
 use ReflectionClass;
+use RuntimeException;
 
 abstract class ModuleServiceProvider extends ServiceProvider
 {
     protected const TRANSLATIONS_PATH = 'Application/Translations';
+
     public const TRANSLATIONS_MODULE_SEPARATOR = '::';
 
+    /**
+     * @var list<array{name: string, path: string}>
+     */
     private static array $registeredModules = [];
 
     abstract public function moduleName(): string;
@@ -23,7 +28,7 @@ abstract class ModuleServiceProvider extends ServiceProvider
 
         self::$registeredModules[] = [
             'name' => $this->moduleName(),
-            'path' => $modulePath
+            'path' => $modulePath,
         ];
 
         $this->loadTranslations();
@@ -44,11 +49,9 @@ abstract class ModuleServiceProvider extends ServiceProvider
 
     private function loadTranslations(): void
     {
-        $reflectionClass = new ReflectionClass($this);
-
-        $translationsPath = join(DIRECTORY_SEPARATOR, [
-            dirname($reflectionClass->getFileName()),
-            static::TRANSLATIONS_PATH,
+        $translationsPath = implode(DIRECTORY_SEPARATOR, [
+            $this->getModulePath(),
+            self::TRANSLATIONS_PATH,
         ]);
 
         if (file_exists($translationsPath)) {
@@ -58,8 +61,12 @@ abstract class ModuleServiceProvider extends ServiceProvider
 
     private function getModulePath(): string
     {
-        $reflectionClass = new ReflectionClass($this);
+        $fileName = (new ReflectionClass($this))->getFileName();
 
-        return dirname($reflectionClass->getFileName());
+        if ($fileName === false) {
+            throw new RuntimeException('Unable to resolve module provider path for ' . static::class);
+        }
+
+        return dirname($fileName);
     }
 }

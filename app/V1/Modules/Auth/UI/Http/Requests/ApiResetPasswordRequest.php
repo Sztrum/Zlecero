@@ -12,22 +12,17 @@ class ApiResetPasswordRequest extends FormRequest
 {
     public function authorize(AuthManager $authManager): bool
     {
-        return $authManager->guard()->user() == null;
+        return $authManager->guard()->user() === null;
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function rules(): array
     {
         return [
-            'token' => [
-                'required',
-                'string',
-            ],
-            'password' => [
-                'required',
-                'string',
-                'confirmed',
-                new IsValidPasswordRule(),
-            ],
+            'token' => ['required', 'string'],
+            'password' => ['required', 'string', 'confirmed', new IsValidPasswordRule()],
         ];
     }
 }

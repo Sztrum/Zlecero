@@ -13,10 +13,13 @@ use Illuminate\Support\ServiceProvider as BaseServiceProvider;
  */
 abstract class CommandBusServiceProvider extends BaseServiceProvider
 {
+    /**
+     * @var array<class-string, class-string>
+     */
     protected array $commands = [];
 
     /**
-     * @throws BindingResolutionException;
+     * @throws BindingResolutionException
      */
     public function boot(): void
     {

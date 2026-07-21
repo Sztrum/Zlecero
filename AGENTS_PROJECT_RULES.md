@@ -1,7 +1,7 @@
 # AGENTS_PROJECT_RULES.md
 
 ## Version
-v1.1.0
+v1.3.0
 
 ## Scope
 Repository-specific rules for the Zlecero Laravel project.
@@ -59,7 +59,7 @@ Read documents in this exact order before implementation:
 - Validate request input in dedicated request classes.
 - Domain validation and not-found checks should live in aggregates/services and use project/module-specific exceptions.
 - New runtime text must be added through translations instead of inline literals.
-- For this repository, add new translation keys in the owning Polish translation scope in the same task; other languages may remain unchanged unless explicitly requested.
+- For this repository, add new translation keys only in the owning Polish, English, and German translation scopes in the same task unless the user explicitly requests additional languages.
 - Keep controller context prefixes explicit: `Api`, `Front`, or `Admin`.
 - Keep module names and namespaces aligned with existing `app/V1/Modules/**` structure.
 - Keep module routes inside module-owned route service providers registered by the owning module service provider; do not introduce root `routes/**` files for module routes.
@@ -81,6 +81,8 @@ Read documents in this exact order before implementation:
 - For backend/domain changes, run focused tests with `php artisan test --filter=...` when a focused target exists; otherwise run `php artisan test` when feasible.
 - For migrations, run `php artisan migrate` after adding migration files.
 - For frontend asset changes, run `npm install` only when dependencies changed, then run `npm run prod`.
+- Run `composer phpstan` for PHP static analysis whenever PHP code, config, database files, or tests change.
+- Do not use PHPStan baselines, ignore-error entries, or inline PHPStan suppressions as the default way to make analysis pass; fix the underlying typed contract or runtime assumption instead.
 - For PHP syntax-sensitive isolated edits, run `php -l <file>` when faster than the full test suite and still meaningful.
 - If verification cannot be run because of a missing dependency, unavailable service, or environment limitation, report the blocker and exact remediation.
 

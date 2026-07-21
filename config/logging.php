@@ -1,5 +1,8 @@
 <?php
 
+$logStack = env('LOG_STACK', 'single');
+$logStack = is_string($logStack) ? $logStack : 'single';
+
 use Monolog\Handler\NullHandler;
 use Monolog\Handler\StreamHandler;
 use Monolog\Handler\SyslogUdpHandler;
@@ -54,7 +57,7 @@ return [
 
         'stack' => [
             'driver' => 'stack',
-            'channels' => explode(',', env('LOG_STACK', 'single')),
+            'channels' => explode(',', $logStack),
             'ignore_exceptions' => false,
         ],
 

@@ -6,9 +6,13 @@ namespace App\V1\Modules\User\UI\Http\Resources;
 
 use App\V1\Modules\User\Domain\Models\User;
 use App\V1\Shared\UI\Http\Resources\ApiResponseResource;
+use RuntimeException;
 
 class UserResource extends ApiResponseResource
 {
+    /**
+     * @return array<string, mixed>
+     */
     public function getResourceData(): array
     {
         return [
@@ -20,16 +24,26 @@ class UserResource extends ApiResponseResource
 
     public function getResource(): User
     {
-        /** @var User $resource */
+        if (!$this->resource instanceof User) {
+            throw new RuntimeException('UserResource requires a User resource.');
+        }
+
         return $this->resource;
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function getRelationships(): array
     {
-        return $this->getRelationshipsNames()->mapWithKeys(fn (string $relationship) => [
-            $relationship => match ($relationship) {
+        $relationships = [];
+
+        foreach ($this->getRelationshipsNames() as $relationship) {
+            $relationships[$relationship] = match ($relationship) {
                 default => null,
-            },
-        ])->toArray();
+            };
+        }
+
+        return $relationships;
     }
 }

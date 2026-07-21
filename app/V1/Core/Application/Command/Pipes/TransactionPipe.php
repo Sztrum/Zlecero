@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\V1\Core\Application\Command\Pipes;
 
+use Closure;
 use Illuminate\Database\ConnectionResolverInterface;
 use Throwable;
 
@@ -16,10 +17,10 @@ class TransactionPipe
 
     /**
      * @param  mixed     $job
-     * @param  mixed     $next
+     * @param  Closure(mixed): mixed $next
      * @throws Throwable
      */
-    public function handle($job, $next)
+    public function handle(mixed $job, Closure $next): mixed
     {
         return $this->connectionResolver->connection()
             ->transaction(fn () => $next($job));

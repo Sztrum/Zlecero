@@ -13,11 +13,11 @@ abstract class Model extends BaseModel
 
     protected $keyType = 'string';
 
-    protected static function boot()
+    protected static function boot(): void
     {
         parent::boot();
 
-        static::creating(function ($model) {
+        static::creating(static function (BaseModel $model): void {
             $model->{$model->getKeyName()} = (string) Str::uuid();
         });
     }

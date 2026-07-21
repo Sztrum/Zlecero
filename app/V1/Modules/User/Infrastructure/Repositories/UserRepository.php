@@ -6,7 +6,9 @@ namespace App\V1\Modules\User\Infrastructure\Repositories;
 
 use App\V1\Core\Infrastructure\Repositories\Eloquent\EloquentModelRepository;
 use App\V1\Modules\Auth\Domain\Exceptions\AuthException;
+use App\V1\Modules\User\Domain\Exceptions\UserNotFoundException;
 use App\V1\Modules\User\Domain\Models\User;
+use Illuminate\Database\Eloquent\Builder;
 use Throwable;
 
 class UserRepository extends EloquentModelRepository
@@ -26,19 +28,24 @@ class UserRepository extends EloquentModelRepository
      */
     public function getAuthenticatedUser(): User
     {
-        /** @var ?User $user */
         $user = auth()->user();
 
-        throw_if(!$user, AuthException::class);
+        throw_if(!$user instanceof User, AuthException::class);
 
         return $user;
     }
 
-    public function firstByEmail(
-        string $email
-    ): ?User {
-        /** @var ?User $user */
-        return $this->query()
+    /**
+     * @return Builder<User>
+     */
+    private function userQuery(): Builder
+    {
+        return User::query();
+    }
+
+    public function firstByEmail(string $email): ?User
+    {
+        return $this->userQuery()
             ->where('email', $email)
             ->first();
     }
@@ -47,26 +54,27 @@ class UserRepository extends EloquentModelRepository
         string $user_id,
         string $remember_token
     ): User {
-        return $this->model()
-            ->query()
+        return $this->userQuery()
             ->where('id', $user_id)
             ->where('remember_token', $remember_token)
             ->firstOrFail();
     }
 
-    public function findByEmail(
-        string $email
-    ): User {
-        return $this->query()
-            ->where('email', $email)
-            ->firstOrFail();
+    /**
+     * @throws Throwable
+     */
+    public function findByEmail(string $email): User
+    {
+        $user = $this->firstByEmail($email);
+
+        throw_if(!$user instanceof User, UserNotFoundException::class);
+
+        return $user;
     }
 
-    public function findByRememberToken(
-        string $remember_token
-    ): User {
-        return $this->model()
-            ->query()
+    public function findByRememberToken(string $remember_token): User
+    {
+        return $this->userQuery()
             ->where('remember_token', $remember_token)
             ->firstOrFail();
     }

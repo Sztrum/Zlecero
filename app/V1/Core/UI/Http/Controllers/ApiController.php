@@ -11,7 +11,6 @@ use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Routing\Controller as BaseController;
-use JetBrains\PhpStorm\NoReturn;
 use Symfony\Component\HttpFoundation\Response;
 use Throwable;
 
@@ -24,7 +23,6 @@ class ApiController extends BaseController
     /**
      * @throws Throwable
      */
-    #[NoReturn]
     public function __construct(
         protected CommandBusInterface $commandBus,
         private readonly ResponseFactory $responseFactory,
@@ -41,9 +39,12 @@ class ApiController extends BaseController
         ], $statusCode);
     }
 
+    /**
+     * @param array<string, mixed> $data
+     */
     protected function responseData(
         array $data,
-        string $message = null,
+        ?string $message = null,
         int $statusCode = Response::HTTP_OK
     ): JsonResponse {
         $array = ['status' => $statusCode];

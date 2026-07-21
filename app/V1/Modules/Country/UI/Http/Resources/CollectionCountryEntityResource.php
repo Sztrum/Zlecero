@@ -9,7 +9,7 @@ use App\V1\Shared\UI\Http\Resources\ApiResponseResource;
 
 class CollectionCountryEntityResource extends ApiCollectionResource
 {
-    public function getResource($model): ApiResponseResource
+    public function getResource(mixed $model): ApiResponseResource
     {
         return new CountryEntityResource(
             $model,

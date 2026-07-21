@@ -8,11 +8,17 @@ use App\V1\Core\Domain\Models\Model;
 
 interface ModelRepositoryInterface
 {
-    public function model(): mixed;
+    public function model(): Model;
 
-    public function create(array $params): mixed;
+    /**
+     * @param array<string, mixed> $params
+     */
+    public function create(array $params): Model;
 
-    public function update(Model $model, array $params): mixed;
+    /**
+     * @param array<string, mixed> $params
+     */
+    public function update(Model $model, array $params): Model;
 
-    public function findById(string $id): mixed;
+    public function findById(string $id): Model;
 }

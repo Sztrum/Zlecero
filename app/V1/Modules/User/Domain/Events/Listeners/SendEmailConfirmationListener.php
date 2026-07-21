@@ -10,11 +10,12 @@ use App\V1\Modules\User\Domain\Mail\VerifyEmailMail;
 
 readonly class SendEmailConfirmationListener
 {
-    public function handle(UserHasBeenCreatedEvent|ResendEmailConfirmationEvent $event): void
+    public function __construct(private EmailService $emailService)
     {
-        /** @var EmailService $emailService */
-        $emailService = resolve(EmailService::class);
+    }
 
-        $emailService->sendEmail([$event->user->email], new VerifyEmailMail($event->user));
+    public function handle(UserHasBeenCreatedEvent $event): void
+    {
+        $this->emailService->sendEmail([$event->user->email], new VerifyEmailMail($event->user));
     }
 }

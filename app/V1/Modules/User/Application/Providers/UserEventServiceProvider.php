@@ -9,6 +9,9 @@ use App\V1\Modules\User\Domain\Events\Subscribers\UserEventSubscriber;
 
 class UserEventServiceProvider extends EventServiceProvider
 {
+    /**
+     * @var list<class-string>
+     */
     protected $subscribe = [
         UserEventSubscriber::class,
     ];
