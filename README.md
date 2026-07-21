@@ -200,6 +200,17 @@ Important: disable Secure Boot in BIOS before using this setup.
    npm run dev
    ```
 
+## Local URL Layout
+
+Use one local host for the Laravel monolith and its API:
+
+```txt
+http://zlecero.test/          -> Laravel-served public frontend
+http://zlecero.test/api/v1    -> versioned API
+```
+
+Prefer `zlecero.test/api/v1/...` over `api.zlecero.test`. This keeps local setup simpler with one `/etc/hosts` entry, one certificate/nginx/vhost, fewer CORS and Sanctum cookie/session-domain issues, and matches the current same-origin Laravel architecture. Consider `api.zlecero.test` only if the API becomes a separate deployment/service or cross-domain auth must be tested from the start.
+
 ## Useful Commands
 
 ```bash

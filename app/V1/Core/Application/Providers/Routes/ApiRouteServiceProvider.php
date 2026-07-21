@@ -15,7 +15,7 @@ abstract class ApiRouteServiceProvider extends RouteServiceProvider
 {
     public const VERSION = 'v1';
 
-    public const PREFIX = '';
+    public const PREFIX = 'api';
 
     protected bool $pluralPrefix = true;
 

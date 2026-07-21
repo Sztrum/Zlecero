@@ -8,6 +8,7 @@
         'class' => 'static-pages-button static-pages-button--' . $variant,
         'href' => $href,
     ]) }}
+
 >
     {{ $slot }}
 </a>

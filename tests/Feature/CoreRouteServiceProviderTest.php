@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Feature;
 
+use App\V1\Core\Application\Providers\Routes\ApiRouteServiceProvider;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\RateLimiter;
@@ -12,6 +13,14 @@ use Tests\TestCase;
 
 class CoreRouteServiceProviderTest extends TestCase
 {
+    public function test_api_route_prefix_uses_api_namespace_before_version(): void
+    {
+        config(['app.url' => 'http://zlecero.test']);
+
+        $this->assertSame('api/v1', ApiRouteServiceProvider::getRoutePrefix());
+        $this->assertSame('http://zlecero.test/api/v1', ApiRouteServiceProvider::getBaseUrl());
+    }
+
     public function test_api_limiter_accepts_numeric_string_max_attempts_config(): void
     {
         config(['auth.throttle.default' => '60']);

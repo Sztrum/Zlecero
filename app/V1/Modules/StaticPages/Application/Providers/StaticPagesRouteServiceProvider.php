@@ -16,6 +16,25 @@ class StaticPagesRouteServiceProvider extends FrontendRouteServiceProvider
 
     protected function registerRoutes(Registrar $router): void
     {
-        $router->get('/', [FrontStaticPageController::class, 'home'])->name('home');
+        $router->get('/', [FrontStaticPageController::class, 'redirectToPreferredLocale'])
+            ->name('home.redirect');
+
+        $router->get('/{locale}', [FrontStaticPageController::class, 'home'])
+            ->whereIn('locale', $this->enabledLocales())
+            ->name('home');
+    }
+
+    /**
+     * @return list<string>
+     */
+    private function enabledLocales(): array
+    {
+        $enabledLocales = config('core::languages.enabled_system_languages', ['pl', 'en', 'de']);
+
+        if (!is_array($enabledLocales)) {
+            return ['pl', 'en', 'de'];
+        }
+
+        return array_values(array_filter($enabledLocales, is_string(...)));
     }
 }

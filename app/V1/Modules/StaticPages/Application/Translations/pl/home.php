@@ -17,6 +17,8 @@ return [
     'navigation_actions' => [
         'login' => 'Zaloguj się',
         'join' => 'Dołącz',
+        'join_pilot' => 'Dołącz do pilotażu',
+        'language_label' => 'Wybór języka',
     ],
     'hero' => [
         'badge' => 'Trwa program pilotażowy - dołącz bezpłatnie',
@@ -32,12 +34,12 @@ return [
         'title' => 'Czy tak wygląda praca w Twojej firmie?',
         'description' => 'Problemy, które słyszymy od firm obsługujących zapytania przez e-mail.',
         'items' => [
-            ['icon' => '@', 'title' => 'Zapytania giną w skrzynce', 'description' => 'Klienci piszą, a maile toną w setkach innych wiadomości.'],
-            ['icon' => '[]', 'title' => 'Pliki na kilku komputerach', 'description' => 'Nikt nie wie, gdzie jest aktualna wersja projektu.'],
-            ['icon' => 'u', 'title' => 'Kto prowadzi klienta?', 'description' => 'Każdy myśli, że ktoś inny odpowiedział.'],
-            ['icon' => 't', 'title' => 'Oferta czeka bez odpowiedzi', 'description' => 'Klient dostał ofertę tydzień temu. Nikt nie przypomniał.'],
-            ['icon' => '?', 'title' => 'Trudno sprawdzić status', 'description' => 'Klient pyta, a Ty musisz szukać przez 10 minut.'],
-            ['icon' => '#', 'title' => 'Excel zamiast systemu', 'description' => 'Arkusze, których nikt nie aktualizuje na bieżąco.'],
+            ['icon' => '📧', 'title' => 'Zapytania giną w skrzynce', 'description' => 'Klienci piszą, a maile toną w setkach innych wiadomości.'],
+            ['icon' => '💾', 'title' => 'Pliki na kilku komputerach', 'description' => 'Nikt nie wie, gdzie jest aktualna wersja projektu.'],
+            ['icon' => '❓', 'title' => 'Kto prowadzi klienta?', 'description' => 'Każdy myśli, że ktoś inny odpowiedział.'],
+            ['icon' => '⏰', 'title' => 'Oferta czeka bez odpowiedzi', 'description' => 'Klient dostał ofertę tydzień temu. Nikt nie przypomniał.'],
+            ['icon' => '🔍', 'title' => 'Trudno sprawdzić status', 'description' => 'Klient pyta, a Ty musisz szukać przez 10 minut.'],
+            ['icon' => '📋', 'title' => 'Excel zamiast systemu', 'description' => 'Arkusze, których nikt nie aktualizuje na bieżąco.'],
         ],
     ],
     'process' => [
@@ -45,11 +47,11 @@ return [
         'description' => 'Pięć kroków, które zastąpią e-mail, Excela i segregator.',
         'step_label' => 'KROK :number',
         'steps' => [
-            ['number' => '1', 'label' => 'Klient wysyła wiadomość', 'icon' => '@', 'variant' => 'primary'],
-            ['number' => '2', 'label' => 'Zlecero tworzy zapytanie', 'icon' => '?', 'variant' => 'accent'],
-            ['number' => '3', 'label' => 'Zespół przygotowuje ofertę', 'icon' => '#', 'variant' => 'info'],
-            ['number' => '4', 'label' => 'Klient akceptuje online', 'icon' => 'ok', 'variant' => 'success'],
-            ['number' => '5', 'label' => 'Zapytanie staje się zleceniem', 'icon' => '[]', 'variant' => 'warning'],
+            ['number' => '1', 'label' => 'Klient wysyła wiadomość', 'icon' => 'mail', 'variant' => 'primary'],
+            ['number' => '2', 'label' => 'Zlecero tworzy zapytanie', 'icon' => 'file-question', 'variant' => 'accent'],
+            ['number' => '3', 'label' => 'Zespół przygotowuje ofertę', 'icon' => 'file-text', 'variant' => 'info'],
+            ['number' => '4', 'label' => 'Klient akceptuje online', 'icon' => 'check-circle', 'variant' => 'success'],
+            ['number' => '5', 'label' => 'Zapytanie staje się zleceniem', 'icon' => 'briefcase', 'variant' => 'warning'],
         ],
     ],
     'comparison' => [
