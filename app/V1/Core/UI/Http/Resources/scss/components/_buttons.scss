@@ -1,0 +1,34 @@
+.static-pages-button
+{
+    @apply inline-flex w-full items-center justify-center gap-2;
+    @apply rounded-xl px-7 py-3.5;
+    @apply text-sm font-semibold;
+    @apply transition-colors;
+    @apply sm:w-auto;
+}
+
+.static-pages-button--primary
+{
+    @apply bg-primary-700 text-neutral-0;
+    @apply shadow-drop-shadow;
+    @apply hover:bg-primary-600;
+}
+
+.static-pages-button--secondary
+{
+    @apply border border-neutral-200;
+    @apply text-neutral-700;
+    @apply hover:bg-neutral-100;
+
+    span
+    {
+        @apply text-danger-500;
+    }
+}
+
+.static-pages-button--nav
+{
+    @apply rounded-lg px-4 py-2;
+    @apply bg-primary-700 text-neutral-0;
+    @apply hover:bg-primary-600;
+}

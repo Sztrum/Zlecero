@@ -16,6 +16,7 @@ abstract class FrontendRouteServiceProvider extends RouteServiceProvider
     protected bool $pluralPrefix = true;
 
     protected bool $prefix = true;
+
     protected bool $pluralRouteName = true;
 
     protected string $prefixRouteName = '';
@@ -38,7 +39,7 @@ abstract class FrontendRouteServiceProvider extends RouteServiceProvider
             $moduleProviderSegments = explode('\\', $moduleProviderNamespace);
 
             foreach ($moduleProviderSegments as $index => $segment) {
-                if (!isset($routeProviderSegments[$index]) || $routeProviderSegments[$index] !== $segment) {
+                if (! isset($routeProviderSegments[$index]) || $routeProviderSegments[$index] !== $segment) {
                     continue 2;
                 }
             }
@@ -46,7 +47,7 @@ abstract class FrontendRouteServiceProvider extends RouteServiceProvider
             return $moduleServiceProvider;
         }
 
-        throw new RuntimeException('Module provider not found for route provider ' . static::class);
+        throw new RuntimeException('Module provider not found for route provider '.static::class);
     }
 
     public function getModulePrefix(): string
@@ -56,7 +57,7 @@ abstract class FrontendRouteServiceProvider extends RouteServiceProvider
 
         $modulePrefix = $this->pluralPrefix ? Str::plural($moduleName) : $moduleName;
 
-        return $this->additionalPrefix !== '' ? $this->additionalPrefix . $modulePrefix : $modulePrefix;
+        return $this->additionalPrefix !== '' ? $this->additionalPrefix.$modulePrefix : $modulePrefix;
     }
 
     public function getModuleRouteName(): string
@@ -71,8 +72,8 @@ abstract class FrontendRouteServiceProvider extends RouteServiceProvider
     {
         $router->group([
             'middleware' => $this->middlewares(),
-            'prefix' => $this->getModulePrefix(),
-            'as' => $this->prefixRouteName !== '' ? $this->prefixRouteName . $this->getModuleRouteName() . '.' : $this->getModuleRouteName() . '.'
+            'prefix' => $this->hasPrefix() ? $this->getModulePrefix() : '',
+            'as' => $this->prefixRouteName !== '' ? $this->prefixRouteName.$this->getModuleRouteName().'.' : $this->getModuleRouteName().'.',
         ], fn () => $this->registerRoutes($router));
     }
 
@@ -84,5 +85,10 @@ abstract class FrontendRouteServiceProvider extends RouteServiceProvider
     protected function middlewares(): array
     {
         return ['web'];
+    }
+
+    final protected function hasPrefix(): bool
+    {
+        return $this->prefix;
     }
 }
