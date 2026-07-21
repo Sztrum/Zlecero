@@ -1,7 +1,7 @@
 # AGENTS_PROJECT_RULES.md
 
 ## Version
-v1.5.0
+v1.6.0
 
 ## Scope
 Repository-specific rules for the Zlecero Laravel project.
@@ -56,6 +56,7 @@ Read documents in this exact order before implementation:
 - Prefer module-owned config files over `config/constants.php`; do not add new entries to `config/constants.php`.
 - Keep API, domain, and persistence logic independent from Blade-only presentation concerns.
 - Public API responses should be stable and explicit enough for external React consumers.
+- Serve versioned API routes under the same host using the `/api/v1/...` path prefix, not a separate `api.*` subdomain, unless the user explicitly moves API hosting to a separate deployment/service.
 
 ## Laravel And Module Conventions
 - Use command-based flow for write operations: controllers dispatch commands and handlers own side effects.

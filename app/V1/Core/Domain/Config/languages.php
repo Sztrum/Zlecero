@@ -7,8 +7,5 @@ return [
         'pl',
         'en',
         'de',
-        'es',
-        'fr',
-        'it',
     ],
 ];

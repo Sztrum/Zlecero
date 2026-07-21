@@ -17,7 +17,7 @@
             x-bind:class="{ 'static-pages-faq-item__chevron--open': open }"
             aria-hidden="true"
         >
-            v
+            <x-static-pages::icon name="chevron-down" />
         </span>
     </button>
     <div

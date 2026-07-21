@@ -17,6 +17,8 @@ return [
     'navigation_actions' => [
         'login' => 'Einloggen',
         'join' => 'Beitreten',
+        'join_pilot' => 'Am Pilot teilnehmen',
+        'language_label' => 'Sprachauswahl',
     ],
     'hero' => [
         'badge' => 'Das Pilotprogramm läuft - kostenlos teilnehmen',
@@ -32,12 +34,12 @@ return [
         'title' => 'Sieht die Arbeit in Ihrer Firma so aus?',
         'description' => 'Probleme, die wir von Firmen hören, die Anfragen per E-Mail bearbeiten.',
         'items' => [
-            ['icon' => '@', 'title' => 'Anfragen gehen im Postfach verloren', 'description' => 'Kunden schreiben, aber E-Mails versinken zwischen hunderten anderen Nachrichten.'],
-            ['icon' => '[]', 'title' => 'Dateien liegen auf mehreren Computern', 'description' => 'Niemand weiß, wo die aktuelle Projektversion liegt.'],
-            ['icon' => 'u', 'title' => 'Wer betreut den Kunden?', 'description' => 'Jeder denkt, jemand anderes habe geantwortet.'],
-            ['icon' => 't', 'title' => 'Angebote warten ohne Antwort', 'description' => 'Der Kunde erhielt vor einer Woche ein Angebot. Niemand hat nachgefasst.'],
-            ['icon' => '?', 'title' => 'Status ist schwer zu prüfen', 'description' => 'Der Kunde fragt, und Sie suchen 10 Minuten.'],
-            ['icon' => '#', 'title' => 'Excel statt System', 'description' => 'Tabellen, die niemand laufend aktualisiert.'],
+            ['icon' => '📧', 'title' => 'Anfragen gehen im Postfach verloren', 'description' => 'Kunden schreiben, aber E-Mails versinken zwischen hunderten anderen Nachrichten.'],
+            ['icon' => '💾', 'title' => 'Dateien liegen auf mehreren Computern', 'description' => 'Niemand weiß, wo die aktuelle Projektversion liegt.'],
+            ['icon' => '❓', 'title' => 'Wer betreut den Kunden?', 'description' => 'Jeder denkt, jemand anderes habe geantwortet.'],
+            ['icon' => '⏰', 'title' => 'Angebote warten ohne Antwort', 'description' => 'Der Kunde erhielt vor einer Woche ein Angebot. Niemand hat nachgefasst.'],
+            ['icon' => '🔍', 'title' => 'Status ist schwer zu prüfen', 'description' => 'Der Kunde fragt, und Sie suchen 10 Minuten.'],
+            ['icon' => '📋', 'title' => 'Excel statt System', 'description' => 'Tabellen, die niemand laufend aktualisiert.'],
         ],
     ],
     'process' => [
@@ -45,11 +47,11 @@ return [
         'description' => 'Fünf Schritte ersetzen E-Mail, Excel und Ordner.',
         'step_label' => 'SCHRITT :number',
         'steps' => [
-            ['number' => '1', 'label' => 'Kunde sendet eine Nachricht', 'icon' => '@', 'variant' => 'primary'],
-            ['number' => '2', 'label' => 'Zlecero erstellt eine Anfrage', 'icon' => '?', 'variant' => 'accent'],
-            ['number' => '3', 'label' => 'Team bereitet Angebot vor', 'icon' => '#', 'variant' => 'info'],
-            ['number' => '4', 'label' => 'Kunde akzeptiert online', 'icon' => 'ok', 'variant' => 'success'],
-            ['number' => '5', 'label' => 'Anfrage wird zum Auftrag', 'icon' => '[]', 'variant' => 'warning'],
+            ['number' => '1', 'label' => 'Kunde sendet eine Nachricht', 'icon' => 'mail', 'variant' => 'primary'],
+            ['number' => '2', 'label' => 'Zlecero erstellt eine Anfrage', 'icon' => 'file-question', 'variant' => 'accent'],
+            ['number' => '3', 'label' => 'Team bereitet Angebot vor', 'icon' => 'file-text', 'variant' => 'info'],
+            ['number' => '4', 'label' => 'Kunde akzeptiert online', 'icon' => 'check-circle', 'variant' => 'success'],
+            ['number' => '5', 'label' => 'Anfrage wird zum Auftrag', 'icon' => 'briefcase', 'variant' => 'warning'],
         ],
     ],
     'comparison' => [

@@ -17,6 +17,8 @@ return [
     'navigation_actions' => [
         'login' => 'Log in',
         'join' => 'Join',
+        'join_pilot' => 'Join the pilot',
+        'language_label' => 'Language selection',
     ],
     'hero' => [
         'badge' => 'Pilot program is open - join for free',
@@ -32,12 +34,12 @@ return [
         'title' => 'Does work in your company look like this?',
         'description' => 'Problems we hear from companies handling inquiries by email.',
         'items' => [
-            ['icon' => '@', 'title' => 'Inquiries get lost in the inbox', 'description' => 'Customers write, but emails sink among hundreds of other messages.'],
-            ['icon' => '[]', 'title' => 'Files are spread across computers', 'description' => 'Nobody knows where the latest project version is.'],
-            ['icon' => 'u', 'title' => 'Who owns the customer?', 'description' => 'Everyone thinks someone else has replied.'],
-            ['icon' => 't', 'title' => 'Offers wait without follow-up', 'description' => 'The customer received an offer a week ago. Nobody reminded them.'],
-            ['icon' => '?', 'title' => 'Status is hard to check', 'description' => 'The customer asks, and you search for 10 minutes.'],
-            ['icon' => '#', 'title' => 'Excel instead of a system', 'description' => 'Spreadsheets that nobody updates in real time.'],
+            ['icon' => '📧', 'title' => 'Inquiries get lost in the inbox', 'description' => 'Customers write, but emails sink among hundreds of other messages.'],
+            ['icon' => '💾', 'title' => 'Files are spread across computers', 'description' => 'Nobody knows where the latest project version is.'],
+            ['icon' => '❓', 'title' => 'Who owns the customer?', 'description' => 'Everyone thinks someone else has replied.'],
+            ['icon' => '⏰', 'title' => 'Offers wait without follow-up', 'description' => 'The customer received an offer a week ago. Nobody reminded them.'],
+            ['icon' => '🔍', 'title' => 'Status is hard to check', 'description' => 'The customer asks, and you search for 10 minutes.'],
+            ['icon' => '📋', 'title' => 'Excel instead of a system', 'description' => 'Spreadsheets that nobody updates in real time.'],
         ],
     ],
     'process' => [
@@ -45,11 +47,11 @@ return [
         'description' => 'Five steps that replace email, Excel, and binders.',
         'step_label' => 'STEP :number',
         'steps' => [
-            ['number' => '1', 'label' => 'Customer sends a message', 'icon' => '@', 'variant' => 'primary'],
-            ['number' => '2', 'label' => 'Zlecero creates an inquiry', 'icon' => '?', 'variant' => 'accent'],
-            ['number' => '3', 'label' => 'Team prepares an offer', 'icon' => '#', 'variant' => 'info'],
-            ['number' => '4', 'label' => 'Customer accepts online', 'icon' => 'ok', 'variant' => 'success'],
-            ['number' => '5', 'label' => 'Inquiry becomes an order', 'icon' => '[]', 'variant' => 'warning'],
+            ['number' => '1', 'label' => 'Customer sends a message', 'icon' => 'mail', 'variant' => 'primary'],
+            ['number' => '2', 'label' => 'Zlecero creates an inquiry', 'icon' => 'file-question', 'variant' => 'accent'],
+            ['number' => '3', 'label' => 'Team prepares an offer', 'icon' => 'file-text', 'variant' => 'info'],
+            ['number' => '4', 'label' => 'Customer accepts online', 'icon' => 'check-circle', 'variant' => 'success'],
+            ['number' => '5', 'label' => 'Inquiry becomes an order', 'icon' => 'briefcase', 'variant' => 'warning'],
         ],
     ],
     'comparison' => [

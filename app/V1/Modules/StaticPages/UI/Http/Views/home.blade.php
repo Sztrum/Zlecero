@@ -23,6 +23,23 @@
                 </div>
 
                 <div class="static-pages-nav__actions">
+                    <div
+                        class="static-pages-language-switcher"
+                        aria-label="{{ __('static-pages::home.navigation_actions.language_label') }}"
+                    >
+                        @foreach($languageItems as $languageItem)
+                            <a
+                                href="{{ $languageItem['href'] }}"
+                                @class([
+                                    'is-active' => $languageItem['active'],
+                                ])
+                                hreflang="{{ $languageItem['locale'] }}"
+                            >
+                                {{ $languageItem['label'] }}
+                            </a>
+                        @endforeach
+                    </div>
+
                     <a href="{{ $navigationItems['login_href'] ?? '/auth/login' }}">
                         {{ __('static-pages::home.navigation_actions.login') }}
                     </a>
@@ -30,7 +47,7 @@
                         href="#cennik"
                         variant="nav"
                     >
-                        {{ __('static-pages::home.navigation_actions.join') }}
+                        {{ __('static-pages::home.navigation_actions.join_pilot') }}
                     </x-static-pages::button>
                 </div>
             </div>
@@ -53,13 +70,13 @@
                     <div class="static-pages-hero__actions">
                         <x-static-pages::button href="#cennik">
                             {{ __('static-pages::home.hero.primary_action') }}
-                            <span aria-hidden="true">-></span>
+                            <span aria-hidden="true">→</span>
                         </x-static-pages::button>
                         <x-static-pages::button
                             href="#jak-dziala"
                             variant="secondary"
                         >
-                            <span aria-hidden="true">•</span>
+                            <x-static-pages::icon name="circle" />
                             {{ __('static-pages::home.hero.secondary_action') }}
                         </x-static-pages::button>
                     </div>
@@ -187,7 +204,7 @@
                             </label>
                             <button type="submit">
                                 {{ __('static-pages::home.pilot.submit') }}
-                                <span aria-hidden="true">-></span>
+                                <span aria-hidden="true">→</span>
                             </button>
                             <p>{{ __('static-pages::home.pilot.notice') }}</p>
                         </form>
@@ -231,7 +248,7 @@
                 <p>{{ __('static-pages::home.footer.copyright') }}</p>
                 <div>
                     <a href="/auth/login">{{ __('static-pages::home.navigation_actions.login') }}</a>
-                    <a href="#cennik">{{ __('static-pages::home.navigation_actions.join') }}</a>
+                    <a href="#cennik">{{ __('static-pages::home.navigation_actions.join_pilot') }}</a>
                 </div>
             </div>
         </footer>

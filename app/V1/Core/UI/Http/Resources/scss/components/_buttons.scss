@@ -1,34 +1,49 @@
 .static-pages-button
 {
-    @apply inline-flex w-full items-center justify-center gap-2;
-    @apply rounded-xl px-7 py-3.5;
-    @apply text-sm font-semibold;
-    @apply transition-colors;
+    @apply inline-flex w-full items-center justify-center gap-2 rounded-xl px-7 py-3.5;
+    @apply text-sm font-semibold transition-colors;
     @apply sm:w-auto;
 }
 
 .static-pages-button--primary
 {
-    @apply bg-primary-700 text-neutral-0;
-    @apply shadow-drop-shadow;
-    @apply hover:bg-primary-600;
+    background: #4f46e5;
+    box-shadow: 0 10px 15px -3px rgba(199, 210, 254, 1), 0 4px 6px -4px rgba(199, 210, 254, 1);
+    color: #ffffff;
+}
+
+.static-pages-button--primary:hover
+{
+    background: #4338ca;
 }
 
 .static-pages-button--secondary
 {
-    @apply border border-neutral-200;
-    @apply text-neutral-700;
-    @apply hover:bg-neutral-100;
+    @apply font-medium;
+    border: 1px solid #e5e7eb;
+    color: #374151;
+}
 
-    span
-    {
-        @apply text-danger-500;
-    }
+.static-pages-button--secondary:hover
+{
+    background: #f9fafb;
+}
+
+.static-pages-button--secondary .static-pages-icon
+{
+    @apply size-4;
+    color: #ef4444;
+    fill: #ef4444;
 }
 
 .static-pages-button--nav
 {
     @apply rounded-lg px-4 py-2;
-    @apply bg-primary-700 text-neutral-0;
-    @apply hover:bg-primary-600;
+    background: #4f46e5;
+    color: #ffffff;
+}
+
+.static-pages-button--nav:hover
+{
+    background: #4338ca;
 }
