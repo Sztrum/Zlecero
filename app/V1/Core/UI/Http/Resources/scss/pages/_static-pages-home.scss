@@ -1,0 +1,634 @@
+@import "../components/buttons";
+
+[x-cloak]
+{
+    @apply hidden;
+}
+
+.static-pages-home
+{
+    @apply relative left-1/2 w-screen -translate-x-1/2;
+    @apply min-h-screen bg-neutral-0 text-neutral-900;
+}
+
+.static-pages-container
+{
+    @apply mx-auto max-w-6xl px-4;
+    @apply sm:px-6;
+}
+
+.static-pages-container--narrow
+{
+    @apply max-w-5xl;
+}
+
+.static-pages-container--compact
+{
+    @apply max-w-3xl;
+}
+
+.static-pages-container--faq
+{
+    @apply max-w-2xl;
+}
+
+.static-pages-logo
+{
+    @apply flex items-center gap-2.5;
+}
+
+.static-pages-logo__mark
+{
+    @apply flex items-center justify-center rounded-lg bg-primary-700;
+}
+
+.static-pages-logo__mark span
+{
+    @apply block size-4 rounded border-2 border-neutral-0;
+    @apply rotate-45;
+}
+
+.static-pages-logo__text
+{
+    @apply text-base font-bold text-neutral-900;
+}
+
+.static-pages-logo--md .static-pages-logo__mark
+{
+    @apply size-8;
+}
+
+.static-pages-logo--sm .static-pages-logo__mark
+{
+    @apply size-7;
+}
+
+.static-pages-nav
+{
+    @apply sticky top-0 z-40;
+    @apply border-b border-neutral-150 bg-neutral-0/90 backdrop-blur-md;
+}
+
+.static-pages-nav__inner
+{
+    @apply flex h-16 items-center gap-8;
+}
+
+.static-pages-nav__links
+{
+    @apply hidden flex-1 items-center gap-6;
+    @apply md:flex;
+
+    a
+    {
+        @apply text-sm text-neutral-500 transition-colors hover:text-neutral-900;
+    }
+}
+
+.static-pages-nav__actions
+{
+    @apply ml-auto flex items-center gap-2;
+    @apply sm:gap-3;
+
+    > a
+    {
+        @apply rounded-lg px-3 py-2;
+        @apply text-sm text-neutral-600 transition-colors hover:bg-neutral-100 hover:text-neutral-900;
+    }
+}
+
+.static-pages-hero
+{
+    @apply text-center;
+}
+
+.static-pages-hero__inner
+{
+    @apply pb-16 pt-14;
+    @apply sm:pb-24 sm:pt-20;
+}
+
+.static-pages-hero__badge
+{
+    @apply mb-8 inline-flex items-center gap-2;
+    @apply rounded-full border border-primary-200 bg-primary-100 px-4 py-1.5;
+    @apply text-sm font-medium text-primary-700;
+
+    span
+    {
+        @apply size-2 rounded-full bg-primary-700;
+    }
+}
+
+.static-pages-hero h1
+{
+    @apply mx-auto mb-6 max-w-3xl;
+    @apply text-4xl font-bold leading-tight text-neutral-900;
+    @apply sm:text-5xl;
+
+    span
+    {
+        @apply text-primary-700;
+    }
+}
+
+.static-pages-hero__lead
+{
+    @apply mx-auto mb-10 max-w-2xl;
+    @apply text-lg leading-relaxed text-neutral-500;
+}
+
+.static-pages-hero__actions
+{
+    @apply flex flex-col items-center justify-center gap-3;
+    @apply sm:flex-row sm:gap-4;
+}
+
+.static-pages-product-preview
+{
+    @apply mx-auto mt-16 max-w-4xl overflow-hidden rounded-2xl;
+    @apply border border-neutral-200 bg-neutral-0 text-left shadow-table-container;
+}
+
+.static-pages-product-preview__bar
+{
+    @apply flex h-10 items-center gap-2 border-b border-neutral-150 px-4;
+
+    span
+    {
+        @apply size-3 rounded-full;
+    }
+
+    span:nth-child(1)
+    {
+        @apply bg-danger-200;
+    }
+
+    span:nth-child(2)
+    {
+        @apply bg-warning-200;
+    }
+
+    span:nth-child(3)
+    {
+        @apply bg-success-200;
+    }
+
+    span:nth-child(4)
+    {
+        @apply mx-4 h-5 flex-1 rounded-md bg-neutral-100;
+    }
+}
+
+.static-pages-product-preview__body
+{
+    @apply flex h-56;
+    @apply sm:h-64;
+
+    aside
+    {
+        @apply hidden w-40 border-r border-neutral-150 bg-neutral-100 p-3;
+        @apply sm:block;
+
+        p
+        {
+            @apply mb-0.5 flex items-center gap-2 rounded-lg px-2 py-1.5;
+            @apply text-xs text-neutral-500;
+        }
+
+        p span
+        {
+            @apply size-3.5 rounded bg-neutral-200;
+        }
+
+        p.is-active
+        {
+            @apply bg-primary-100 text-primary-700;
+        }
+
+        p.is-active span
+        {
+            @apply bg-primary-200;
+        }
+    }
+
+    > div
+    {
+        @apply flex-1 p-4;
+    }
+}
+
+.static-pages-product-preview__stats
+{
+    @apply mb-4 grid grid-cols-2 gap-2;
+    @apply sm:grid-cols-4;
+
+    article
+    {
+        @apply rounded-lg border border-neutral-150 bg-neutral-100 p-2;
+    }
+
+    strong
+    {
+        @apply text-xs font-bold text-neutral-800;
+    }
+
+    span
+    {
+        @apply mt-1 block h-1 w-3/4 rounded bg-primary-200;
+    }
+}
+
+.static-pages-product-preview__rows
+{
+    @apply space-y-1.5;
+
+    article
+    {
+        @apply flex items-center gap-3 rounded-lg border border-neutral-150 bg-neutral-100 px-3 py-2;
+    }
+
+    article > span:first-child
+    {
+        @apply size-6 rounded-full bg-primary-200;
+    }
+
+    article > span:nth-child(2)
+    {
+        @apply flex-1 space-y-1;
+    }
+
+    i
+    {
+        @apply block h-1.5 rounded bg-neutral-200;
+    }
+
+    i:first-child
+    {
+        @apply w-3/4;
+    }
+
+    i:last-child
+    {
+        @apply w-1/2 bg-neutral-150;
+    }
+
+    article > span:last-child
+    {
+        @apply h-4 w-12 rounded-full bg-success-100;
+    }
+}
+
+.static-pages-section
+{
+    @apply py-14;
+    @apply sm:py-20;
+}
+
+.static-pages-section--muted
+{
+    @apply bg-neutral-100;
+}
+
+.static-pages-section-heading
+{
+    @apply mb-12 text-center;
+
+    h2
+    {
+        @apply mb-3 text-3xl font-bold text-neutral-900;
+    }
+
+    p
+    {
+        @apply text-neutral-500;
+    }
+}
+
+.static-pages-problem-grid
+{
+    @apply grid grid-cols-1 gap-4;
+    @apply sm:grid-cols-2 lg:grid-cols-3;
+}
+
+.static-pages-problem-card
+{
+    @apply rounded-xl border border-neutral-200 bg-neutral-0 p-5;
+    @apply transition-colors hover:border-primary-200;
+
+    h3
+    {
+        @apply mb-1 text-sm font-bold text-neutral-900;
+    }
+
+    p
+    {
+        @apply text-xs leading-5 text-neutral-500;
+    }
+}
+
+.static-pages-problem-card__icon
+{
+    @apply mb-3 flex size-10 items-center justify-center rounded-xl;
+    @apply bg-primary-100 text-sm font-bold text-primary-700;
+}
+
+.static-pages-process-grid
+{
+    @apply grid grid-cols-1 gap-6;
+    @apply sm:grid-cols-2 lg:grid-cols-5;
+}
+
+.static-pages-process-step
+{
+    @apply relative text-center;
+
+    h3
+    {
+        @apply text-sm font-medium leading-tight text-neutral-900;
+    }
+}
+
+.static-pages-process-step__connector
+{
+    @apply absolute left-1/2 top-6 z-0 hidden h-px w-full bg-neutral-200;
+    @apply lg:block;
+}
+
+.static-pages-process-step:last-child .static-pages-process-step__connector
+{
+    @apply hidden;
+}
+
+.static-pages-process-step__icon
+{
+    @apply relative z-10 mx-auto mb-3 flex size-12 items-center justify-center rounded-full border-2 bg-neutral-0;
+    @apply text-sm font-bold;
+}
+
+.static-pages-process-step__eyebrow
+{
+    @apply mb-1 text-xs font-semibold text-neutral-400;
+}
+
+.static-pages-process-step--primary .static-pages-process-step__icon
+{
+    @apply border-primary-200 bg-primary-100 text-primary-700;
+}
+
+.static-pages-process-step--accent .static-pages-process-step__icon
+{
+    @apply border-neutral-300 bg-neutral-100 text-neutral-700;
+}
+
+.static-pages-process-step--info .static-pages-process-step__icon
+{
+    @apply border-primary-200 bg-primary-100 text-primary-600;
+}
+
+.static-pages-process-step--success .static-pages-process-step__icon
+{
+    @apply border-success-200 bg-success-100 text-success-700;
+}
+
+.static-pages-process-step--warning .static-pages-process-step__icon
+{
+    @apply border-warning-200 bg-warning-100 text-warning-700;
+}
+
+.static-pages-comparison-grid
+{
+    @apply grid grid-cols-1 gap-6;
+    @apply md:grid-cols-2;
+}
+
+.static-pages-workflow-list
+{
+    @apply rounded-2xl p-6;
+
+    h3
+    {
+        @apply mb-4 flex items-center gap-2 text-base font-bold;
+    }
+
+    h3 span,
+    .static-pages-workflow-list__items span
+    {
+        @apply flex size-5 shrink-0 items-center justify-center rounded-full;
+        @apply text-[10px] font-bold;
+    }
+}
+
+.static-pages-workflow-list--current
+{
+    @apply border border-neutral-200 bg-neutral-0;
+
+    h3
+    {
+        @apply text-neutral-500;
+    }
+
+    h3 span,
+    .static-pages-workflow-list__items span
+    {
+        @apply bg-danger-100 text-danger-600;
+    }
+}
+
+.static-pages-workflow-list--zlecero
+{
+    @apply bg-primary-700 text-neutral-0;
+
+    h3
+    {
+        @apply text-primary-200;
+    }
+
+    h3 span,
+    .static-pages-workflow-list__items span
+    {
+        @apply bg-neutral-0/20 text-neutral-0;
+    }
+}
+
+.static-pages-workflow-list__items
+{
+    @apply space-y-3;
+
+    p
+    {
+        @apply flex items-center gap-2 text-sm;
+    }
+}
+
+.static-pages-workflow-list--current .static-pages-workflow-list__items p
+{
+    @apply text-neutral-600;
+}
+
+.static-pages-workflow-list--zlecero .static-pages-workflow-list__items p
+{
+    @apply text-primary-100;
+}
+
+.static-pages-pilot
+{
+    @apply rounded-3xl bg-gradient-to-br from-primary-700 to-neutral-800 p-5 text-center text-neutral-0;
+    @apply sm:p-10;
+
+    > span
+    {
+        @apply mb-6 inline-block rounded-full border border-neutral-0/30 bg-neutral-0/20 px-4 py-1;
+        @apply text-sm font-medium;
+    }
+
+    h2
+    {
+        @apply mb-3 text-3xl font-bold;
+    }
+
+    > p
+    {
+        @apply mb-8 text-sm text-primary-200;
+    }
+}
+
+.static-pages-pilot-form
+{
+    @apply space-y-3 rounded-2xl bg-neutral-0 p-6 text-left;
+
+    label
+    {
+        @apply block;
+    }
+
+    label span
+    {
+        @apply mb-1 block text-xs font-medium text-neutral-600;
+    }
+
+    input,
+    textarea
+    {
+        @apply w-full rounded-lg border border-neutral-200 px-3 py-2;
+        @apply text-sm text-neutral-900 outline-none focus:border-primary-500;
+    }
+
+    textarea
+    {
+        @apply resize-none;
+    }
+
+    button
+    {
+        @apply inline-flex w-full items-center justify-center gap-2 rounded-xl;
+        @apply bg-primary-700 py-3 font-semibold text-neutral-0 transition-colors hover:bg-primary-600;
+    }
+
+    > p
+    {
+        @apply text-center text-xs text-neutral-400;
+    }
+}
+
+.static-pages-pilot-form__grid
+{
+    @apply grid grid-cols-1 gap-3;
+    @apply sm:grid-cols-2;
+}
+
+.static-pages-faq-list
+{
+    @apply space-y-2;
+}
+
+.static-pages-faq-item
+{
+    @apply overflow-hidden rounded-xl border border-neutral-200 bg-neutral-0;
+
+    button
+    {
+        @apply flex w-full items-center justify-between gap-4 px-5 py-4 text-left;
+        @apply cursor-pointer;
+    }
+
+    button span:first-child
+    {
+        @apply text-sm font-semibold text-neutral-900;
+    }
+}
+
+.static-pages-faq-item__chevron
+{
+    @apply shrink-0 text-sm text-neutral-400 transition-transform;
+}
+
+.static-pages-faq-item__chevron--open
+{
+    @apply rotate-180;
+}
+
+.static-pages-faq-item__answer
+{
+    @apply border-t border-neutral-150 px-5 pb-4 pt-3;
+    @apply text-sm leading-relaxed text-neutral-600;
+}
+
+.static-pages-footer
+{
+    @apply border-t border-neutral-200 py-12;
+}
+
+.static-pages-footer__top
+{
+    @apply flex flex-col items-start justify-between gap-8;
+    @apply md:flex-row;
+}
+
+.static-pages-footer__brand
+{
+    @apply max-w-xs;
+
+    p
+    {
+        @apply mt-3 text-xs leading-relaxed text-neutral-400;
+    }
+}
+
+.static-pages-footer__columns
+{
+    @apply grid grid-cols-2 gap-8;
+    @apply sm:grid-cols-3 sm:gap-10;
+
+    p
+    {
+        @apply mb-3 text-xs font-semibold text-neutral-700;
+    }
+
+    a
+    {
+        @apply mb-1.5 block text-xs text-neutral-400 hover:text-neutral-700;
+    }
+}
+
+.static-pages-footer__bottom
+{
+    @apply mt-8 flex flex-col gap-4 border-t border-neutral-150 pt-8;
+    @apply sm:flex-row sm:items-center sm:justify-between;
+
+    p,
+    a
+    {
+        @apply text-xs text-neutral-400;
+    }
+
+    div
+    {
+        @apply flex items-center gap-4;
+    }
+
+    a:last-child
+    {
+        @apply font-medium text-primary-700 hover:underline;
+    }
+}

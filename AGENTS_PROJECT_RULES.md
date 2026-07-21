@@ -1,7 +1,7 @@
 # AGENTS_PROJECT_RULES.md
 
 ## Version
-v1.3.0
+v1.5.0
 
 ## Scope
 Repository-specific rules for the Zlecero Laravel project.
@@ -35,6 +35,7 @@ Read documents in this exact order before implementation:
   - `app/V1/Modules/User/**`
   - `app/V1/Modules/Country/**`
   - `app/V1/Modules/Email/**`
+  - `app/V1/Modules/StaticPages/**`
 - Migration files: `database/migrations/**`.
 - Main project config and tooling:
   - `artisan`
@@ -42,8 +43,10 @@ Read documents in this exact order before implementation:
   - `package.json`
   - `vite.config.js`
   - `tailwind.config.js`
+- Shared frontend SCSS components: `app/V1/Core/UI/Http/Resources/scss/components/**`.
+- Page-level frontend SCSS compositions: `app/V1/Core/UI/Http/Resources/scss/pages/**`.
 - Project effort estimate document: `docs/project-effort-estimate.md`.
-- Module-level `AGENTS.md` files do not exist at the moment; create one when a touched module gains non-trivial custom conventions.
+- Module-level `AGENTS.md` files currently exist for modules with custom conventions, such as `app/V1/Modules/StaticPages/AGENTS.md`; create another one when a touched module gains non-trivial custom conventions.
 
 ## Architecture Rules
 - Default backend/domain/API implementation and analysis scope is `app/V1/**`.
@@ -75,6 +78,8 @@ Read documents in this exact order before implementation:
 ## Frontend Scope Rules
 - Blade/Vite/Tailwind changes in this repository should support SEO public pages, server-rendered views, shared backend-adjacent assets, or temporary previews explicitly requested by the user.
 - Do not build the future client dashboard or admin SPA here; those belong to the separate React project.
+- Keep Laravel Blade styles in `app/V1/Core/UI/Http/Resources/scss/**`: use `components/**` for reusable UI patterns and `pages/**` for page-specific compositions imported by `style.scss`.
+- Module view folders should own Blade markup and translations; put SCSS in core UI resources unless the user explicitly asks for module-private assets.
 - If a backend change needs future React integration, document the API contract or response shape close to the implementation or in task documentation.
 
 ## Verification Checklist

@@ -1,7 +1,7 @@
 # AGENTS_CODING_RULES.md
 
 ## Version
-v1.1.0
+v1.3.0
 
 ## Scope
 Portable coding/style/implementation standards intended to be reusable across projects.
@@ -79,6 +79,9 @@ Read documents in this exact order before implementation:
 - Start Blade components with `@props([])` or `@props([...])` and keep default values explicit.
 - Keep components data-driven; avoid hardcoded content when props/config should drive rendering.
 - Reuse existing components for repeatable UI patterns; extract shared components instead of duplicating markup.
+- For Blade/Vite frontend styling, prefer SCSS partials that use Tailwind `@apply` for reusable classes; avoid long repeated inline utility strings in Blade when a style pattern repeats across sections, components, or pages.
+- Keep reusable visual patterns such as buttons, cards, section headings, lists, and form controls in clearly named SCSS partials or Blade components instead of scattering page-specific styling.
+- Put reusable SCSS component partials in the core UI resources component layer and page-level SCSS compositions in the core UI resources page layer unless a module-level rule explicitly defines a narrower asset boundary.
 - Use camelCase prop bindings when invoking Blade components.
 - Prepare data in controllers/view composers; avoid loading service/config logic directly inside Blade templates.
 - Avoid PHP logic blocks in Blade templates; move view data preparation to controllers/view composers.
