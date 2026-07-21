@@ -9,14 +9,14 @@ use App\V1\Core\Domain\Exceptions\DomainException;
 class ErrorWhileResetPasswordException extends DomainException
 {
     /**
-     *  array<string, bool|float|int|string|null> $replace
+     * @param  array<string, bool|float|int|string|null>  $replace
      */
     public function __construct(
         string $message = '',
         array $replace = []
     ) {
         if ($message === '') {
-            $message = __('user::exceptions.other.error_while_reset_password', $replace);
+            $message = 'user::_backend/exceptions.error_while_reset_password';
         }
 
         parent::__construct($message, $replace);

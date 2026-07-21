@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\V1\Shared\VO;
 
-use App\V1\Core\Domain\Exceptions\DomainException;
+use App\V1\Core\Domain\Exceptions\InvalidUrlException;
 use Throwable;
 
 final class UrlVO extends StringVO
@@ -24,9 +24,9 @@ final class UrlVO extends StringVO
     private function validate(): void
     {
         throw_if(
-            !(filter_var($this->value, FILTER_VALIDATE_URL) === $this->value)
-            || !(filter_var($this->value, FILTER_SANITIZE_URL) === $this->value),
-            new DomainException()
+            ! (filter_var($this->value, FILTER_VALIDATE_URL) === $this->value)
+            || ! (filter_var($this->value, FILTER_SANITIZE_URL) === $this->value),
+            InvalidUrlException::class
         );
     }
 }

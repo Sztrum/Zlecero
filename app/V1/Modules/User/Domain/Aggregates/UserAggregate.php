@@ -14,7 +14,6 @@ use App\V1\Modules\User\Domain\Exceptions\UserWithEmailExistsException;
 use App\V1\Modules\User\Domain\Exceptions\UserWithEmailNotExistsException;
 use App\V1\Modules\User\Domain\Models\User;
 use App\V1\Modules\User\Infrastructure\Repositories\UserRepository;
-use Exception;
 use Illuminate\Contracts\Auth\PasswordBroker as PasswordBrokerContract;
 use Illuminate\Contracts\Hashing\Hasher;
 use Throwable;
@@ -23,9 +22,8 @@ readonly class UserAggregate
 {
     public function __construct(
         private UserRepository $repository,
-        private Hasher         $hasher
-    ) {
-    }
+        private Hasher $hasher
+    ) {}
 
     /**
      * @throws Throwable
@@ -35,8 +33,7 @@ readonly class UserAggregate
     ): self {
         throw_if(
             $this->repository->firstByEmail($email),
-            UserWithEmailExistsException::class,
-            __('user::domain.user_with_email_already_exist')
+            UserWithEmailExistsException::class
         );
 
         return $this;
@@ -50,9 +47,8 @@ readonly class UserAggregate
         string $hash
     ): self {
         throw_if(
-            !$user->verifyEmailVerificationHash($hash),
-            InvalidEmailVerificationHashException::class,
-            __('user::domain.invalid_email_verification_hash')
+            ! $user->verifyEmailVerificationHash($hash),
+            InvalidEmailVerificationHashException::class
         );
 
         return $this;
@@ -66,13 +62,11 @@ readonly class UserAggregate
     ): self {
         try {
             $this->validateVerifiedEmail($user);
-        } catch (Exception $exception) {
+        } catch (UserEmailIsNotVerifiedException $exception) {
             return $this;
         }
 
-        throw new UserEmailAlreadyVerifiedException(
-            __('user::domain.user_email_already_confirmed')
-        );
+        throw new UserEmailAlreadyVerifiedException;
     }
 
     /**
@@ -82,9 +76,8 @@ readonly class UserAggregate
         User $user
     ): self {
         throw_if(
-            !$user->hasVerifiedEmail(),
-            UserEmailIsNotVerifiedException::class,
-            __('user::domain.user_email_is_not_verified')
+            ! $user->hasVerifiedEmail(),
+            UserEmailIsNotVerifiedException::class
         );
 
         return $this;
@@ -96,8 +89,8 @@ readonly class UserAggregate
     public function verifyPassword(User $user, string $password): self
     {
         throw_if(
-            !$this->hasher->check($password, $user->password),
-            new AuthException(__('auth::messages.auth_failed'))
+            ! $this->hasher->check($password, $user->password),
+            AuthException::class
         );
 
         return $this;
@@ -111,13 +104,11 @@ readonly class UserAggregate
     ): self {
         try {
             $this->checkUserWithEmailAlreadyExist($email);
-        } catch (Exception $exception) {
+        } catch (UserWithEmailExistsException $exception) {
             return $this;
         }
 
-        throw new UserWithEmailNotExistsException(
-            __('user::domain.user_with_email_not_exist')
-        );
+        throw new UserWithEmailNotExistsException;
     }
 
     /**
@@ -128,8 +119,7 @@ readonly class UserAggregate
     ): self {
         throw_if(
             $status !== PasswordBrokerContract::PASSWORD_RESET,
-            ErrorWhileResetPasswordException::class,
-            __("auth::{$status}")
+            ErrorWhileResetPasswordException::class
         );
 
         return $this;
@@ -141,6 +131,6 @@ readonly class UserAggregate
     public function ensureUserExists(
         ?User $user,
     ): void {
-        throw_if(!$user, new UserNotFoundException());
+        throw_if(! $user, UserNotFoundException::class);
     }
 }

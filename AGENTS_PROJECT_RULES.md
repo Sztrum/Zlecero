@@ -1,7 +1,7 @@
 # AGENTS_PROJECT_RULES.md
 
 ## Version
-v1.2.0
+v1.3.0
 
 ## Scope
 Repository-specific rules for the Zlecero Laravel project.
@@ -59,7 +59,7 @@ Read documents in this exact order before implementation:
 - Validate request input in dedicated request classes.
 - Domain validation and not-found checks should live in aggregates/services and use project/module-specific exceptions.
 - New runtime text must be added through translations instead of inline literals.
-- For this repository, add new translation keys in the owning Polish translation scope in the same task; other languages may remain unchanged unless explicitly requested.
+- For this repository, add new translation keys only in the owning Polish, English, and German translation scopes in the same task unless the user explicitly requests additional languages.
 - Keep controller context prefixes explicit: `Api`, `Front`, or `Admin`.
 - Keep module names and namespaces aligned with existing `app/V1/Modules/**` structure.
 - Keep module routes inside module-owned route service providers registered by the owning module service provider; do not introduce root `routes/**` files for module routes.

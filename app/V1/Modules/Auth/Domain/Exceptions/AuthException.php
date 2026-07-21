@@ -5,25 +5,20 @@ declare(strict_types=1);
 namespace App\V1\Modules\Auth\Domain\Exceptions;
 
 use App\V1\Core\Domain\Exceptions\ForbiddenException;
-use Symfony\Component\HttpFoundation\Response;
-use Throwable;
 
 class AuthException extends ForbiddenException
 {
     /**
-     * @param array<string, string|string[]> $headers
+     * @param  array<string, bool|float|int|string|null>  $replace
      */
     public function __construct(
-        ?string $message = null,
-        public int $statusCode = Response::HTTP_FORBIDDEN,
-        ?Throwable $previous = null,
-        array $headers = [],
-        int $code = 0
+        string $message = '',
+        array $replace = []
     ) {
-        if (!$message) {
-            $message = __('auth::messages.auth_failed');
+        if ($message === '') {
+            $message = 'auth::_backend/exceptions.auth_failed';
         }
 
-        parent::__construct($message, $statusCode, $previous, $headers, $code);
+        parent::__construct($message, $replace);
     }
 }

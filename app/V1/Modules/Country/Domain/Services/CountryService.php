@@ -18,18 +18,17 @@ readonly class CountryService
     public function __construct(
         private CountryEntityMapper $countryEntityMapper,
         private Repository $config,
-    ) {
-    }
+    ) {}
 
     /**
      * @throws Throwable
      */
     public function getCountryByCode(string $code): CountryEntity
     {
-        $countryConfig = $this->config->get('countries::countries.countries.' . strtoupper($code));
+        $countryConfig = $this->config->get('countries::countries.countries.'.strtoupper($code));
 
-        if (!is_array($countryConfig)) {
-            throw new CountryNotFoundException('Country not found');
+        if (! is_array($countryConfig)) {
+            throw new CountryNotFoundException;
         }
 
         return $this->countryEntityMapper->parseToEntity($this->countryData($countryConfig, $code));
@@ -42,14 +41,14 @@ readonly class CountryService
     {
         $native = $this->getCountryByCode($code)->getNative();
 
-        throw_if(!$native, CountryNativeNameNotFoundException::class, 'Country native name not found');
+        throw_if(! $native, CountryNativeNameNotFoundException::class);
 
         return $native;
     }
 
     public function getCountriesByLanguageCode(string $languageCode): CountryEntityCollection
     {
-        $countries = new CountryEntityCollection();
+        $countries = new CountryEntityCollection;
 
         foreach ($this->countriesConfig() as $code => $countryConfig) {
             $country = $this->countryEntityMapper->parseToEntity($this->countryData($countryConfig, $code));
@@ -66,7 +65,7 @@ readonly class CountryService
     {
         $countryEntity = $this->getCountriesByLanguageCode($languageCode)->toCollection()->first();
 
-        if (!$countryEntity instanceof CountryEntity) {
+        if (! $countryEntity instanceof CountryEntity) {
             return null;
         }
 
@@ -75,7 +74,7 @@ readonly class CountryService
 
     public function getAllCountries(): CountryEntityCollection
     {
-        $countries = new CountryEntityCollection();
+        $countries = new CountryEntityCollection;
 
         foreach ($this->countriesConfig() as $code => $countryConfig) {
             $countries->add($this->countryEntityMapper->parseToEntity($this->countryData($countryConfig, $code)));
@@ -91,14 +90,14 @@ readonly class CountryService
     {
         $countries = $this->config->get('countries::countries.countries');
 
-        if (!is_array($countries)) {
+        if (! is_array($countries)) {
             throw new RuntimeException('Config countries::countries.countries must be an array.');
         }
 
         $typedCountries = [];
 
         foreach ($countries as $code => $country) {
-            if (!is_string($code) || !is_array($country)) {
+            if (! is_string($code) || ! is_array($country)) {
                 throw new RuntimeException('Each country config entry must be keyed by country code and contain an array.');
             }
 
@@ -109,13 +108,13 @@ readonly class CountryService
     }
 
     /**
-     * @param array<array-key, mixed> $country
+     * @param  array<array-key, mixed>  $country
      * @return array{code: string, name: string, native: string, phone: list<string>, continent: string, capital: string, currency: list<string>, languages: list<string>}
      */
     private function countryData(array $country, string $code): array
     {
         foreach (['name', 'native', 'continent', 'capital'] as $key) {
-            if (!isset($country[$key]) || !is_string($country[$key])) {
+            if (! isset($country[$key]) || ! is_string($country[$key])) {
                 throw new RuntimeException("Country config key [{$key}] must be a string.");
             }
         }
@@ -137,14 +136,14 @@ readonly class CountryService
      */
     private function stringList(mixed $value): array
     {
-        if (!is_array($value)) {
+        if (! is_array($value)) {
             throw new RuntimeException('Country config list value must be an array.');
         }
 
         $items = [];
 
         foreach ($value as $item) {
-            if (!is_string($item)) {
+            if (! is_string($item)) {
                 throw new RuntimeException('Country config list item must be a string.');
             }
 

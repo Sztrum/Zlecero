@@ -1,7 +1,7 @@
 # AGENTS_CODING_RULES.md
 
 ## Version
-v1.0.0
+v1.1.0
 
 ## Scope
 Portable coding/style/implementation standards intended to be reusable across projects.
@@ -104,6 +104,7 @@ Read documents in this exact order before implementation:
 - Avoid single-use temporary variables when inline expressions remain readable.
 - When removing behavior/config, remove stale related artifacts in the same change.
 - Prefer project-specific custom exceptions over framework/default generic exceptions whenever a domain/system-specific failure can be expressed and translated.
+- Custom domain exceptions must extend the owning core/domain exception base, expose `__construct(string $message = '', array $replace = [])`, set their default `$message` to the owning module translation key such as `'module::_backend/exceptions.exception_key'` when no message is provided, and pass `$message` plus `$replace` to the parent constructor so the base exception resolves the translation. Call sites should throw the exception class without passing pre-translated messages unless runtime replacement values are required.
 - Prefer `throw_if(...)` over `if (...) { throw ...; }` for guard clauses throwing exceptions.
 - In functions/methods where exceptions are thrown, add explicit `@throws <SpecificException>|Throwable` PHPDoc annotations when missing.
 

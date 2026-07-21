@@ -18,22 +18,26 @@ class CoreRouteServiceProvider extends ApiRouteServiceProvider
         $this->configureRateLimiting();
     }
 
-    protected function registerRoutes(Registrar $router): void
-    {
-    }
+    protected function registerRoutes(Registrar $router): void {}
 
     protected function configureRateLimiting(): void
     {
         RateLimiter::for('api', function (Request $request) {
             $configuredMaxAttempts = config('auth.throttle.default', 500);
 
-            if (!is_int($configuredMaxAttempts)) {
-                throw new RuntimeException('Config auth.throttle.default must be an integer.');
+            if (! is_numeric($configuredMaxAttempts)) {
+                throw new RuntimeException('Config auth.throttle.default must be numeric.');
+            }
+
+            $maxAttempts = (int) $configuredMaxAttempts;
+
+            if ($maxAttempts <= 0) {
+                throw new RuntimeException('Config auth.throttle.default must be greater than zero.');
             }
 
             $user = $request->user();
 
-            return Limit::perMinute($configuredMaxAttempts)->by($user?->id ?: $request->ip());
+            return Limit::perMinute($maxAttempts)->by($user?->id ?: $request->ip());
         });
     }
 }
