@@ -5,7 +5,6 @@ use App\V1\Core\Infrastructure\Packages\Vite\VitePackageServiceProvider;
 use App\V1\Modules\Auth\AuthModuleServiceProvider;
 use App\V1\Modules\Country\CountryModuleServiceProvider;
 use App\V1\Modules\Email\EmailModuleServiceProvider;
-use App\V1\Modules\StaticPages\StaticPagesModuleServiceProvider;
 use App\V1\Modules\User\UserModuleServiceProvider;
 
 return [
@@ -15,5 +14,4 @@ return [
     UserModuleServiceProvider::class,
     CountryModuleServiceProvider::class,
     EmailModuleServiceProvider::class,
-    StaticPagesModuleServiceProvider::class,
 ];
