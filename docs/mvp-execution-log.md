@@ -210,7 +210,7 @@ Planned output:
 - SEO/public pages in Laravel following the provided visual reference;
 - basic customer/admin dashboard shells only where required by MVP.
 
-Status: in progress.
+Status: completed.
 
 ## Active Problems And Questions
 
@@ -482,7 +482,7 @@ Verification:
 
 PR/merge status: backend PR #17 and React PR #10 merged.
 
-### 2026-07-26 01:28 - Stage 8 In Progress
+### 2026-07-26 01:28 - Stage 8 Completed
 
 - Identified a remaining MVP gap from the definition: orders could be created automatically from accepted offers, but they could not yet be completed.
 - Added Laravel order status transition endpoint under `/api/v1/orders/{order_id}/status`.
@@ -504,7 +504,35 @@ Verification:
 - React: `npm test -- --run` - passed.
 - React: `npm run build` - passed with existing outdated `caniuse-lite` and large chunk warnings.
 
-PR/merge status: pending verification, commit, push, PR creation, and merge for `feature/mvp-order-completion`.
+PR/merge status: backend PR #18 and React PR #11 merged.
+
+## MVP Completion Status
+
+Status: completed for the scoped MVP defined in this log.
+
+Completed capability checklist:
+
+- company account registration and sign-in;
+- employee/user management;
+- customer database;
+- manual inquiry creation and company-scoped inquiry workflow;
+- owner assignment, priority, response/realization/pickup dates, archive, files, and internal notes;
+- offer draft/editor, commercial terms, deterministic totals, PDF generation, send state, and acceptance;
+- automatic order creation after accepted offer;
+- order start and completion workflow;
+- API-backed company dashboard and basic admin dashboard;
+- localized public landing, pricing, FAQ, about, and contact pages.
+
+Remaining non-MVP follow-up candidates:
+
+- live mailbox provider integration and outbound offer email delivery;
+- production PDF template/engine;
+- public customer self-acceptance link/token flow;
+- platform-admin RBAC separate from company owner/admin;
+- production contact mailbox, retry policy, and legal company data;
+- full English/German body copy for public SEO pages;
+- production storage/backups for customer files;
+- realtime notifications and richer order production planning.
 
 ### 2026-07-25 22:06 - Stage 1 Completed
 
