@@ -11,6 +11,8 @@ use RuntimeException;
 
 class CoreMigrationStubsServiceProvider extends ServiceProvider
 {
+    private const DEFAULT_STUB_PATH = 'V1/Shared/Migrations/Stubs';
+
     public function boot(): void
     {
     }
@@ -29,6 +31,10 @@ class CoreMigrationStubsServiceProvider extends ServiceProvider
     private function migrationStubPath(Application $app): string
     {
         $stubPath = $app['config']->get('core::migration.stub_path');
+
+        if ($stubPath === null) {
+            return $app->path(self::DEFAULT_STUB_PATH);
+        }
 
         if (! is_string($stubPath)) {
             throw new RuntimeException('Configured migration stub path must be a string.');

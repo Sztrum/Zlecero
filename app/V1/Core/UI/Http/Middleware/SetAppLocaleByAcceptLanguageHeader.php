@@ -12,10 +12,20 @@ use Symfony\Component\HttpFoundation\Response;
 
 class SetAppLocaleByAcceptLanguageHeader
 {
+    /**
+     * @var list<string>
+     */
+    private const DEFAULT_ENABLED_LANGUAGES = [
+        'pl',
+        'en',
+        'de',
+    ];
+
     public function handle(Request $request, Closure $next): Response
     {
         $locale = $request->header('Accept-Language', 'pl');
-        $enabledLanguages = config('core::languages.enabled_system_languages');
+        $enabledLanguages = config('core::languages.enabled_system_languages')
+            ?? self::DEFAULT_ENABLED_LANGUAGES;
 
         if (!is_array($enabledLanguages)) {
             throw new RuntimeException('Config core::languages.enabled_system_languages must be an array.');
