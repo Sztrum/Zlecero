@@ -480,7 +480,7 @@ Verification:
 - React: `npm test -- --run` - passed.
 - React: `npm run build` - passed with existing outdated `caniuse-lite` and large chunk warnings.
 
-PR/merge status: pending verification, commit, push, PR creation, and merge for `feature/mvp-dashboard-public-pages`.
+PR/merge status: backend PR #17 and React PR #10 created; merge pending.
 
 ### 2026-07-25 22:06 - Stage 1 Completed
 
