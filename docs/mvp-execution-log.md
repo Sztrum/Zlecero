@@ -171,7 +171,7 @@ Planned output:
 - file metadata, upload endpoints, ownership checks;
 - internal notes/comments linked to inquiries.
 
-Status: pending.
+Status: completed.
 
 ### Stage 6: Offers, PDF, Acceptance, And Orders
 
@@ -189,7 +189,7 @@ Planned output:
 - offer send/acceptance record;
 - order creation and completion flow.
 
-Status: pending.
+Status: completed.
 
 ### Stage 7: Dashboard And Public Views
 
@@ -210,7 +210,7 @@ Planned output:
 - SEO/public pages in Laravel following the provided visual reference;
 - basic customer/admin dashboard shells only where required by MVP.
 
-Status: pending.
+Status: in progress.
 
 ## Active Problems And Questions
 
@@ -219,7 +219,7 @@ Status: pending.
 - Product: AI provider and retention rules are not selected. Current plan defers AI.
 - Product: customer panel access method is not selected. Current plan will use authenticated app routes until a token/link model is approved.
 - Architecture: tenant isolation must be implemented before customer/inquiry/offer CRUD to avoid retrofitting ownership constraints.
-- Architecture: public landing page reference path from the original request is Windows-style (`B:\Konrad\Execute instructions from file (1)`). It must be resolved locally before public page implementation.
+- Architecture: public landing page reference from the original request was Windows-style (`B:\Konrad\Execute instructions from file (1)`). A local Figma Make export was found in `/home/sztrum/php8.3/zlecero-app/agent-context/project-figma` and is used as the visual source for Stage 7.
 - Tooling: ClickUp task comments currently fail through the connector with `INVALID_ARGUMENT`; local work log remains the source of truth until connector writes are available.
 
 ## Work Entries
@@ -450,7 +450,37 @@ Verification:
 - React: `npm test -- --run` - passed.
 - React: `npm run build` - passed with existing bundle-size warning and outdated `caniuse-lite` notice.
 
-PR/merge status: pending local commit, push, PR creation, and merge for `feature/mvp-offers-orders`.
+PR/merge status: backend PR #16 and React PR #9 merged.
+
+### 2026-07-26 00:48 - Stage 7 In Progress
+
+- Retrieved ClickUp tasks for operational dashboard, public landing page, pricing, FAQ, about, contact, SaaS customer dashboard, and admin dashboard.
+- Confirmed product split: SEO/public pages stay in Laravel; authenticated company/admin dashboards stay in React.
+- Found local Figma Make reference under the React repository task context and used it for landing/dashboard composition.
+- Implemented Laravel `Dashboard` API module with `/api/v1/dashboard` and `/api/v1/dashboard/admin`.
+- Implemented dashboard cards, attention items, today tasks, upcoming deadlines, basic stats, and recent activity using company-scoped source modules.
+- Implemented Laravel public static pages with localized `/pl`, `/en`, and `/de` paths, canonical/alternate meta tags, landing, pricing, FAQ, about, contact, contact request validation, honeypot anti-spam, duplicate protection, and queued contact email.
+- Implemented React company dashboard using the real dashboard endpoint, owner/team filter, loading/error/empty states, and navigation links to operational records.
+- Implemented React admin dashboard route `/app/admin` using the platform metrics endpoint.
+- Added MSW dashboard handlers that calculate local/test dashboard data from the existing mock database.
+
+Problems/questions:
+
+- A real platform-admin role does not exist yet. The MVP admin dashboard currently exposes platform-level metrics to company owner/admin users and avoids showing business records from other companies. A dedicated platform RBAC model should replace this before production administration.
+- Contact form delivery currently queues an email to `mail.from.address`; a production support mailbox and retry/notification policy should be configured before launch.
+- English and German public-page translations currently reuse most Polish body copy except localized metadata and hero text. Full localized copy should be completed before SEO work in those markets.
+
+Verification:
+
+- Backend: `LOG_CHANNEL=stderr php artisan test --filter=DashboardStaticPagesContractTest` - passed.
+- Backend: `vendor/bin/phpstan analyse --configuration=/tmp/zlecero-phpstan-stage7.neon --memory-limit=1G` - passed.
+- Backend: `npm run prod` - passed with existing Sass legacy API and outdated `caniuse-lite` warnings.
+- React: `npm run check-types` - passed.
+- React: `npm run lint` - passed after formatting dashboard files.
+- React: `npm test -- --run` - passed.
+- React: `npm run build` - passed with existing outdated `caniuse-lite` and large chunk warnings.
+
+PR/merge status: backend PR #17 and React PR #10 created; merge pending.
 
 ### 2026-07-25 22:06 - Stage 1 Completed
 
