@@ -104,7 +104,7 @@ Planned output:
 - explicit dependency order for upcoming implementation;
 - repository documentation alignment if current AGENTS rules do not cover a confirmed MVP decision.
 
-Status: in progress.
+Status: completed.
 
 ### Stage 2: Tenant, Company, Roles, And Access Isolation
 
@@ -122,7 +122,7 @@ Planned output:
 - owner/admin/member roles and access checks;
 - React onboarding/company settings/user management screens.
 
-Status: pending.
+Status: completed.
 
 ### Stage 3: Customers
 
@@ -220,6 +220,7 @@ Status: pending.
 - Product: customer panel access method is not selected. Current plan will use authenticated app routes until a token/link model is approved.
 - Architecture: tenant isolation must be implemented before customer/inquiry/offer CRUD to avoid retrofitting ownership constraints.
 - Architecture: public landing page reference path from the original request is Windows-style (`B:\Konrad\Execute instructions from file (1)`). It must be resolved locally before public page implementation.
+- Tooling: ClickUp task comments currently fail through the connector with `INVALID_ARGUMENT`; local work log remains the source of truth until connector writes are available.
 
 ## Work Entries
 
@@ -229,5 +230,77 @@ Status: pending.
 - Confirmed MVP scope and first technical-decision task.
 - Created branch `feature/mvp-execution-foundation` in both repositories.
 - Created this execution log as the shared MVP work record.
+
+Verification:
+
+- Backend: `php artisan migrate` - passed, nothing pending.
+- Backend: `php artisan test --filter=CompanyAccessApiContractTest` - passed.
+- Backend: `php artisan test --filter=AuthApiContractTest` - passed.
+- Backend: `vendor/bin/phpstan analyse --memory-limit=1G --configuration=/tmp/zlecero-phpstan.neon` - passed.
+- React: `npm run check-types` - passed.
+- React: `npm run lint` - passed.
+- React: `npm test -- --run` - passed.
+- React: `npm run build` - passed with existing bundle-size warning for large chunks.
+
+PR/merge status: pending local commit, push, PR creation, and merge for `feature/mvp-company-access`.
+
+### 2026-07-25 22:25 - Stage 2 Completed Locally
+
+- Implemented Laravel company tenancy foundation:
+  - `companies` table with trial/settings fields;
+  - `users.company_id`, role/status, invitation/deactivation fields;
+  - `Company` module provider, routes, repository, resources, exceptions, and translations;
+  - authenticated company settings endpoint;
+  - authenticated company-user list/invite/deactivate endpoints;
+  - registration command now creates a company and owner user transactionally;
+  - login rejects inactive/deactivated company users.
+- Implemented React company access UI:
+  - registration now collects company name, password confirmation, and required terms acceptance;
+  - authenticated routes `/app/company` and `/app/company/users`;
+  - company settings form;
+  - company users table, invite form, and deactivate action;
+  - typed company/user API contracts and MSW handlers.
+- Added tests covering company registration/profile contract, company user management authorization, cross-company denial, and last-owner protection.
+
+Problems/questions:
+
+- Invitation emails are still not a full product flow: invited users are persisted with `invited` status, but resend/accept-invite screens and email templates should be handled in a later user-management refinement.
+- The onboarding wizard task is not complete yet; this stage prepared company/trial fields and settings, while the actual wizard UI should be a separate slice after the main domain objects exist.
+- Frontend production build reports large chunks (`index`, `db`) from the existing scaffold/MSW setup; not blocking for MVP, but worth splitting before production hardening.
+
+Verification:
+
+- Backend: `php artisan migrate` - passed, nothing pending.
+- Backend: `php artisan test --filter=CompanyAccessApiContractTest` - passed.
+- Backend: `php artisan test --filter=AuthApiContractTest` - passed.
+- Backend: `vendor/bin/phpstan analyse --memory-limit=1G --configuration=/tmp/zlecero-phpstan.neon` - passed.
+- React: `npm run check-types` - passed.
+- React: `npm run lint` - passed.
+- React: `npm test -- --run` - passed.
+- React: `npm run build` - passed with existing bundle-size warning for large chunks.
+
+PR/merge status: pending local commit, push, PR creation, and merge for `feature/mvp-company-access`.
+
+### 2026-07-25 22:06 - Stage 1 Completed
+
+- Backend PR #11 merged with the canonical MVP execution log and technical decisions.
+- React PR #4 merged with a project rule pointing agents to the canonical MVP execution log.
+- Both repositories were synchronized back to `main`.
+- Backend post-pull commands completed: `php artisan migrate`, `php artisan config:clear`, `php artisan cache:clear`.
+
+Verification: documentation-only change; runtime checks were not required.
+
+### 2026-07-25 22:20 - Stage 2 Started
+
+- Created branch `feature/mvp-company-access` in both repositories.
+- Retrieved ClickUp details for company isolation, roles, company registration, onboarding/trial, company settings, and company user management.
+- Added Laravel `Company` module, company migrations, user tenant fields, role/status enums, company settings endpoint, company user endpoints, and focused company access tests.
+- Started React company API declarations, registration updates, company settings view, company users view, MSW handlers, and role type updates.
+
+Problems/questions:
+
+- Company registration now requires password and terms acceptance; this intentionally changes the previous temporary no-password registration flow.
+- Live invitation email content and resend flow are not implemented yet; invited users receive backend status and remember token support, while email delivery will be completed with notification/user-management refinement.
+- Full onboarding wizard is not implemented in this slice; company/trial fields are prepared first.
 
 Verification: pending.
