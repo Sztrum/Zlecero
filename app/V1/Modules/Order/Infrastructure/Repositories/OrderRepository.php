@@ -6,6 +6,8 @@ namespace App\V1\Modules\Order\Infrastructure\Repositories;
 
 use App\V1\Core\Infrastructure\Repositories\Eloquent\EloquentModelRepository;
 use App\V1\Modules\Company\Domain\Models\Company;
+use App\V1\Modules\Order\Domain\Enums\OrderStatus;
+use App\V1\Modules\Order\Domain\Exceptions\InvalidOrderStateException;
 use App\V1\Modules\Order\Domain\Exceptions\OrderNotFoundException;
 use App\V1\Modules\Order\Domain\Models\Order;
 use Illuminate\Database\Eloquent\Builder;
@@ -58,5 +60,36 @@ class OrderRepository extends EloquentModelRepository
         throw_if(! $order instanceof Order, OrderNotFoundException::class);
 
         return $order;
+    }
+
+    /**
+     * @throws InvalidOrderStateException|OrderNotFoundException|Throwable
+     */
+    public function changeStatus(Company $company, Order $order, OrderStatus $nextStatus): Order
+    {
+        $currentStatus = OrderStatus::from($order->status);
+
+        throw_if(! $this->canTransition($currentStatus, $nextStatus), InvalidOrderStateException::class);
+
+        if ($currentStatus === $nextStatus) {
+            return $this->findCompanyOrder($company, $order->id);
+        }
+
+        $order->fill(['status' => $nextStatus->value])->save();
+
+        return $this->findCompanyOrder($company, $order->id);
+    }
+
+    private function canTransition(OrderStatus $currentStatus, OrderStatus $nextStatus): bool
+    {
+        if ($currentStatus === $nextStatus) {
+            return true;
+        }
+
+        return match ($currentStatus) {
+            OrderStatus::NEW => in_array($nextStatus, [OrderStatus::IN_PROGRESS, OrderStatus::COMPLETED], true),
+            OrderStatus::IN_PROGRESS => $nextStatus === OrderStatus::COMPLETED,
+            OrderStatus::COMPLETED => false,
+        };
     }
 }

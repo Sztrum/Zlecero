@@ -14,5 +14,6 @@ class OrderRouteServiceProvider extends ApiRouteServiceProvider
     {
         $router->get('/', [ApiOrderController::class, 'index'])->name('index');
         $router->get('/{order_id}', [ApiOrderController::class, 'show'])->name('show');
+        $router->patch('/{order_id}/status', [ApiOrderController::class, 'changeStatus'])->name('change-status');
     }
 }

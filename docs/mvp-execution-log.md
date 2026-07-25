@@ -452,7 +452,7 @@ Verification:
 
 PR/merge status: backend PR #16 and React PR #9 merged.
 
-### 2026-07-26 00:48 - Stage 7 In Progress
+### 2026-07-26 00:48 - Stage 7 Completed
 
 - Retrieved ClickUp tasks for operational dashboard, public landing page, pricing, FAQ, about, contact, SaaS customer dashboard, and admin dashboard.
 - Confirmed product split: SEO/public pages stay in Laravel; authenticated company/admin dashboards stay in React.
@@ -480,7 +480,31 @@ Verification:
 - React: `npm test -- --run` - passed.
 - React: `npm run build` - passed with existing outdated `caniuse-lite` and large chunk warnings.
 
-PR/merge status: backend PR #17 and React PR #10 created; merge pending.
+PR/merge status: backend PR #17 and React PR #10 merged.
+
+### 2026-07-26 01:28 - Stage 8 In Progress
+
+- Identified a remaining MVP gap from the definition: orders could be created automatically from accepted offers, but they could not yet be completed.
+- Added Laravel order status transition endpoint under `/api/v1/orders/{order_id}/status`.
+- Added order status transition rules: `new` can move to `in_progress` or `completed`, `in_progress` can move to `completed`, and completed orders cannot be reopened in MVP.
+- Added React order-detail workflow actions for starting and completing an order.
+- Added MSW support for order status changes.
+
+Problems/questions:
+
+- MVP order completion currently stores only status. Completion timestamp, production checklist, assignee workload, and customer notification should be modeled in later operations/planning scope.
+- Reopening completed orders is blocked until product rules define who can reopen and how audit/customer notifications should work.
+
+Verification:
+
+- Backend: `LOG_CHANNEL=stderr php artisan test --filter=OfferOrderApiContractTest` - passed.
+- Backend: `vendor/bin/phpstan analyse --configuration=/tmp/zlecero-phpstan-stage7.neon --memory-limit=1G` - passed.
+- React: `npm run check-types` - passed.
+- React: `npm run lint` - passed after formatting.
+- React: `npm test -- --run` - passed.
+- React: `npm run build` - passed with existing outdated `caniuse-lite` and large chunk warnings.
+
+PR/merge status: pending verification, commit, push, PR creation, and merge for `feature/mvp-order-completion`.
 
 ### 2026-07-25 22:06 - Stage 1 Completed
 
