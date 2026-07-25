@@ -15,7 +15,7 @@ This file tracks cumulative recommended developer effort only for module work un
 - `app/V1/Modules/Dashboard/**`: 3 h 0 min - 5 h 0 min
 - `app/V1/Modules/Inquiry/**`: 9 h 0 min - 13 h 30 min
 - `app/V1/Modules/Offer/**`: 6 h 0 min - 9 h 0 min
-- `app/V1/Modules/Order/**`: 2 h 30 min - 4 h 0 min
+- `app/V1/Modules/Order/**`: 3 h 0 min - 4 h 45 min
 - `app/V1/Modules/StaticPages/**`: 8 h 0 min - 12 h 0 min
 
 ## Update rule

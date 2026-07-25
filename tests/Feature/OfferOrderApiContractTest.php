@@ -133,6 +133,29 @@ class OfferOrderApiContractTest extends TestCase
             ->assertOk()
             ->assertJsonPath('data.offerId', $offerId)
             ->assertJsonPath('data.items.0.grossCents', 24600);
+
+        Auth::forgetGuards();
+
+        $this->flushHeaders()
+            ->withHeader('Authorization', "Bearer {$token}")
+            ->patchJson("/api/v1/orders/{$orderId}/status", ['status' => OrderStatus::IN_PROGRESS->value])
+            ->assertOk()
+            ->assertJsonPath('data.status', OrderStatus::IN_PROGRESS->value);
+
+        Auth::forgetGuards();
+
+        $this->flushHeaders()
+            ->withHeader('Authorization', "Bearer {$token}")
+            ->patchJson("/api/v1/orders/{$orderId}/status", ['status' => OrderStatus::COMPLETED->value])
+            ->assertOk()
+            ->assertJsonPath('data.status', OrderStatus::COMPLETED->value);
+
+        Auth::forgetGuards();
+
+        $this->flushHeaders()
+            ->withHeader('Authorization', "Bearer {$token}")
+            ->patchJson("/api/v1/orders/{$orderId}/status", ['status' => OrderStatus::IN_PROGRESS->value])
+            ->assertConflict();
     }
 
     public function test_offer_access_is_scoped_to_authenticated_company(): void

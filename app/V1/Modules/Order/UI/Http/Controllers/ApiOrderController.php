@@ -6,7 +6,9 @@ namespace App\V1\Modules\Order\UI\Http\Controllers;
 
 use App\V1\Core\Application\Command\CommandBusInterface;
 use App\V1\Core\UI\Http\Controllers\ApiController;
+use App\V1\Modules\Order\Domain\Enums\OrderStatus;
 use App\V1\Modules\Order\Infrastructure\Repositories\OrderRepository;
+use App\V1\Modules\Order\UI\Http\Requests\ApiChangeOrderStatusRequest;
 use App\V1\Modules\Order\UI\Http\Resources\OrderResource;
 use App\V1\Modules\User\Infrastructure\Repositories\UserRepository;
 use Illuminate\Contracts\Routing\ResponseFactory;
@@ -54,12 +56,41 @@ class ApiOrderController extends ApiController
         );
     }
 
+    /**
+     * @throws Throwable
+     */
+    public function changeStatus(ApiChangeOrderStatusRequest $request): OrderResource
+    {
+        $company = $this->userRepository->getAuthenticatedUserCompany();
+        $order = $this->orderRepository->findCompanyOrder($company, $this->routeString($request, 'order_id'));
+
+        return new OrderResource(
+            resource: $this->orderRepository->changeStatus(
+                $company,
+                $order,
+                OrderStatus::from($this->validatedString($request, 'status')),
+            ),
+            asResponse: true,
+        );
+    }
+
     private function routeString(Request $request, string $key): string
     {
         $value = $request->route($key);
 
         if (! is_string($value)) {
             throw new RuntimeException("Route parameter [{$key}] must be a string.");
+        }
+
+        return $value;
+    }
+
+    private function validatedString(ApiChangeOrderStatusRequest $request, string $key): string
+    {
+        $value = $request->validated($key);
+
+        if (! is_string($value)) {
+            throw new RuntimeException("Validated field [{$key}] must be a string.");
         }
 
         return $value;
