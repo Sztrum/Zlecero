@@ -27,6 +27,6 @@ class AuthRouteServiceProvider extends ApiRouteServiceProvider
         });
 
         $router->get('/profile', [AuthController::class, 'profile'])->name('profile');
-        $router->get('/logout', [AuthController::class, 'logout'])->name('logout');
+        $router->post('/logout', [AuthController::class, 'logout'])->name('logout');
     }
 }
