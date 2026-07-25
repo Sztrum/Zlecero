@@ -22,20 +22,35 @@ class AuthApiContractTest extends TestCase
         $user->forceFill([
             'id' => (string) Str::uuid(),
             'name' => 'Konrad Nowicki',
-            'email' => 'konrad@example.com',
+            'email' => 'zlecero.contract.user@gmail.com',
             'email_verified_at' => now(),
             'password' => Hash::make('secret-password'),
         ]);
         $user->saveQuietly();
 
-        $token = $user->createToken('test-token')->plainTextToken;
+        $loginResponse = $this->postJson('/api/v1/auth/login', [
+            'email' => 'zlecero.contract.user@gmail.com',
+            'password' => 'secret-password',
+        ])
+            ->assertOk()
+            ->assertJsonStructure([
+                'status',
+                'message',
+                'data' => [
+                    'token',
+                ],
+            ]);
+
+        $token = $loginResponse->json('data.token');
+
+        self::assertIsString($token);
 
         $this->withHeader('Authorization', "Bearer {$token}")
             ->getJson('/api/v1/auth/profile')
             ->assertOk()
             ->assertJsonPath('data.id', $user->id)
             ->assertJsonPath('data.name', 'Konrad Nowicki')
-            ->assertJsonPath('data.email', 'konrad@example.com');
+            ->assertJsonPath('data.email', 'zlecero.contract.user@gmail.com');
 
         $this->withHeader('Authorization', "Bearer {$token}")
             ->postJson('/api/v1/auth/logout')
