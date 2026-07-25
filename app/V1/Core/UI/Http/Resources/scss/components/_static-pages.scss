@@ -1,0 +1,260 @@
+.zp-page {
+    min-height: 100vh;
+    background: #ffffff;
+    color: #111827;
+    font-family: Inter, Poppins, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+.zp-nav {
+    position: sticky;
+    top: 0;
+    z-index: 40;
+    border-bottom: 1px solid #f3f4f6;
+    background: rgba(255, 255, 255, 0.92);
+    backdrop-filter: blur(16px);
+}
+
+.zp-nav__inner,
+.zp-footer__inner,
+.zp-footer__bottom {
+    margin: 0 auto;
+    max-width: 1152px;
+    padding: 0 24px;
+}
+
+.zp-nav__inner {
+    display: flex;
+    min-height: 64px;
+    align-items: center;
+    gap: 32px;
+}
+
+.zp-logo {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    color: #111827;
+    font-weight: 800;
+    text-decoration: none;
+}
+
+.zp-logo__mark {
+    display: inline-flex;
+    height: 32px;
+    width: 32px;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+    background: #4f46e5;
+    color: #ffffff;
+    font-size: 14px;
+}
+
+.zp-nav__links {
+    display: flex;
+    flex: 1;
+    gap: 24px;
+}
+
+.zp-nav a {
+    color: #6b7280;
+    font-size: 14px;
+    text-decoration: none;
+}
+
+.zp-nav a:hover {
+    color: #111827;
+}
+
+.zp-nav__actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.zp-languages {
+    display: flex;
+    gap: 4px;
+}
+
+.zp-languages a {
+    border-radius: 8px;
+    padding: 4px 7px;
+    font-size: 11px;
+    font-weight: 700;
+}
+
+.zp-languages a.is-active {
+    background: #eef2ff;
+    color: #4f46e5;
+}
+
+.zp-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+    padding: 10px 16px;
+    font-size: 14px;
+    font-weight: 700;
+    text-decoration: none;
+    transition: background 0.18s ease, border-color 0.18s ease, color 0.18s ease, transform 0.18s ease;
+}
+
+.zp-button:hover {
+    transform: translateY(-1px);
+}
+
+.zp-button--primary {
+    background: #4f46e5;
+    color: #ffffff !important;
+}
+
+.zp-button--secondary {
+    border: 1px solid #e5e7eb;
+    background: #ffffff;
+    color: #374151;
+}
+
+.zp-button--light {
+    background: #ffffff;
+    color: #4f46e5 !important;
+}
+
+.zp-button--large {
+    padding: 14px 28px;
+    border-radius: 14px;
+}
+
+.zp-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    border: 1px solid #e0e7ff;
+    border-radius: 999px;
+    background: #eef2ff;
+    color: #4338ca;
+    font-size: 14px;
+    font-weight: 700;
+    padding: 6px 16px;
+}
+
+.zp-pill i {
+    height: 8px;
+    width: 8px;
+    border-radius: 999px;
+    background: #6366f1;
+}
+
+.zp-section,
+.zp-hero,
+.zp-subhero,
+.zp-pilot {
+    margin: 0 auto;
+    max-width: 1152px;
+    padding: 72px 24px;
+}
+
+.zp-section--muted {
+    max-width: none;
+    background: #f9fafb;
+}
+
+.zp-section--muted > * {
+    margin-left: auto;
+    margin-right: auto;
+    max-width: 1024px;
+}
+
+.zp-section__head {
+    margin: 0 auto 44px;
+    max-width: 720px;
+    text-align: center;
+}
+
+.zp-section__head h2,
+.zp-subhero h1,
+.zp-pilot h2 {
+    margin: 0;
+    color: #111827;
+    font-size: 34px;
+    font-weight: 800;
+    line-height: 1.15;
+}
+
+.zp-section__head p,
+.zp-subhero p,
+.zp-pilot p {
+    margin: 12px 0 0;
+    color: #6b7280;
+    font-size: 16px;
+    line-height: 1.7;
+}
+
+.zp-footer {
+    border-top: 1px solid #e5e7eb;
+}
+
+.zp-footer__inner {
+    display: flex;
+    justify-content: space-between;
+    gap: 48px;
+    padding-top: 48px;
+    padding-bottom: 36px;
+}
+
+.zp-footer p,
+.zp-footer a {
+    color: #6b7280;
+    font-size: 13px;
+    line-height: 1.7;
+    text-decoration: none;
+}
+
+.zp-footer__grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(120px, 1fr));
+    gap: 48px;
+}
+
+.zp-footer__grid div {
+    display: grid;
+    gap: 8px;
+}
+
+.zp-footer__grid strong {
+    color: #374151;
+    font-size: 13px;
+}
+
+.zp-footer__bottom {
+    display: flex;
+    justify-content: space-between;
+    border-top: 1px solid #f3f4f6;
+    padding-top: 24px;
+    padding-bottom: 32px;
+    color: #9ca3af;
+    font-size: 12px;
+}
+
+.zp-honeypot {
+    position: absolute;
+    left: -9999px;
+}
+
+@media (max-width: 900px) {
+    .zp-nav__links,
+    .zp-nav__login,
+    .zp-languages {
+        display: none;
+    }
+
+    .zp-nav__inner {
+        justify-content: space-between;
+    }
+
+    .zp-footer__inner,
+    .zp-footer__bottom {
+        flex-direction: column;
+    }
+}
