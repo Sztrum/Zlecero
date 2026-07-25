@@ -6,6 +6,9 @@ namespace App\V1\Modules\User\Domain\Models;
 
 use App\V1\Core\Domain\Models\Model;
 use App\V1\Core\Infrastructure\Packages\Sanctum\Models\PersonalAccessToken;
+use App\V1\Modules\Company\Domain\Enums\CompanyUserRole;
+use App\V1\Modules\Company\Domain\Enums\CompanyUserStatus;
+use App\V1\Modules\Company\Domain\Models\Company;
 use App\V1\Modules\User\Domain\Events\UserHasBeenCreatedEvent;
 use DateTimeInterface;
 use Illuminate\Auth\Authenticatable;
@@ -15,6 +18,7 @@ use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
 use Illuminate\Foundation\Auth\Access\Authorizable;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Str;
 use Laravel\Sanctum\HasApiTokens;
@@ -23,10 +27,15 @@ use RuntimeException;
 
 /**
  * @property string $id
+ * @property string|null $company_id
  * @property string $name
  * @property string $email
  * @property string|null $email_verified_at
  * @property string $password
+ * @property string $role
+ * @property string $status
+ * @property \Illuminate\Support\Carbon|null $invited_at
+ * @property \Illuminate\Support\Carbon|null $deactivated_at
  * @property string|null $remember_token
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
@@ -34,6 +43,7 @@ use RuntimeException;
  * @property int|null $notifications_count
  * @property \Illuminate\Database\Eloquent\Collection<int, PersonalAccessToken> $tokens
  * @property int|null $tokens_count
+ * @property Company|null $company
  * @method static \Illuminate\Database\Eloquent\Builder|User newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|User newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|User query()
@@ -61,8 +71,13 @@ class User extends Model implements
 
     protected $fillable = [
         'name',
+        'company_id',
         'email',
         'password',
+        'role',
+        'status',
+        'invited_at',
+        'deactivated_at',
         'remember_token',
     ];
 
@@ -71,7 +86,10 @@ class User extends Model implements
         'remember_token',
     ];
 
-    protected $casts = [];
+    protected $casts = [
+        'invited_at' => 'datetime',
+        'deactivated_at' => 'datetime',
+    ];
 
     protected $dispatchesEvents = [
         'created' => UserHasBeenCreatedEvent::class,
@@ -116,5 +134,37 @@ class User extends Model implements
     public function verifyEmailVerificationHash(string $hash): bool
     {
         return $hash === $this->generateHashToEmailVerification();
+    }
+
+    /**
+     * @return BelongsTo<Company, $this>
+     */
+    public function company(): BelongsTo
+    {
+        return $this->belongsTo(Company::class);
+    }
+
+    public function hasCompanyRole(CompanyUserRole $role): bool
+    {
+        return $this->role === $role->value;
+    }
+
+    /**
+     * @param list<CompanyUserRole> $roles
+     */
+    public function hasAnyCompanyRole(array $roles): bool
+    {
+        foreach ($roles as $role) {
+            if ($this->hasCompanyRole($role)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public function isActiveCompanyUser(): bool
+    {
+        return $this->status === CompanyUserStatus::ACTIVE->value;
     }
 }

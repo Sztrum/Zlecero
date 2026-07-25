@@ -1,7 +1,7 @@
 # AGENTS_PROJECT_RULES.md
 
 ## Version
-v1.8.0
+v1.9.0
 
 ## Scope
 Repository-specific rules for the Zlecero Laravel project.
@@ -33,6 +33,7 @@ Read documents in this exact order before implementation:
 - Current modules:
   - `app/V1/Modules/Auth/**`
   - `app/V1/Modules/User/**`
+  - `app/V1/Modules/Company/**`
   - `app/V1/Modules/Country/**`
   - `app/V1/Modules/Email/**`
   - `app/V1/Modules/StaticPages/**`
@@ -58,6 +59,7 @@ Read documents in this exact order before implementation:
 - Public API responses should be stable and explicit enough for external React consumers.
 - Serve versioned API routes under the same host using the `/api/v1/...` path prefix, not a separate `api.*` subdomain, unless the user explicitly moves API hosting to a separate deployment/service.
 - For the MVP React integration, authenticated API access uses Sanctum personal access tokens sent as Bearer tokens; do not switch auth endpoints or route protection to first-party cookie/session auth until that architecture is explicitly approved and documented.
+- For MVP tenant isolation, every operational company-owned model introduced after `Company` must include a `company_id` ownership boundary, API queries must scope reads/writes to the authenticated user's company, and focused feature tests must cover cross-company read/write denial before the React CRUD is considered complete.
 
 ## Laravel And Module Conventions
 - Use command-based flow for write operations: controllers dispatch commands and handlers own side effects.

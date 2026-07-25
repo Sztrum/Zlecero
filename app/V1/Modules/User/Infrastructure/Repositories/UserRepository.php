@@ -6,9 +6,16 @@ namespace App\V1\Modules\User\Infrastructure\Repositories;
 
 use App\V1\Core\Infrastructure\Repositories\Eloquent\EloquentModelRepository;
 use App\V1\Modules\Auth\Domain\Exceptions\AuthException;
+use App\V1\Modules\Company\Domain\Enums\CompanyUserRole;
+use App\V1\Modules\Company\Domain\Enums\CompanyUserStatus;
+use App\V1\Modules\Company\Domain\Exceptions\CompanyAccessDeniedException;
+use App\V1\Modules\Company\Domain\Exceptions\CompanyNotFoundException;
+use App\V1\Modules\Company\Domain\Exceptions\LastCompanyOwnerException;
+use App\V1\Modules\Company\Domain\Models\Company;
 use App\V1\Modules\User\Domain\Exceptions\UserNotFoundException;
 use App\V1\Modules\User\Domain\Models\User;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Collection;
 use Throwable;
 
 class UserRepository extends EloquentModelRepository
@@ -36,6 +43,18 @@ class UserRepository extends EloquentModelRepository
     }
 
     /**
+     * @throws CompanyNotFoundException|Throwable
+     */
+    public function getAuthenticatedUserCompany(): Company
+    {
+        $company = $this->getAuthenticatedUser()->company;
+
+        throw_if(! $company instanceof Company, CompanyNotFoundException::class);
+
+        return $company;
+    }
+
+    /**
      * @return Builder<User>
      */
     private function userQuery(): Builder
@@ -48,6 +67,61 @@ class UserRepository extends EloquentModelRepository
         return $this->userQuery()
             ->where('email', $email)
             ->first();
+    }
+
+    /**
+     * @return Collection<int, User>
+     */
+    public function getByCompany(Company $company): Collection
+    {
+        return $this->userQuery()
+            ->where('company_id', $company->id)
+            ->orderBy('created_at')
+            ->get();
+    }
+
+    /**
+     * @throws CompanyAccessDeniedException|Throwable
+     */
+    public function findCompanyUser(Company $company, string $userId): User
+    {
+        $user = $this->userQuery()
+            ->where('company_id', $company->id)
+            ->where('id', $userId)
+            ->first();
+
+        throw_if(! $user instanceof User, CompanyAccessDeniedException::class);
+
+        return $user;
+    }
+
+    public function activeOwnerCount(Company $company): int
+    {
+        return $this->userQuery()
+            ->where('company_id', $company->id)
+            ->where('role', CompanyUserRole::OWNER->value)
+            ->where('status', CompanyUserStatus::ACTIVE->value)
+            ->count();
+    }
+
+    /**
+     * @throws LastCompanyOwnerException|Throwable
+     */
+    public function deactivateCompanyUser(User $user): User
+    {
+        throw_if(
+            $user->hasCompanyRole(CompanyUserRole::OWNER)
+            && $user->company instanceof Company
+            && $this->activeOwnerCount($user->company) <= 1,
+            LastCompanyOwnerException::class
+        );
+
+        $user->fill([
+            'status' => CompanyUserStatus::DEACTIVATED->value,
+            'deactivated_at' => now(),
+        ])->save();
+
+        return $user;
     }
 
     public function findByIdAndRememberToken(

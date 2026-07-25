@@ -99,6 +99,19 @@ readonly class UserAggregate
     /**
      * @throws Throwable
      */
+    public function validateActiveCompanyUser(User $user): self
+    {
+        throw_if(
+            ! $user->isActiveCompanyUser(),
+            AuthException::class
+        );
+
+        return $this;
+    }
+
+    /**
+     * @throws Throwable
+     */
     public function checkUserWithEmailNotExist(
         string $email
     ): self {

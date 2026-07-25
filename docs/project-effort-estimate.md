@@ -9,7 +9,8 @@ This file tracks cumulative recommended developer effort only for module work un
 - shared frontend/assets outside module-owned scope
 
 ## Current estimate
-- `app/V1/Modules/User/**`: 1 h 30 min - 2 h 30 min
+- `app/V1/Modules/User/**`: 4 h 0 min - 6 h 0 min
+- `app/V1/Modules/Company/**`: 4 h 0 min - 6 h 30 min
 
 ## Update rule
 When a task changes module code, update this file with the cumulative recommended effort for the affected module scope.

@@ -15,6 +15,8 @@ readonly class RegisterUserCommand implements CommandTransactionalInterface
     public function __construct(
         public string $name,
         public string $email,
+        public string $password,
+        public string $companyName,
     ) {
     }
 }

@@ -72,6 +72,8 @@ class AuthController extends ApiController
             new RegisterUserCommand(
                 name: $this->validatedString($request, 'name'),
                 email: $this->validatedString($request, 'email'),
+                password: $this->validatedString($request, 'password'),
+                companyName: $this->validatedString($request, 'company_name'),
             )
         );
 

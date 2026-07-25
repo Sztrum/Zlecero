@@ -33,6 +33,7 @@ readonly class AuthService
 
         $this->userAggregate
             ->validateVerifiedEmail($user)
+            ->validateActiveCompanyUser($user)
             ->verifyPassword($user, $loginDataDTO->password);
 
         return $this->createToken($user);

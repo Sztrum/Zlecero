@@ -19,6 +19,15 @@ class UserResource extends ApiResponseResource
             'name' => $this->getResource()->name,
             'email' => $this->getResource()->email,
             'avatar' => 'https://picsum.photos/150/150',
+            'role' => $this->getResource()->role,
+            'status' => $this->getResource()->status,
+            'company' => $this->getResource()->company ? [
+                'id' => $this->getResource()->company->id,
+                'name' => $this->getResource()->company->name,
+                'slug' => $this->getResource()->company->slug,
+                'trialEndsAt' => $this->getResource()->company->trial_ends_at?->toIso8601String(),
+                'onboardingCompletedAt' => $this->getResource()->company->onboarding_completed_at?->toIso8601String(),
+            ] : null,
         ];
     }
 
