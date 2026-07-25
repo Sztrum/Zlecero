@@ -416,7 +416,41 @@ Verification:
 - React: `npm test -- --run` - passed.
 - React: `npm run build` - passed with existing bundle-size warning and outdated `caniuse-lite` notice.
 
-PR/merge status: pending local commit, push, PR creation, and merge for `feature/mvp-inquiry-files-notes`.
+PR/merge status: backend PR #15 and React PR #8 merged.
+
+### 2026-07-25 23:34 - Stage 6 Completed Locally
+
+- Implemented Laravel `Offer` and `Order` modules with company-scoped models, API routes, repositories, resources, validations, translations, and service providers.
+- Added offer editor contract with inquiry link, customer/owner carry-over, number, dates, validity, payment term, delivery cost, discount, deposit, terms, notes, and line items.
+- Added deterministic backend calculations for item net/tax/gross, subtotal, discount, tax, total gross, and deposit using persisted integer cents.
+- Added simple local PDF generation and tenant-scoped PDF download endpoint without introducing a new PDF dependency.
+- Added offer send action that locks draft editing and moves the offer to sent state.
+- Added offer acceptance that blocks draft/rejected/expired offers and creates exactly one linked order.
+- Added order list/detail API with copied customer, inquiry, offer, owner, item, total, term, and date data.
+- Implemented React offer list, offer editor, offer detail actions, PDF download link, order list, order detail, navigation items, natural routes, API hooks, shared money formatting, and MSW handlers.
+
+Problems/questions:
+
+- PDF generation is synchronous and uses a minimal built-in PDF writer for MVP. A production document engine and richer template can replace it later without changing the API download contract.
+- Offer "send" currently records sent state but does not send e-mail externally because the e-mail provider remains undecided.
+- Customer self-acceptance/public token flow is not implemented yet. Stage 6 supports employee-side acceptance through authenticated API.
+- Order team notifications are not implemented yet because notification channels are still deferred.
+- Parallel backend test execution with `RefreshDatabase` continues to race on the shared local MySQL schema; Stage 6 backend tests were verified sequentially.
+- Frontend production build still reports the existing large chunk warning and outdated `caniuse-lite` notice; both are non-blocking build warnings.
+
+Verification:
+
+- Backend: `php artisan migrate` - passed and applied offer/order migrations.
+- Backend: `LOG_CHANNEL=stderr php artisan test --filter=OfferOrderApiContractTest` - passed.
+- Backend: `LOG_CHANNEL=stderr php artisan test --filter=InquiryWorkflowApiContractTest` - passed sequentially.
+- Backend: `LOG_CHANNEL=stderr php artisan test --filter=CompanyAccessApiContractTest` - passed sequentially.
+- Backend: `vendor/bin/phpstan analyse --memory-limit=1G --configuration=/tmp/zlecero-phpstan-stage6.neon` - passed.
+- React: `npm run check-types` - passed.
+- React: `npm run lint` - passed.
+- React: `npm test -- --run` - passed.
+- React: `npm run build` - passed with existing bundle-size warning and outdated `caniuse-lite` notice.
+
+PR/merge status: pending local commit, push, PR creation, and merge for `feature/mvp-offers-orders`.
 
 ### 2026-07-25 22:06 - Stage 1 Completed
 

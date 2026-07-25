@@ -8,6 +8,8 @@ use App\V1\Modules\Country\CountryModuleServiceProvider;
 use App\V1\Modules\Customer\CustomerModuleServiceProvider;
 use App\V1\Modules\Email\EmailModuleServiceProvider;
 use App\V1\Modules\Inquiry\InquiryModuleServiceProvider;
+use App\V1\Modules\Offer\OfferModuleServiceProvider;
+use App\V1\Modules\Order\OrderModuleServiceProvider;
 use App\V1\Modules\User\UserModuleServiceProvider;
 
 return [
@@ -17,6 +19,8 @@ return [
     CompanyModuleServiceProvider::class,
     CustomerModuleServiceProvider::class,
     InquiryModuleServiceProvider::class,
+    OfferModuleServiceProvider::class,
+    OrderModuleServiceProvider::class,
     UserModuleServiceProvider::class,
     CountryModuleServiceProvider::class,
     EmailModuleServiceProvider::class,
