@@ -1,7 +1,7 @@
 # AGENTS_PROJECT_RULES.md
 
 ## Version
-v1.10.0
+v1.11.0
 
 ## Scope
 Repository-specific rules for the Zlecero Laravel project.
@@ -35,6 +35,7 @@ Read documents in this exact order before implementation:
   - `app/V1/Modules/User/**`
   - `app/V1/Modules/Company/**`
   - `app/V1/Modules/Customer/**`
+  - `app/V1/Modules/Inquiry/**`
   - `app/V1/Modules/Country/**`
   - `app/V1/Modules/Email/**`
   - `app/V1/Modules/StaticPages/**`
