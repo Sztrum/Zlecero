@@ -5,15 +5,20 @@ declare(strict_types=1);
 namespace App\V1\Modules\Inquiry\UI\Http\Controllers;
 
 use App\V1\Core\Application\Command\CommandBusInterface;
+use App\V1\Core\Domain\Exceptions\ForbiddenException;
 use App\V1\Core\UI\Http\Controllers\ApiController;
+use App\V1\Modules\Company\Domain\Enums\CompanyUserRole;
 use App\V1\Modules\Company\Domain\Models\Company;
 use App\V1\Modules\Customer\Infrastructure\Repositories\CustomerRepository;
 use App\V1\Modules\Inquiry\Domain\Enums\InquiryMessageDirection;
 use App\V1\Modules\Inquiry\Domain\Enums\InquiryStatus;
 use App\V1\Modules\Inquiry\Domain\Models\Inquiry;
 use App\V1\Modules\Inquiry\Infrastructure\Repositories\InquiryRepository;
+use App\V1\Modules\Inquiry\UI\Http\Requests\ApiAssignInquiryOwnerRequest;
 use App\V1\Modules\Inquiry\UI\Http\Requests\ApiChangeInquiryStatusRequest;
+use App\V1\Modules\Inquiry\UI\Http\Requests\ApiStoreInquiryFileRequest;
 use App\V1\Modules\Inquiry\UI\Http\Requests\ApiStoreInquiryMessageRequest;
+use App\V1\Modules\Inquiry\UI\Http\Requests\ApiStoreInquiryNoteRequest;
 use App\V1\Modules\Inquiry\UI\Http\Requests\ApiStoreInquiryRequest;
 use App\V1\Modules\Inquiry\UI\Http\Requests\ApiUpdateInquiryRequest;
 use App\V1\Modules\Inquiry\UI\Http\Resources\InquiryResource;
@@ -21,8 +26,11 @@ use App\V1\Modules\User\Infrastructure\Repositories\UserRepository;
 use Illuminate\Contracts\Routing\ResponseFactory;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
 use RuntimeException;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 use Throwable;
 
 class ApiInquiryController extends ApiController
@@ -193,6 +201,99 @@ class ApiInquiryController extends ApiController
     }
 
     /**
+     * @throws Throwable
+     */
+    public function storeFile(ApiStoreInquiryFileRequest $request): JsonResponse
+    {
+        $company = $this->userRepository->getAuthenticatedUserCompany();
+        $inquiry = $this->inquiryRepository->findCompanyInquiry($company, $this->routeString($request, 'inquiry_id'));
+        $file = $this->validatedFile($request, 'file');
+        $storedPath = $file->store(sprintf('companies/%s/inquiries/%s', $company->id, $inquiry->id), 'local');
+
+        if (! is_string($storedPath)) {
+            throw new RuntimeException('Uploaded inquiry file could not be stored.');
+        }
+
+        $this->inquiryRepository->createFile($inquiry, [
+            'uploaded_by_user_id' => $this->userRepository->getAuthenticatedUser()->id,
+            'source' => 'manual',
+            'disk' => 'local',
+            'stored_path' => $storedPath,
+            'original_name' => $file->getClientOriginalName(),
+            'mime_type' => $file->getClientMimeType(),
+            'size_bytes' => $file->getSize(),
+            'category' => $this->nullableString($request, 'category'),
+            'description' => $this->nullableString($request, 'description'),
+        ]);
+
+        return $this->responseData(
+            (new InquiryResource($this->inquiryRepository->findCompanyInquiry($company, $inquiry->id)))->toArray($request),
+            statusCode: Response::HTTP_CREATED,
+        );
+    }
+
+    /**
+     * @throws Throwable
+     */
+    public function downloadFile(Request $request): StreamedResponse
+    {
+        $company = $this->userRepository->getAuthenticatedUserCompany();
+        $inquiry = $this->inquiryRepository->findCompanyInquiry($company, $this->routeString($request, 'inquiry_id'));
+        $file = $this->inquiryRepository->findCompanyInquiryFile(
+            $company,
+            $inquiry,
+            $this->routeString($request, 'file_id'),
+        );
+
+        return Storage::disk($file->disk)->download($file->stored_path, $file->original_name);
+    }
+
+    /**
+     * @throws Throwable
+     */
+    public function storeNote(ApiStoreInquiryNoteRequest $request): InquiryResource
+    {
+        $company = $this->userRepository->getAuthenticatedUserCompany();
+        $inquiry = $this->inquiryRepository->findCompanyInquiry($company, $this->routeString($request, 'inquiry_id'));
+
+        $this->inquiryRepository->createNote($inquiry, [
+            'author_user_id' => $this->userRepository->getAuthenticatedUser()->id,
+            'body' => $this->validatedString($request, 'body'),
+            'is_internal' => true,
+        ]);
+
+        return new InquiryResource(
+            resource: $this->inquiryRepository->findCompanyInquiry($company, $inquiry->id),
+            asResponse: true,
+        );
+    }
+
+    /**
+     * @throws Throwable
+     */
+    public function assignOwner(ApiAssignInquiryOwnerRequest $request): InquiryResource
+    {
+        $user = $this->userRepository->getAuthenticatedUser();
+
+        throw_if(
+            ! $user->hasAnyCompanyRole([CompanyUserRole::OWNER, CompanyUserRole::ADMIN]),
+            ForbiddenException::class,
+        );
+
+        $company = $this->userRepository->getAuthenticatedUserCompany();
+        $inquiry = $this->inquiryRepository->findCompanyInquiry($company, $this->routeString($request, 'inquiry_id'));
+        $ownerUserId = $this->nullableString($request, 'owner_user_id');
+        $owner = $ownerUserId === null ? null : $this->userRepository->findCompanyUser($company, $ownerUserId);
+
+        $this->inquiryRepository->assignOwner($inquiry, $owner, $user);
+
+        return new InquiryResource(
+            resource: $this->inquiryRepository->findCompanyInquiry($company, $inquiry->id),
+            asResponse: true,
+        );
+    }
+
+    /**
      * @return array<string, mixed>
      * @throws Throwable
      */
@@ -253,6 +354,17 @@ class ApiInquiryController extends ApiController
         }
 
         return $value;
+    }
+
+    private function validatedFile(Request $request, string $key): UploadedFile
+    {
+        $file = $request->file($key);
+
+        if (! $file instanceof UploadedFile) {
+            throw new RuntimeException("Validated request field [{$key}] must be an uploaded file.");
+        }
+
+        return $file;
     }
 
     private function routeString(Request $request, string $key): string

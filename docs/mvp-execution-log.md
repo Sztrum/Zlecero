@@ -355,7 +355,7 @@ Verification:
 - React: `npm test -- --run` - passed.
 - React: `npm run build` - passed with existing bundle-size warning for large chunks.
 
-PR/merge status: pending local commit, push, PR creation, and merge for `feature/mvp-inquiries-workflow`.
+PR/merge status: backend PR #14 and React PR #7 merged.
 
 ### 2026-07-25 23:01 - Stage 4 Completed Locally
 
@@ -384,7 +384,39 @@ Verification:
 - React: `npm test -- --run` - passed.
 - React: `npm run build` - passed with existing bundle-size warning for large chunks.
 
-PR/merge status: pending local commit, push, PR creation, and merge for `feature/mvp-inquiries-workflow`.
+PR/merge status: backend PR #14 and React PR #7 merged.
+
+### 2026-07-25 23:07 - Stage 5 Completed Locally
+
+- Implemented Laravel inquiry file metadata with tenant ownership, inquiry/customer/message links, upload author, source, category, description, MIME type, size, storage disk, and stored path.
+- Added manual upload, download, internal note, and owner assignment API endpoints under `/api/v1/inquiries/{inquiry_id}`.
+- Added backend validation for allowed file extensions and 20 MB upload size, plus company-scoped file lookup before download.
+- Added internal notes that are always marked internal and never reused as outbound correspondence.
+- Added owner assignment auditing through an internal note and restricted owner changes to company owner/admin roles.
+- Implemented React inquiry detail sections for owner assignment, files with upload/download, upload progress/cancel state, and internal notes.
+- Extended React API declarations, shared API types, and MSW models/handlers to match the Laravel contract.
+
+Problems/questions:
+
+- Live e-mail attachment import remains deferred until the e-mail provider adapter exists. Stage 5 stores `source` and `inquiry_message_id` so inbound attachments can be attached later without changing the file library contract.
+- Department ownership and the "my department" filter are not implemented because there is no department model in the current MVP tenant schema. Current completed filters cover "my cases" through `owner=me` and unassigned cases through `queue=unassigned`.
+- Production storage should move from the local disk to an S3-compatible disk and backup policy before real customer files are stored in production.
+- Frontend production build still reports the existing large chunk warning and an outdated `caniuse-lite` notice; both are non-blocking build warnings.
+- Backend PHPStan cache under `storage/framework/cache/phpstan` contains files owned by another system UID, so PHPStan was verified with a temporary config using `/tmp/zlecero-phpstan-stage5-cache`.
+
+Verification:
+
+- Backend: `php artisan migrate` - passed and applied `2026_07_25_210016_create_inquiry_files_table` and `2026_07_25_210017_create_inquiry_notes_table`.
+- Backend: `php artisan test --filter=InquiryFilesNotesApiContractTest` - passed.
+- Backend: `php artisan test --filter=InquiryWorkflowApiContractTest` - passed.
+- Backend: `php artisan test --filter=CompanyAccessApiContractTest` - passed.
+- Backend: `vendor/bin/phpstan analyse --memory-limit=1G --configuration=/tmp/zlecero-phpstan-stage5.neon` - passed.
+- React: `npm run check-types` - passed.
+- React: `npm run lint` - passed.
+- React: `npm test -- --run` - passed.
+- React: `npm run build` - passed with existing bundle-size warning and outdated `caniuse-lite` notice.
+
+PR/merge status: pending local commit, push, PR creation, and merge for `feature/mvp-inquiry-files-notes`.
 
 ### 2026-07-25 22:06 - Stage 1 Completed
 

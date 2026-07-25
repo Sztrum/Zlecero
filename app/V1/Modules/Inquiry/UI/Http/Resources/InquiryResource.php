@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace App\V1\Modules\Inquiry\UI\Http\Resources;
 
 use App\V1\Modules\Inquiry\Domain\Models\Inquiry;
+use App\V1\Modules\Inquiry\Domain\Models\InquiryFile;
 use App\V1\Modules\Inquiry\Domain\Models\InquiryMessage;
+use App\V1\Modules\Inquiry\Domain\Models\InquiryNote;
 use App\V1\Modules\Inquiry\Domain\Models\InquiryStatusChange;
 use App\V1\Shared\UI\Http\Resources\ApiResponseResource;
 use RuntimeException;
@@ -39,6 +41,14 @@ class InquiryResource extends ApiResponseResource
             ] : null,
             'messages' => $this->getResource()->messages
                 ->map(static fn (InquiryMessage $message) => (new InquiryMessageResource($message))->toArray(request()))
+                ->values()
+                ->all(),
+            'files' => $this->getResource()->files
+                ->map(static fn (InquiryFile $file) => (new InquiryFileResource($file))->toArray(request()))
+                ->values()
+                ->all(),
+            'notes' => $this->getResource()->notes
+                ->map(static fn (InquiryNote $note) => (new InquiryNoteResource($note))->toArray(request()))
                 ->values()
                 ->all(),
             'statusChanges' => $this->getResource()->statusChanges

@@ -20,5 +20,9 @@ class InquiryRouteServiceProvider extends ApiRouteServiceProvider
         $router->patch('/{inquiry_id}/archive', [ApiInquiryController::class, 'archive'])->name('archive');
         $router->patch('/{inquiry_id}/restore', [ApiInquiryController::class, 'restore'])->name('restore');
         $router->post('/{inquiry_id}/messages', [ApiInquiryController::class, 'storeMessage'])->name('messages.store');
+        $router->post('/{inquiry_id}/files', [ApiInquiryController::class, 'storeFile'])->name('files.store');
+        $router->get('/{inquiry_id}/files/{file_id}/download', [ApiInquiryController::class, 'downloadFile'])->name('files.download');
+        $router->post('/{inquiry_id}/notes', [ApiInquiryController::class, 'storeNote'])->name('notes.store');
+        $router->patch('/{inquiry_id}/owner', [ApiInquiryController::class, 'assignOwner'])->name('owner.assign');
     }
 }

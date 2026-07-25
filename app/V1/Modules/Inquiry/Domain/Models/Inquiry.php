@@ -31,6 +31,8 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property User|null $owner
  * @property \Illuminate\Database\Eloquent\Collection<int, InquiryStatusChange> $statusChanges
  * @property \Illuminate\Database\Eloquent\Collection<int, InquiryMessage> $messages
+ * @property \Illuminate\Database\Eloquent\Collection<int, InquiryFile> $files
+ * @property \Illuminate\Database\Eloquent\Collection<int, InquiryNote> $notes
  */
 class Inquiry extends Model
 {
@@ -94,5 +96,21 @@ class Inquiry extends Model
     public function messages(): HasMany
     {
         return $this->hasMany(InquiryMessage::class);
+    }
+
+    /**
+     * @return HasMany<InquiryFile, $this>
+     */
+    public function files(): HasMany
+    {
+        return $this->hasMany(InquiryFile::class);
+    }
+
+    /**
+     * @return HasMany<InquiryNote, $this>
+     */
+    public function notes(): HasMany
+    {
+        return $this->hasMany(InquiryNote::class);
     }
 }

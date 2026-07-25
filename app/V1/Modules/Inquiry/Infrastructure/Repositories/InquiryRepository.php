@@ -11,7 +11,9 @@ use App\V1\Modules\Inquiry\Domain\Enums\InquiryStatus;
 use App\V1\Modules\Inquiry\Domain\Exceptions\InquiryNotFoundException;
 use App\V1\Modules\Inquiry\Domain\Exceptions\InvalidInquiryStatusTransitionException;
 use App\V1\Modules\Inquiry\Domain\Models\Inquiry;
+use App\V1\Modules\Inquiry\Domain\Models\InquiryFile;
 use App\V1\Modules\Inquiry\Domain\Models\InquiryMessage;
+use App\V1\Modules\Inquiry\Domain\Models\InquiryNote;
 use App\V1\Modules\Inquiry\Domain\Models\InquiryStatusChange;
 use App\V1\Modules\User\Domain\Models\User;
 use Illuminate\Database\Eloquent\Builder;
@@ -47,7 +49,7 @@ class InquiryRepository extends EloquentModelRepository
     {
         return $this->inquiryQuery()
             ->where('company_id', $company->id)
-            ->with(['customer', 'owner', 'messages', 'statusChanges'])
+            ->with(['customer', 'owner', 'messages', 'statusChanges', 'files', 'notes.author'])
             ->when(($filters['archived'] ?? null) === '1', static function (Builder $builder): void {
                 $builder->whereNotNull('archived_at');
             }, static function (Builder $builder): void {
@@ -80,7 +82,7 @@ class InquiryRepository extends EloquentModelRepository
         $inquiry = $this->inquiryQuery()
             ->where('company_id', $company->id)
             ->where('id', $inquiryId)
-            ->with(['customer', 'owner', 'messages', 'statusChanges'])
+            ->with(['customer', 'owner', 'messages', 'statusChanges', 'files', 'notes.author'])
             ->first();
 
         throw_if(! $inquiry instanceof Inquiry, InquiryNotFoundException::class);
@@ -161,6 +163,69 @@ class InquiryRepository extends EloquentModelRepository
         ] + $params);
 
         return $message;
+    }
+
+    /**
+     * @param array<string, mixed> $params
+     */
+    public function createFile(Inquiry $inquiry, array $params): InquiryFile
+    {
+        /** @var InquiryFile $file */
+        $file = InquiryFile::query()->create([
+            'company_id' => $inquiry->company_id,
+            'inquiry_id' => $inquiry->id,
+            'customer_id' => $inquiry->customer_id,
+        ] + $params);
+
+        return $file;
+    }
+
+    /**
+     * @param array<string, mixed> $params
+     */
+    public function createNote(Inquiry $inquiry, array $params): InquiryNote
+    {
+        /** @var InquiryNote $note */
+        $note = InquiryNote::query()->create([
+            'company_id' => $inquiry->company_id,
+            'inquiry_id' => $inquiry->id,
+            'is_internal' => true,
+        ] + $params);
+
+        return $note;
+    }
+
+    public function assignOwner(Inquiry $inquiry, ?User $owner, User $changedBy): Inquiry
+    {
+        $previousOwnerUserId = $inquiry->owner_user_id;
+        $nextOwnerUserId = $owner?->id;
+
+        $inquiry->fill(['owner_user_id' => $nextOwnerUserId])->save();
+
+        if ($previousOwnerUserId !== $nextOwnerUserId) {
+            $this->createNote($inquiry, [
+                'author_user_id' => $changedBy->id,
+                'body' => sprintf('Owner changed from %s to %s.', $previousOwnerUserId ?? 'unassigned', $nextOwnerUserId ?? 'unassigned'),
+            ]);
+        }
+
+        return $inquiry;
+    }
+
+    /**
+     * @throws InquiryNotFoundException|Throwable
+     */
+    public function findCompanyInquiryFile(Company $company, Inquiry $inquiry, string $fileId): InquiryFile
+    {
+        $file = InquiryFile::query()
+            ->where('company_id', $company->id)
+            ->where('inquiry_id', $inquiry->id)
+            ->where('id', $fileId)
+            ->first();
+
+        throw_if(! $file instanceof InquiryFile, InquiryNotFoundException::class);
+
+        return $file;
     }
 
     private function recordStatusChange(
