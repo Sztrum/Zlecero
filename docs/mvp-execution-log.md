@@ -155,7 +155,7 @@ Planned output:
 - ownership, priority, dates, queue, archive state;
 - basic correspondence/thread model without live mailbox sync.
 
-Status: pending.
+Status: completed.
 
 ### Stage 5: Files And Notes
 
@@ -302,7 +302,7 @@ Verification:
 - React: `npm test -- --run` - passed.
 - React: `npm run build` - passed with existing bundle-size warning for large chunks.
 
-PR/merge status: pending local commit, push, PR creation, and merge for `feature/mvp-customers`.
+PR/merge status: backend PR #13 and React PR #6 merged.
 
 ### 2026-07-25 22:40 - Stage 3 Completed Locally
 
@@ -330,7 +330,61 @@ Verification:
 - React: `npm test -- --run` - passed.
 - React: `npm run build` - passed with existing bundle-size warning for large chunks.
 
-PR/merge status: pending local commit, push, PR creation, and merge for `feature/mvp-customers`.
+PR/merge status: backend PR #13 and React PR #6 merged.
+
+### 2026-07-25 22:42 - Stage 4 Started
+
+- Created branch `feature/mvp-inquiries-workflow` in both repositories.
+- Retrieved ClickUp tasks for inquiry status workflow, action queue, priorities, due dates, archive, correspondence, and message grouping.
+- Started Laravel `Inquiry` module with company-owned inquiries, status audit, manual messages, workflow transitions, priorities, due dates, action queue filters, archive/restore, and provider-ready external message/thread identifiers.
+
+Problems/questions:
+
+- Live e-mail synchronization, async delivery, and provider delivery errors are intentionally deferred until the provider decision is made. This stage stores manual messages and external IDs so a provider adapter can attach later.
+- Automatic message grouping is limited to stored `external_thread_id`/`external_message_id` fields in this slice; unsafe fallback matching will require provider payloads and product approval.
+
+Verification:
+
+- Backend: `php artisan migrate` - passed and applied inquiry workflow migrations.
+- Backend: `php artisan test --filter=InquiryWorkflowApiContractTest` - passed.
+- Backend: `php artisan test --filter=CustomerApiContractTest` - passed.
+- Backend: `php artisan test --filter=CompanyAccessApiContractTest` - passed.
+- Backend: `vendor/bin/phpstan analyse --memory-limit=1G --configuration=/tmp/zlecero-phpstan.neon` - passed.
+- React: `npm run check-types` - passed.
+- React: `npm run lint` - passed.
+- React: `npm test -- --run` - passed.
+- React: `npm run build` - passed with existing bundle-size warning for large chunks.
+
+PR/merge status: pending local commit, push, PR creation, and merge for `feature/mvp-inquiries-workflow`.
+
+### 2026-07-25 23:01 - Stage 4 Completed Locally
+
+- Implemented Laravel `Inquiry` module with company-owned inquiries, status workflow, priority, due dates, archive/restore, status-change audit, and manual correspondence records.
+- Added queue filters for new, waiting, overdue, unassigned, and urgent inquiries.
+- Added status transition enforcement and audit trail with previous status, next status, user, and timestamp.
+- Added provider-ready correspondence fields for external message and thread identifiers.
+- Implemented React inquiry list/queue, create/edit form, detail view, status selector, archive/restore actions, status history, and manual correspondence panel.
+- Added MSW inquiry workflow handlers matching the Laravel API contract.
+
+Problems/questions:
+
+- Live mailbox sync and async send/delivery tracking remain deferred until the e-mail provider decision is made.
+- Automatic message grouping currently stores external IDs but does not perform unsafe fallback matching without provider payloads and product approval.
+- Offer/order conversion is not implemented in this stage; accepted/closed statuses are prepared for the later offer/order stage.
+
+Verification:
+
+- Backend: `php artisan migrate` - passed and applied inquiry workflow migrations.
+- Backend: `php artisan test --filter=InquiryWorkflowApiContractTest` - passed.
+- Backend: `php artisan test --filter=CustomerApiContractTest` - passed.
+- Backend: `php artisan test --filter=CompanyAccessApiContractTest` - passed.
+- Backend: `vendor/bin/phpstan analyse --memory-limit=1G --configuration=/tmp/zlecero-phpstan.neon` - passed.
+- React: `npm run check-types` - passed.
+- React: `npm run lint` - passed.
+- React: `npm test -- --run` - passed.
+- React: `npm run build` - passed with existing bundle-size warning for large chunks.
+
+PR/merge status: pending local commit, push, PR creation, and merge for `feature/mvp-inquiries-workflow`.
 
 ### 2026-07-25 22:06 - Stage 1 Completed
 

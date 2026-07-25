@@ -7,6 +7,7 @@ use App\V1\Modules\Company\CompanyModuleServiceProvider;
 use App\V1\Modules\Country\CountryModuleServiceProvider;
 use App\V1\Modules\Customer\CustomerModuleServiceProvider;
 use App\V1\Modules\Email\EmailModuleServiceProvider;
+use App\V1\Modules\Inquiry\InquiryModuleServiceProvider;
 use App\V1\Modules\User\UserModuleServiceProvider;
 
 return [
@@ -15,6 +16,7 @@ return [
     AuthModuleServiceProvider::class,
     CompanyModuleServiceProvider::class,
     CustomerModuleServiceProvider::class,
+    InquiryModuleServiceProvider::class,
     UserModuleServiceProvider::class,
     CountryModuleServiceProvider::class,
     EmailModuleServiceProvider::class,
