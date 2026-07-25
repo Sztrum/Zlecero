@@ -18,6 +18,10 @@ abstract class Model extends BaseModel
         parent::boot();
 
         static::creating(static function (BaseModel $model): void {
+            if ($model->{$model->getKeyName()} !== null) {
+                return;
+            }
+
             $model->{$model->getKeyName()} = (string) Str::uuid();
         });
     }
