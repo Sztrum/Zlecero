@@ -135,7 +135,7 @@ Planned output:
 - customer/contact model and API;
 - React customer list, create/edit/detail views.
 
-Status: pending.
+Status: completed.
 
 ### Stage 4: Inquiries And Workflow
 
@@ -242,7 +242,7 @@ Verification:
 - React: `npm test -- --run` - passed.
 - React: `npm run build` - passed with existing bundle-size warning for large chunks.
 
-PR/merge status: pending local commit, push, PR creation, and merge for `feature/mvp-company-access`.
+PR/merge status: backend PR #12 and React PR #5 merged.
 
 ### 2026-07-25 22:25 - Stage 2 Completed Locally
 
@@ -279,7 +279,58 @@ Verification:
 - React: `npm test -- --run` - passed.
 - React: `npm run build` - passed with existing bundle-size warning for large chunks.
 
-PR/merge status: pending local commit, push, PR creation, and merge for `feature/mvp-company-access`.
+PR/merge status: backend PR #12 and React PR #5 merged.
+
+### 2026-07-25 22:28 - Stage 3 Started
+
+- Created branch `feature/mvp-customers` in both repositories.
+- Retrieved ClickUp task `86cavjnv9` - `Baza klientów`.
+- Planned backend `Customer` module and React `customers` feature around manual customer creation, company-scoped search/profile, and duplicate warnings.
+
+Problems/questions:
+
+- Inquiry, message, offer, and order history cannot be fully populated until later MVP stages create those process models. Stage 3 exposes stable empty history arrays so future stages can attach real records without changing the customer profile contract shape.
+
+Verification:
+
+- Backend: `php artisan migrate` - passed and applied `2026_07_25_202828_create_customers_table`.
+- Backend: `php artisan test --filter=CustomerApiContractTest` - passed.
+- Backend: `php artisan test --filter=CompanyAccessApiContractTest` - passed after the UUID root-cause fix.
+- Backend: `vendor/bin/phpstan analyse --memory-limit=1G --configuration=/tmp/zlecero-phpstan.neon` - passed.
+- React: `npm run check-types` - passed.
+- React: `npm run lint` - passed.
+- React: `npm test -- --run` - passed.
+- React: `npm run build` - passed with existing bundle-size warning for large chunks.
+
+PR/merge status: pending local commit, push, PR creation, and merge for `feature/mvp-customers`.
+
+### 2026-07-25 22:40 - Stage 3 Completed Locally
+
+- Implemented Laravel `Customer` module with company-scoped customer storage, API routing, command handlers, repository queries, resources, validation requests, exceptions, and translations.
+- Added customer CRUD API slice for list/search, create, profile read, and update.
+- Added potential duplicate detection by e-mail, tax number, or company name without automatic merge.
+- Added stable empty customer history arrays for future inquiry/message/offer/order attachment.
+- Fixed shared UUID model behavior so preassigned UUIDs are not overwritten during create.
+- Implemented React `customers` feature with typed API declarations, `/app/customers`, `/app/customers/:customerId`, customer form, customer list/search, profile editing, history counters, duplicate warnings, and MSW handlers.
+
+Problems/questions:
+
+- Customer history is intentionally empty until inquiry/message/offer/order stages create those models.
+- Duplicate detection is advisory only and intentionally does not merge records; product rules for manual merge can be added later.
+- Frontend production build still reports large chunks from the existing app/MSW setup; not blocking for MVP.
+
+Verification:
+
+- Backend: `php artisan migrate` - passed and applied `2026_07_25_202828_create_customers_table`.
+- Backend: `php artisan test --filter=CustomerApiContractTest` - passed.
+- Backend: `php artisan test --filter=CompanyAccessApiContractTest` - passed after the UUID root-cause fix.
+- Backend: `vendor/bin/phpstan analyse --memory-limit=1G --configuration=/tmp/zlecero-phpstan.neon` - passed.
+- React: `npm run check-types` - passed.
+- React: `npm run lint` - passed.
+- React: `npm test -- --run` - passed.
+- React: `npm run build` - passed with existing bundle-size warning for large chunks.
+
+PR/merge status: pending local commit, push, PR creation, and merge for `feature/mvp-customers`.
 
 ### 2026-07-25 22:06 - Stage 1 Completed
 
