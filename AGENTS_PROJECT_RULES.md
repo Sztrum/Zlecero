@@ -1,7 +1,7 @@
 # AGENTS_PROJECT_RULES.md
 
 ## Version
-v1.11.2
+v1.11.3
 
 ## Scope
 Repository-specific rules for the Zlecero Laravel project.
@@ -75,6 +75,7 @@ Read documents in this exact order before implementation:
 - Keep controller context prefixes explicit: `Api`, `Front`, or `Admin`.
 - Keep module names and namespaces aligned with existing `app/V1/Modules/**` structure.
 - Keep module routes inside module-owned route service providers registered by the owning module service provider; do not introduce root `routes/**` files for module routes.
+- Container/runtime logging defaults should prefer `stderr`, and stacked logging must ignore channel write exceptions so a filesystem permission problem in `storage/logs` does not mask the original application exception.
 
 ## Migration Rules
 - New migrations must be created with `php artisan make:migration <migration-name>`.

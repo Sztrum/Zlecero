@@ -11,7 +11,6 @@ use Illuminate\Foundation\Exceptions\Handler;
 use Illuminate\Http\Exceptions\ThrottleRequestsException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\HttpException;
@@ -39,6 +38,10 @@ class ExceptionHandler extends Handler
 
     public function render($request, Throwable $e): Response|JsonResponse|RedirectResponse
     {
+        if (! $request->expectsJson()) {
+            return parent::render($request, $e);
+        }
+
         return $this->buildJsonResponse($e, config('app.debug') === true);
     }
 

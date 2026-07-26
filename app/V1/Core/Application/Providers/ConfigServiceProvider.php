@@ -12,7 +12,7 @@ use Symfony\Component\Finder\Finder;
 
 abstract class ConfigServiceProvider extends ServiceProvider
 {
-    protected const CONFIGS_PATH = '../../Domain/Config';
+    protected const string CONFIGS_PATH = '../../Domain/Config';
 
     public function boot(
         ConfigContract $configRepository
@@ -28,7 +28,7 @@ abstract class ConfigServiceProvider extends ServiceProvider
     {
         $configsPath = implode(DIRECTORY_SEPARATOR, [
             $this->getProviderPath(),
-            self::CONFIGS_PATH,
+            static::CONFIGS_PATH,
         ]);
 
         if (file_exists($configsPath)) {
