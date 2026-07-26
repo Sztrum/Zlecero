@@ -1,28 +1,34 @@
-<footer class="zp-footer">
-    <div class="zp-footer__inner">
-        <div>
-            <a class="zp-logo zp-logo--dark" href="{{ url('/'.$locale) }}">
-                <span class="zp-logo__mark">Z</span>
-                <span>{{ $shared['brand'] }}</span>
+<footer class="zl-footer">
+    <div class="zl-footer__inner">
+        <div class="zl-footer__brand">
+            <a class="zl-logo" href="{{ url('/'.$locale) }}">
+                <span class="zl-logo__mark">Z</span>
+                <span class="zl-logo__text">{{ $shared['brand'] }}</span>
             </a>
             <p>{{ $shared['footer']['description'] }}</p>
         </div>
-        <div class="zp-footer__grid">
+        <div class="zl-footer__grid">
             <div>
-                <strong>Produkt</strong>
-                <a href="{{ url('/'.$locale.'#jak-dziala') }}">{{ $shared['nav']['how'] }}</a>
-                <a href="{{ url('/'.$locale.'/pricing') }}">{{ $shared['nav']['pricing'] }}</a>
-                <a href="{{ url('/'.$locale.'/faq') }}">{{ $shared['nav']['faq'] }}</a>
+                <div class="zl-footer__group-label">Produkt</div>
+                <ul>
+                    <li><a href="{{ url('/'.$locale.'#funkcje') }}">{{ $shared['nav']['features'] }}</a></li>
+                    <li><a href="{{ url('/'.$locale.'/pricing') }}">{{ $shared['nav']['pricing'] }}</a></li>
+                    <li><a href="{{ url('/'.$locale.'/faq') }}">{{ $shared['nav']['faq'] }}</a></li>
+                </ul>
             </div>
             <div>
-                <strong>Firma</strong>
-                <a href="{{ url('/'.$locale.'/about') }}">{{ $shared['nav']['about'] }}</a>
-                <a href="{{ url('/'.$locale.'/contact') }}">{{ $shared['nav']['contact'] }}</a>
+                <div class="zl-footer__group-label">Firma</div>
+                <ul>
+                    <li><a href="{{ url('/'.$locale.'/about') }}">{{ $shared['nav']['about'] }}</a></li>
+                    <li><a href="{{ url('/'.$locale.'/contact') }}">{{ $shared['nav']['contact'] }}</a></li>
+                </ul>
             </div>
         </div>
     </div>
-    <div class="zp-footer__bottom">
+    <div class="zl-footer__bottom">
         <span>{{ $shared['footer']['rights'] }}</span>
-        <a href="{{ $authLinks['login'] }}">{{ $shared['login'] }}</a>
+        <div class="zl-footer__legal">
+            <a href="{{ $authLinks['login'] }}">{{ $shared['login'] }}</a>
+        </div>
     </div>
 </footer>
