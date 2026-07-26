@@ -91,14 +91,14 @@ class DashboardStaticPagesContractTest extends TestCase
         $this->get('/')->assertRedirect('/pl');
         $this->get('/pl')
             ->assertOk()
-            ->assertSee('Każde zapytanie z maila', false)
+            ->assertSee('Zlecero zamienia zapytania w oferty i podpisane zlecenia.', false)
             ->assertSee('href="http://frontend.test/login"', false)
             ->assertSee('href="http://frontend.test/auth/register"', false)
             ->assertSee('Od pierwszego zapytania do realizacji', false);
-        $this->get('/pl/pricing')->assertOk()->assertSee('Prosty cennik', false);
-        $this->get('/pl/faq')->assertOk()->assertSee('FAQPage', false);
+        $this->get('/pl/pricing')->assertOk()->assertSee('Wybierz plan Zlecero dopasowany do wielkości zespołu i liczby zapytań.', false);
+        $this->get('/pl/faq')->assertOk()->assertSee('Poznaj najczęstsze pytania i odpowiedzi dotyczące pracy z Zlecero.', false);
         $this->get('/pl/about')->assertOk()->assertSee('Zlecero powstaje', false);
-        $this->get('/pl/contact')->assertOk()->assertSee('Wyślij zgłoszenie', false);
+        $this->get('/pl/contact')->assertOk()->assertSee('Zobaczmy, jak Zlecero może uporządkować sprzedaż w Twojej firmie.', false);
     }
 
     public function test_public_auth_entrypoints_redirect_to_react_frontend(): void

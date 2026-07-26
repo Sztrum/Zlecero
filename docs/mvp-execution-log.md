@@ -222,6 +222,56 @@ Status: completed.
 - Architecture: public landing page reference from the original request was Windows-style (`B:\Konrad\Execute instructions from file (1)`). A local Figma Make export was found in `/home/sztrum/php8.3/zlecero-app/agent-context/project-figma` and is used as the visual source for Stage 7.
 - Tooling: ClickUp task comments currently fail through the connector with `INVALID_ARGUMENT`; local work log remains the source of truth until connector writes are available.
 
+## Dashboard Alignment Plan
+
+Current direction: stop broad demo-only dashboard expansion and align one customer workflow at a time against real Laravel API data. The React dashboard should keep the current visual direction, but the layout and behavior should be made consistent with the `agent-context/dashboard` reference only where the backed data contract is clear.
+
+### Step 1: Inquiries As The Canonical Workflow
+
+- Make `Zapytania` the first fully aligned dashboard area.
+- Keep inquiries as a list plus expandable drawer/modal, not separate inquiry detail subpages.
+- Align `/app/inquiries`, dashboard inquiry widgets, and inquiry-related quick actions to one shared interaction model.
+- Use real inquiry API data for list rows, status, priority, owner, dates, customer/source fields, and creation flow.
+- Replace local preview-only data in inquiry drawers with real messages, files, notes, and linked offers where the backend contracts already exist.
+- Update or neutralize stale links that still point to removed routes such as `/app/inquiries/{id}`.
+
+### Step 2: Offers
+
+- Build offers directly on top of the inquiry drawer flow.
+- Use real offer data for draft, sent, accepted, rejected, and expired states.
+- Add or refine offer editor behavior, commercial terms, PDF generation, send action, and acceptance-to-order transition.
+- Keep offer cards and comparison/pricing language consistent with the public pricing visual system where it makes sense.
+
+### Step 3: Customers
+
+- Align customer list/profile/history with the inquiry and offer workflow.
+- Show customer context inside inquiry and offer drawers before investing in a large standalone customer dashboard.
+- Add duplicate/contact cleanup only after the core inquiry-to-offer flow is stable.
+
+### Step 4: Messages And Files
+
+- Treat messages and files as inquiry-scoped features first.
+- Add global `Wiadomosci` and `Pliki` dashboard tabs only after inquiry-scoped messages/files persist correctly and have usable filters.
+- Avoid building global demo surfaces that cannot yet act on real records.
+
+### Step 5: Products
+
+- Decide whether products are required for the MVP offer editor or should remain a later catalog feature.
+- If required, add backend product/catalog contracts before expanding the React `Produkty` tab.
+- If not required for MVP, keep the tab hidden or explicitly lightweight until the offer editor needs it.
+
+### Step 6: Settings
+
+- Finalize workflow, company, notification, and AI/provider settings after operational modules are stable.
+- Keep settings connected to real API contracts only; avoid local-only toggles that imply production behavior.
+
+### Implementation Guardrails
+
+- Every dashboard tab should either use real API data or be clearly reduced/hidden until its backend contract exists.
+- Shared visual patterns should be extracted only after at least two real screens use the same pattern.
+- Backend API hrefs and React routes must stay synchronized whenever a detail page is removed or replaced by a drawer/modal.
+- Verification for React dashboard iterations should include type checks, lint, tests, production build, and a browser check of the touched route.
+
 ## Work Entries
 
 ### 2026-07-25 22:02 - Stage 1 Started

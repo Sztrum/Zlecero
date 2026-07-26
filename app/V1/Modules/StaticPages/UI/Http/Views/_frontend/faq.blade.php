@@ -7,34 +7,36 @@
         {!! json_encode([
             '@context' => 'https://schema.org',
             '@type' => 'FAQPage',
-            'mainEntity' => collect($content['sections'])->flatMap(fn ($section) => $section['items'])->map(fn ($item) => [
+            'mainEntity' => collect($landingReference['faqs'])->map(fn ($item) => [
                 '@type' => 'Question',
-                'name' => $item['question'],
-                'acceptedAnswer' => ['@type' => 'Answer', 'text' => $item['answer']],
+                'name' => $item['q'],
+                'acceptedAnswer' => ['@type' => 'Answer', 'text' => $item['a']],
             ])->values()->all(),
         ], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) !!}
     </script>
 @endsection
 
 @section('main-content')
-    <div class="zp-page">
+    <div class="zl-page">
         @include('static_pages::_frontend.partials.nav')
-        <section class="zp-subhero">
-            <h1>{{ $content['title'] }}</h1>
-            <p>{{ $content['lead'] }}</p>
+        <section class="zl-faq-page-head">
+            <div class="zl-faq-page-head__inner">
+                <h1>Poznaj najczęstsze pytania i odpowiedzi dotyczące pracy z Zlecero.</h1>
+                <p>Masz inne pytanie? <a href="{{ url('/'.$locale.'/contact') }}">Skontaktuj się z nami.</a></p>
+            </div>
         </section>
-        <section class="zp-section">
-            <div class="zp-faq-list">
-                @foreach($content['sections'] as $section)
-                    <div class="zp-faq-section">
-                        <h2>{{ $section['title'] }}</h2>
-                        @foreach($section['items'] as $item)
-                            <article id="{{ $item['slug'] }}">
-                                <h3><a href="#{{ $item['slug'] }}">{{ $item['question'] }}</a></h3>
-                                <p>{{ $item['answer'] }}</p>
-                            </article>
-                        @endforeach
-                    </div>
+        <section class="zl-faq-page-list">
+            <div class="zl-faq-page-list__inner">
+                @foreach($landingReference['faqs'] as $faq)
+                    <article class="zl-faq-card">
+                        <button class="zl-faq-card__button" type="button" aria-expanded="false">
+                            <span>{{ $faq['q'] }}</span>
+                            <span>⌄</span>
+                        </button>
+                        <div class="zl-faq-card__answer">
+                            <div>{{ $faq['a'] }}</div>
+                        </div>
+                    </article>
                 @endforeach
             </div>
         </section>
