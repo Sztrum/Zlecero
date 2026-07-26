@@ -301,7 +301,7 @@ class DashboardRepository extends EloquentModelRepository
                 'description' => $change->inquiry?->title,
                 'status' => $change->to_status,
                 'occurredAt' => $change->changed_at->toIso8601String(),
-                'href' => $change->inquiry ? '/app/inquiries/'.$change->inquiry->id : '/app/inquiries',
+                'href' => $change->inquiry ? '/app/inquiries?inquiry='.$change->inquiry->id : '/app/inquiries',
             ])
             ->all());
     }
@@ -321,7 +321,7 @@ class DashboardRepository extends EloquentModelRepository
             'status' => $inquiry->status,
             'tone' => $tone,
             'dueAt' => $inquiry->response_due_at?->toIso8601String(),
-            'href' => '/app/inquiries/'.$inquiry->id,
+            'href' => '/app/inquiries?inquiry='.$inquiry->id,
         ];
     }
 

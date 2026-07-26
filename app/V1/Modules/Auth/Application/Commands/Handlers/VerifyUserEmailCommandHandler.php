@@ -31,10 +31,10 @@ readonly class VerifyUserEmailCommandHandler implements CommandHandlerInterface
 
         $this->userAggregate->verifyEmailVerificationHash($user, $command->hash);
 
-        $this->userAggregate->userEmailAlreadyVerified($user);
-
-        if (!$user->hasVerifiedEmail()) {
-            $user->markEmailAsVerified();
+        if ($user->hasVerifiedEmail()) {
+            return;
         }
+
+        $user->markEmailAsVerified();
     }
 }

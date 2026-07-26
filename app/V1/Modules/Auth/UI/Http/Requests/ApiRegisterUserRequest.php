@@ -9,6 +9,15 @@ use Illuminate\Validation\Rules\Password;
 
 class ApiRegisterUserRequest extends FormRequest
 {
+    protected function prepareForValidation(): void
+    {
+        if (is_string($this->input('email'))) {
+            $this->merge([
+                'email' => strtolower(trim($this->input('email'))),
+            ]);
+        }
+    }
+
     /**
      * @return array<string, mixed>
      */
@@ -16,7 +25,7 @@ class ApiRegisterUserRequest extends FormRequest
     {
         return [
             'name' => ['string', 'required'],
-            'email' => ['string', 'required', 'email:rfc,dns', 'unique:users'],
+            'email' => ['string', 'required', 'email:rfc', 'unique:users'],
             'password' => ['required', 'string', 'confirmed', Password::defaults()],
             'company_name' => ['required', 'string', 'max:255'],
             'terms_accepted' => ['accepted'],
