@@ -7,14 +7,18 @@
         @include('static_pages::_frontend.partials.nav')
 
         <section class="zp-hero">
-            <span class="zp-pill"><i></i>{{ $shared['pilot_badge'] }}</span>
-            <h1>{{ $content['hero_title'] }}</h1>
-            <p>{{ $content['hero_text'] }}</p>
-            <div class="zp-hero__actions">
-                <a class="zp-button zp-button--primary zp-button--large" href="/auth/register">{{ $shared['trial_cta'] }}</a>
-                <a class="zp-button zp-button--secondary zp-button--large" href="#jak-dziala">{{ $shared['demo_cta'] }}</a>
+            <div class="zp-hero__grid">
+                <div>
+                    <span class="zp-pill"><i></i>{{ $shared['pilot_badge'] }}</span>
+                    <h1>{{ $content['hero_title'] }}</h1>
+                    <p>{{ $content['hero_text'] }}</p>
+                    <div class="zp-hero__actions">
+                        <a class="zp-button zp-button--primary zp-button--large" href="/auth/register">{{ $shared['trial_cta'] }}</a>
+                        <a class="zp-button zp-button--secondary zp-button--large" href="#jak-dziala">{{ $shared['demo_cta'] }}</a>
+                    </div>
+                </div>
+                @include('static_pages::_frontend.partials.product-preview')
             </div>
-            @include('static_pages::_frontend.partials.product-preview')
         </section>
 
         <section id="dla-kogo" class="zp-section zp-section--muted">

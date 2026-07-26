@@ -556,4 +556,28 @@ Problems/questions:
 - Live invitation email content and resend flow are not implemented yet; invited users receive backend status and remember token support, while email delivery will be completed with notification/user-management refinement.
 - Full onboarding wizard is not implemented in this slice; company/trial fields are prepared first.
 
+Verification:
+
+- Backend: `LOG_CHANNEL=stderr php artisan test --filter=DashboardStaticPagesContractTest` - passed.
+- Backend: `npm run prod` - passed with existing Sass legacy API and outdated `caniuse-lite` warnings.
+- Backend: `vendor/bin/phpstan analyse --configuration=/tmp/zlecero-phpstan-reference-style.neon --memory-limit=1G` - passed. Default `composer phpstan` still cannot write to `storage/framework/cache/phpstan`, so the verified run used `/tmp` for PHPStan cache.
+- React: `npm run check-types` - passed.
+- React: `npm run lint` - passed.
+- React: `npm test -- --run` - passed.
+- React: `npm run build` - passed with existing outdated `caniuse-lite` and large chunk warnings.
+
+PR/merge status: pending.
+
+### 2026-07-26 07:10 - Reference Style Rollout Started
+
+- User provided the correct Zlecero visual reference in `agent-context/Execute instructions from file (1)`.
+- Started a cross-repository style alignment stage on `feature/apply-reference-style` in Laravel and React.
+- Laravel scope: public Blade pages, static page SCSS, auth CTA link contract checks, and StaticPages styling rule.
+- React scope: global design tokens, auth shell and forms, dashboard shell, dashboard cards/lists, and React project styling rule.
+
+Problems/questions:
+
+- Public Laravel pages link to React-owned auth routes (`/login`, `/auth/register`). This keeps the repository split intact, but final production deployment must route those SPA paths to the React app host.
+- The reference contains a much broader single-file prototype than the current production app surface. This stage applies the shared style system to existing Laravel/React routes instead of copying prototype-only demo screens that have no backing routes yet.
+
 Verification: pending.

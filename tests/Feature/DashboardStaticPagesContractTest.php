@@ -87,7 +87,11 @@ class DashboardStaticPagesContractTest extends TestCase
     public function test_public_pages_render_with_localized_paths(): void
     {
         $this->get('/')->assertRedirect('/pl');
-        $this->get('/pl')->assertOk()->assertSee('Każde zapytanie z maila', false);
+        $this->get('/pl')
+            ->assertOk()
+            ->assertSee('Każde zapytanie z maila', false)
+            ->assertSee('href="/login"', false)
+            ->assertSee('href="/auth/register"', false);
         $this->get('/pl/pricing')->assertOk()->assertSee('Prosty cennik', false);
         $this->get('/pl/faq')->assertOk()->assertSee('FAQPage', false);
         $this->get('/pl/about')->assertOk()->assertSee('Zlecero powstaje', false);
