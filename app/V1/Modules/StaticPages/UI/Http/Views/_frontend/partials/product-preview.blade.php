@@ -11,7 +11,7 @@
         </aside>
         <main>
             <div class="zp-preview__stats">
-                @foreach(['7 nowych', '4 oferty', '5 zleceń', '3 uwagi'] as $stat)
+                @foreach(['24 aktywne', '12 ofert', '8 wygranych', '2.4h odpowiedź'] as $stat)
                     <div><strong>{{ $stat }}</strong><span></span></div>
                 @endforeach
             </div>

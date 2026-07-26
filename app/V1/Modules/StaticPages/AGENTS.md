@@ -1,7 +1,7 @@
 # AGENTS.md
 
 ## Version
-v1.3.0
+v1.4.0
 
 ## Scope
 Module-specific rules for `app/V1/Modules/StaticPages/**`.
@@ -10,7 +10,7 @@ Module-specific rules for `app/V1/Modules/StaticPages/**`.
 This file defines conventions for SEO/public static pages served from the Laravel Zlecero project.
 
 ## Static Pages Styling
-- Preserve the current Zlecero landing page visual direction unless the user explicitly asks for a redesign: clean white and muted-neutral surfaces, blue primary accents from the project Tailwind palette, compact rounded cards, restrained shadows, and dashboard-like product preview patterns.
+- Preserve the current Zlecero reference visual direction unless the user explicitly asks for a redesign: warm cream background `#FAF5ED`, dark brown hero/footer `#33251D`, brick primary `#9C442D`, white product surfaces, 8px default radius, restrained brown-tinted shadows, Inter body typography, Plus Jakarta Sans display typography, and compact dashboard-like product preview patterns.
 - When the user provides a Figma/exported reference for a public static page, treat that reference as the visual source of truth for typography, palette, spacing, radius, shadows, iconography, and component proportions; map those values into the repository Blade components and core SCSS instead of approximating them with the existing project Tailwind palette.
 - Convert React landing page UI patterns into Blade components plus core SCSS partials that use Tailwind `@apply`; do not copy long Tailwind utility strings directly into Blade templates when the pattern can be named and reused.
 - Keep repeatable public-page UI pieces such as buttons, logos, section headings, cards, process steps, workflow lists, FAQ items, and forms as module Blade components plus core SCSS partials.

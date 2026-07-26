@@ -1,42 +1,64 @@
 .zp-hero {
-    padding-top: 56px;
-    text-align: center;
+    max-width: none;
+    min-height: calc(100vh - 64px);
+    background: var(--zp-dark);
+    padding: 0 24px;
+}
+
+.zp-hero__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 0.82fr) minmax(0, 1.18fr);
+    gap: 64px;
+    align-items: center;
+    min-height: calc(100vh - 64px);
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 72px 0 88px;
 }
 
 .zp-hero h1,
 .zp-subhero h1 {
-    margin: 28px auto 0;
-    max-width: 820px;
-    color: #111827;
-    font-size: 54px;
+    margin: 28px 0 0;
+    max-width: 760px;
+    color: var(--zp-ink);
+    font-family: var(--zp-font-display);
+    font-size: 56px;
     font-weight: 850;
     line-height: 1.05;
 }
 
+.zp-hero h1 {
+    color: #ffffff;
+}
+
 .zp-hero p,
 .zp-subhero p {
-    margin: 22px auto 0;
-    max-width: 720px;
-    color: #6b7280;
+    margin: 22px 0 0;
+    max-width: 620px;
+    color: var(--zp-muted);
     font-size: 18px;
     line-height: 1.75;
 }
 
+.zp-hero p {
+    color: rgba(255, 255, 255, 0.62);
+}
+
 .zp-hero__actions {
     display: flex;
-    justify-content: center;
+    justify-content: flex-start;
     gap: 16px;
     margin-top: 36px;
 }
 
 .zp-preview {
-    margin: 64px auto 0;
-    max-width: 900px;
+    margin: 0;
+    max-width: 720px;
     overflow: hidden;
-    border: 1px solid #e5e7eb;
-    border-radius: 24px;
+    border: 1px solid var(--zp-border-strong);
+    border-radius: 28px;
     background: #ffffff;
-    box-shadow: 0 28px 70px rgba(15, 23, 42, 0.14);
+    box-shadow: 0 28px 80px rgba(156, 68, 45, 0.18);
     text-align: left;
 }
 
@@ -45,7 +67,8 @@
     align-items: center;
     gap: 8px;
     height: 40px;
-    border-bottom: 1px solid #f3f4f6;
+    border-bottom: 1px solid var(--zp-border);
+    background: var(--zp-background);
     padding: 0 16px;
 }
 
@@ -55,27 +78,28 @@
     border-radius: 999px;
 }
 
-.zp-preview__chrome span:nth-child(1) { background: #fca5a5; }
-.zp-preview__chrome span:nth-child(2) { background: #fcd34d; }
-.zp-preview__chrome span:nth-child(3) { background: #86efac; }
+.zp-preview__chrome span:nth-child(1) { background: #dca28d; }
+.zp-preview__chrome span:nth-child(2) { background: #e9c67e; }
+.zp-preview__chrome span:nth-child(3) { background: #8da278; }
 
 .zp-preview__chrome i {
     flex: 1;
     height: 20px;
     margin-left: 16px;
+    border: 1px solid var(--zp-border);
     border-radius: 8px;
-    background: #f3f4f6;
+    background: #ffffff;
 }
 
 .zp-preview__body {
     display: grid;
-    grid-template-columns: 170px 1fr;
-    min-height: 250px;
+    grid-template-columns: 132px 1fr;
+    min-height: 360px;
 }
 
 .zp-preview aside {
-    border-right: 1px solid #f3f4f6;
-    background: #f9fafb;
+    border-right: 1px solid var(--zp-border);
+    background: var(--zp-dark);
     padding: 14px;
 }
 
@@ -83,26 +107,27 @@
     display: flex;
     align-items: center;
     gap: 8px;
-    border-radius: 10px;
-    color: #6b7280;
+    border-radius: 8px;
+    color: rgba(255, 255, 255, 0.48);
     font-size: 12px;
     padding: 8px;
 }
 
 .zp-preview aside span.is-active {
-    background: #eef2ff;
-    color: #4338ca;
+    background: rgba(255, 255, 255, 0.12);
+    color: #ffffff;
 }
 
 .zp-preview aside i {
     height: 14px;
     width: 14px;
     border-radius: 4px;
-    background: #e5e7eb;
+    background: rgba(255, 255, 255, 0.2);
 }
 
 .zp-preview main {
-    padding: 20px;
+    background: var(--zp-background);
+    padding: 24px;
 }
 
 .zp-preview__stats {
@@ -113,9 +138,9 @@
 
 .zp-preview__stats div,
 .zp-preview__rows div {
-    border: 1px solid #f3f4f6;
-    border-radius: 12px;
-    background: #f9fafb;
+    border: 1px solid var(--zp-border);
+    border-radius: 8px;
+    background: #ffffff;
 }
 
 .zp-preview__stats div {
@@ -123,7 +148,7 @@
 }
 
 .zp-preview__stats strong {
-    color: #111827;
+    color: var(--zp-ink);
     font-size: 13px;
 }
 
@@ -133,7 +158,7 @@
     height: 5px;
     margin-top: 8px;
     border-radius: 999px;
-    background: #c7d2fe;
+    background: rgba(156, 68, 45, 0.28);
 }
 
 .zp-preview__rows {
@@ -152,8 +177,8 @@
 .zp-preview__rows i {
     height: 28px;
     width: 28px;
-    border-radius: 999px;
-    background: #c7d2fe;
+    border-radius: 8px;
+    background: rgba(156, 68, 45, 0.18);
 }
 
 .zp-preview__rows span {
@@ -166,19 +191,19 @@
     display: block;
     height: 6px;
     border-radius: 999px;
-    background: #e5e7eb;
+    background: var(--zp-border);
 }
 
 .zp-preview__rows b + b {
     width: 55%;
-    background: #f3f4f6;
+    background: var(--zp-secondary);
 }
 
 .zp-preview__rows em {
     width: 56px;
     height: 20px;
     border-radius: 999px;
-    background: #d1fae5;
+    background: rgba(116, 136, 91, 0.22);
 }
 
 .zp-card-grid {
@@ -194,10 +219,10 @@
 .zp-story-grid article,
 .zp-contact aside,
 .zp-contact form {
-    border: 1px solid #e5e7eb;
-    border-radius: 16px;
+    border: 1px solid var(--zp-border);
+    border-radius: 12px;
     background: #ffffff;
-    box-shadow: 0 10px 28px rgba(15, 23, 42, 0.04);
+    box-shadow: 0 10px 28px rgba(51, 37, 29, 0.04);
 }
 
 .zp-problem-card {
@@ -210,9 +235,9 @@
     justify-content: center;
     height: 34px;
     width: 34px;
-    border-radius: 10px;
-    background: #eef2ff;
-    color: #4f46e5;
+    border-radius: 8px;
+    background: var(--zp-secondary);
+    color: var(--zp-primary);
     font-size: 11px;
     font-weight: 800;
 }
@@ -222,7 +247,8 @@
 .zp-story-grid h2,
 .zp-contact h2 {
     margin: 14px 0 6px;
-    color: #111827;
+    color: var(--zp-ink);
+    font-family: var(--zp-font-display);
     font-size: 16px;
     font-weight: 800;
 }
@@ -232,7 +258,7 @@
 .zp-story-grid p,
 .zp-contact p {
     margin: 0;
-    color: #6b7280;
+    color: var(--zp-muted);
     font-size: 14px;
     line-height: 1.7;
 }
@@ -254,10 +280,10 @@
     justify-content: center;
     height: 52px;
     width: 52px;
-    border: 2px solid #c7d2fe;
+    border: 2px solid var(--zp-border-strong);
     border-radius: 999px;
-    background: #eef2ff;
-    color: #4f46e5;
+    background: var(--zp-secondary);
+    color: var(--zp-primary);
     font-weight: 800;
 }
 
@@ -268,14 +294,14 @@
 
 .zp-steps small {
     margin-top: 12px;
-    color: #9ca3af;
+    color: var(--zp-muted);
     font-size: 11px;
     font-weight: 800;
 }
 
 .zp-steps strong {
     margin-top: 4px;
-    color: #111827;
+    color: var(--zp-ink);
     font-size: 14px;
     line-height: 1.35;
 }
@@ -285,7 +311,7 @@
     grid-template-columns: repeat(2, 1fr);
     gap: 24px;
     margin: 0 auto;
-    max-width: 760px;
+    max-width: 820px;
 }
 
 .zp-compare article {
@@ -293,12 +319,13 @@
 }
 
 .zp-compare__positive {
-    background: #4f46e5 !important;
+    background: var(--zp-primary) !important;
     color: #ffffff;
 }
 
 .zp-compare h3 {
     margin: 0 0 18px;
+    font-family: var(--zp-font-display);
     font-size: 18px;
     font-weight: 800;
 }
@@ -308,12 +335,12 @@
     align-items: center;
     gap: 10px;
     margin: 10px 0;
-    color: #4b5563;
+    color: var(--zp-muted);
     font-size: 14px;
 }
 
 .zp-compare__positive p {
-    color: #eef2ff;
+    color: rgba(255, 255, 255, 0.86);
 }
 
 .zp-compare span {
@@ -324,7 +351,7 @@
     width: 18px;
     border-radius: 999px;
     background: #fee2e2;
-    color: #ef4444;
+    color: #b91c1c;
     font-weight: 800;
 }
 
@@ -334,13 +361,13 @@
 }
 
 .zp-pilot {
-    max-width: 820px;
+    max-width: 900px;
     text-align: center;
 }
 
 .zp-pilot div {
-    border-radius: 28px;
-    background: linear-gradient(135deg, #4f46e5, #7c3aed);
+    border-radius: 18px;
+    background: var(--zp-dark);
     color: #ffffff;
     padding: 44px;
 }
@@ -355,7 +382,7 @@
     margin-bottom: 18px;
     border: 1px solid rgba(255, 255, 255, 0.3);
     border-radius: 999px;
-    background: rgba(255, 255, 255, 0.18);
+    background: rgba(255, 255, 255, 0.08);
     padding: 6px 14px;
     font-size: 13px;
     font-weight: 700;
@@ -366,7 +393,7 @@
 }
 
 .zp-subhero {
-    text-align: center;
+    text-align: left;
 }
 
 .zp-pricing,
@@ -387,25 +414,26 @@
 .zp-pricing h2,
 .zp-faq-section h2 {
     margin: 0 0 14px;
-    color: #111827;
+    color: var(--zp-ink);
+    font-family: var(--zp-font-display);
     font-size: 18px;
     font-weight: 800;
 }
 
 .zp-pricing strong {
     display: block;
-    color: #111827;
+    color: var(--zp-ink);
     font-size: 32px;
 }
 
 .zp-pricing p {
-    color: #6b7280;
+    color: var(--zp-muted);
 }
 
 .zp-pricing span {
     display: block;
     margin: 10px 0;
-    color: #374151;
+    color: var(--zp-ink);
     font-size: 14px;
 }
 
@@ -418,7 +446,7 @@
     display: grid;
     gap: 16px;
     margin: 0 auto;
-    max-width: 820px;
+    max-width: 860px;
 }
 
 .zp-faq-section {
@@ -431,20 +459,20 @@
 }
 
 .zp-faq-list h3 a {
-    color: #111827;
+    color: var(--zp-ink);
     text-decoration: none;
 }
 
 .zp-contact {
     grid-template-columns: 0.8fr 1.2fr;
     margin: 0 auto;
-    max-width: 920px;
+    max-width: 960px;
 }
 
 .zp-contact aside a {
     display: inline-flex;
     margin-top: 18px;
-    color: #4f46e5;
+    color: var(--zp-primary);
     font-weight: 700;
 }
 
@@ -456,7 +484,7 @@
 .zp-contact label {
     display: grid;
     gap: 6px;
-    color: #374151;
+    color: var(--zp-ink);
     font-size: 13px;
     font-weight: 700;
 }
@@ -464,11 +492,18 @@
 .zp-contact input,
 .zp-contact textarea {
     width: 100%;
-    border: 1px solid #e5e7eb;
-    border-radius: 10px;
-    color: #111827;
+    border: 1px solid var(--zp-border);
+    border-radius: 8px;
+    background: var(--zp-background);
+    color: var(--zp-ink);
     font-size: 14px;
     padding: 11px 12px;
+}
+
+.zp-contact input:focus,
+.zp-contact textarea:focus {
+    border-color: var(--zp-primary);
+    outline: 3px solid rgba(156, 68, 45, 0.14);
 }
 
 .zp-contact textarea {
@@ -496,7 +531,7 @@
         font-size: 38px;
     }
 
-    .zp-hero__actions,
+    .zp-hero__grid,
     .zp-compare,
     .zp-pricing,
     .zp-story-grid,
@@ -505,6 +540,11 @@
     .zp-steps,
     .zp-preview__body {
         grid-template-columns: 1fr;
+    }
+
+    .zp-hero__grid {
+        gap: 36px;
+        padding: 56px 0 72px;
     }
 
     .zp-hero__actions {
