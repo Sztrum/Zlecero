@@ -23,6 +23,6 @@
     </div>
     <div class="zp-footer__bottom">
         <span>{{ $shared['footer']['rights'] }}</span>
-        <a href="/login">{{ $shared['login'] }}</a>
+        <a href="{{ $authLinks['login'] }}">{{ $shared['login'] }}</a>
     </div>
 </footer>

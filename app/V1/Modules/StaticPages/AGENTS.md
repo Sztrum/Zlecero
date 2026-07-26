@@ -1,7 +1,7 @@
 # AGENTS.md
 
 ## Version
-v1.4.0
+v1.5.0
 
 ## Scope
 Module-specific rules for `app/V1/Modules/StaticPages/**`.
@@ -20,3 +20,6 @@ This file defines conventions for SEO/public static pages served from the Larave
 - Public static pages must expose the active language in the URL path, such as `/pl`, `/en`, and `/de`; use a cookie only to remember the preferred language for redirects from non-localized entry points like `/`.
 - Public static page language switchers must render direct localized links instead of JavaScript-only language changes.
 - Keep public-page runtime text in module translations and prepare repeatable data structures in controllers or view composers instead of hardcoding arrays in Blade.
+
+## Static Pages React App Links
+- Public Blade links that navigate to React-owned app routes such as login, registration, dashboard, onboarding, or password screens must be generated from the configured frontend endpoint service and must not use raw relative hrefs like `/login` unless Laravel also owns that GET route.
