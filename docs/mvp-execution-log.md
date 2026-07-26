@@ -41,6 +41,7 @@ MVP is complete when a company can:
 - Limitation: browser token storage is less ideal than secure first-party cookie sessions for production.
 - Fallback plan: switch to first-party cookie/session auth only after explicit approval, documentation update, CSRF/CORS setup, and React API client update.
 - Domain boundary: token issuance and revocation stay outside Domain; Domain receives authenticated user context through application/service boundaries.
+- Email input contract: auth request validation trims and lowercases email addresses and uses RFC email validation without DNS lookup, so login/register/forgot-password are not blocked by local domains, transient DNS checks, or uppercase user input.
 
 ### First Email Integration
 
@@ -618,6 +619,140 @@ Verification:
 
 PR/merge status: pending.
 
+### 2026-07-26 23:10 - Inquiry Drawer Close Animation
+
+- Kept the inquiry detail drawer mounted during close and delayed clearing the selected inquiry until the shared drawer close animation can finish.
+- Preserved URL/list synchronization after the close transition instead of removing the drawer immediately on click.
+
+Verification:
+
+- React: `npm run check-types` - passed.
+- React: `npm run lint` - passed.
+- React: `npm test -- --run` - passed.
+- React: `npm run build` - passed with existing outdated `caniuse-lite` and large chunk warnings.
+- Frontend/manual: `GET http://127.0.0.1:3002/app/inquiries` - returned 200 from the active Vite dev server.
+
+PR/merge status: pending.
+
+### 2026-07-26 23:05 - Inquiry Drawer Width Adjustment
+
+- Widened the React inquiry creation drawer to use nearly the full viewport with a large-screen cap.
+- Widened the inquiry detail drawer so rich inquiry context, files, messages, and linked offers have more usable horizontal space.
+- Removed the inherited `sm:max-w-sm` drawer variant cap for inquiry drawers so the configured wide widths actually apply on desktop.
+
+Verification:
+
+- React: `npm run check-types` - passed.
+- React: `npm run lint` - passed.
+- React: `npm run build` - passed with existing outdated `caniuse-lite` and large chunk warnings.
+- Frontend/manual: `GET http://127.0.0.1:3002/app/inquiries` - returned 200 from the active Vite dev server.
+
+PR/merge status: pending.
+
+### 2026-07-26 23:01 - Inquiry Creation Drawer Flow
+
+- Changed React inquiry creation from an inline page block to an animated right-side drawer/modal opened from the canonical inquiry list.
+- Reused the shared drawer primitive for inquiry details instead of a hand-built fixed overlay, so open/close behavior is smooth and consistent.
+- Added short tab content transitions inside the inquiry drawer for messages, files, offers, and inquiry overview panels.
+- Documented the React dashboard rule that modal, drawer, and expandable workflow surfaces should use shared animated UI primitives.
+
+Verification:
+
+- React: `npm run check-types` - passed.
+- React: `npm run lint` - passed.
+- React: `npm test -- --run` - passed.
+- React: `npm run build` - passed with existing outdated `caniuse-lite` and large chunk warnings.
+- Frontend/manual: `GET http://127.0.0.1:3002/app/inquiries` - returned 200 from the active Vite dev server.
+
+PR/merge status: pending.
+
+### 2026-07-26 22:56 - Inquiry Creation View Polish
+
+- Reworked the React inquiry creation mode into a full dashboard workspace instead of a small generic card.
+- Split the inquiry form into clear operational sections for inquiry content, customer/owner/priority, and due dates.
+- Localized visible inquiry creation labels and actions to Polish.
+- Added an inline cancel action that returns from creation mode to the canonical inquiry list.
+
+Verification:
+
+- React: `npm run check-types` - passed.
+- React: `npm run lint` - passed.
+- React: `npm test -- --run` - passed.
+- React: `npm run build` - passed with existing outdated `caniuse-lite` and large chunk warnings.
+- Frontend/manual: `GET http://127.0.0.1:3002/app/inquiries` - returned 200 from the active Vite dev server.
+
+PR/merge status: pending.
+
+### 2026-07-26 22:50 - Dashboard Content Width Alignment
+
+- Centered dashboard application content through the shared React `DashboardLayout` with a full-width responsive container for the post-sidebar workspace.
+- Removed the local left-pinned width cap from the canonical inquiries route so `/app/inquiries` uses the available dashboard space.
+- Documented the React dashboard layout rule to avoid route-level left-pinned `max-w-*` wrappers unless a deliberately narrow reading/form surface is required.
+
+Verification:
+
+- React: `npm run check-types` - passed.
+- React: `npm run lint` - passed.
+- React: `npm test -- --run` - passed.
+- React: `npm run build` - passed with existing outdated `caniuse-lite` and large chunk warnings.
+- Frontend/manual: `GET http://127.0.0.1:3002/app/inquiries` - returned 200 from the active Vite dev server.
+- Visual screenshot automation was not run because no local Chromium/Chrome binary is installed in this workspace.
+
+PR/merge status: pending.
+
+### 2026-07-26 22:28 - Login Email Validation Fix
+
+- Fixed login validation returning generic `Invalid data` for syntactically valid emails that fail DNS lookup by switching auth email validation to RFC-only validation.
+- Normalized auth email request input on the backend by trimming whitespace and lowercasing login, register, and forgot-password emails before validation.
+- Normalized React auth form email values through the shared auth schema before API submission.
+- Updated the React API client to surface the first backend field validation error when available instead of showing only the generic response message.
+- Added backend and frontend regression coverage for normalized, uppercase, whitespace-padded login email input.
+
+Verification:
+
+- Backend: `php -l app/V1/Modules/Auth/UI/Http/Requests/ApiLoginRequest.php` - passed.
+- Backend: `php -l app/V1/Modules/Auth/UI/Http/Requests/ApiRegisterUserRequest.php` - passed.
+- Backend: `php -l app/V1/Modules/Auth/UI/Http/Requests/ApiForgotPasswordRequest.php` - passed.
+- Backend: `php -l tests/Feature/AuthApiContractTest.php` - passed.
+- Backend: `LOG_CHANNEL=stderr php artisan test --filter=AuthApiContractTest` - passed on sqlite `:memory:`.
+- Backend: `composer phpstan` - passed.
+- React: `npm run check-types` - passed.
+- React: `npm run lint` - passed.
+- React: `npm test -- --run src/features/auth/components/__tests__/login-form.test.tsx` - passed.
+- React: `npm test -- --run` - passed.
+- React: `npm run build` - passed with existing outdated `caniuse-lite` and large chunk warnings.
+- Backend/manual: `POST http://127.0.0.1:8000/api/v1/auth/login` with whitespace-padded uppercase `owner@example.invalid` - returned the auth failure message `Nie udało się zalogować.` instead of validation `Invalid data`, without changing database records.
+- Frontend/manual: `GET http://127.0.0.1:3002/login` - returned 200.
+- Frontend/manual: `GET http://localhost:3000/login` - still resets the connection in this local environment; use the active Vite URL `http://127.0.0.1:3002`.
+
+PR/merge status: pending.
+
+### 2026-07-26 22:15 - Email Verification Route Fix
+
+- Fixed the email verification flow by adding the missing React `/auth/verify-email` route that reads `user_id` and `hash` query params from verification emails.
+- Added a React API call to POST `/api/v1/auth/verify-email/{user_id}/email/verify/{hash}` and show success, invalid-link, or failure states.
+- Made backend email verification idempotent for an already verified account when the same valid hash is used, so repeated clicks on the same verification link still return success.
+- Added MSW support and frontend route tests for successful and incomplete email verification links.
+- Added backend contract coverage for verification email link generation and API email verification.
+- Isolated Laravel tests from the developer database by setting PHPUnit to sqlite `:memory:` and documented the database-safety verification rule.
+- Local manual check found `localhost:3000` occupied by a broken listener; the local ignored backend `.env` was pointed to the working Vite URL `http://127.0.0.1:3002` for this workspace.
+
+Verification:
+
+- Backend: `php -l tests/Feature/AuthEmailVerificationLinkContractTest.php` - passed.
+- Backend: `LOG_CHANNEL=stderr php artisan test --filter=AuthEmailVerificationLinkContractTest` - passed on sqlite `:memory:`.
+- Backend: `LOG_CHANNEL=stderr php artisan test --filter=AuthApiContractTest` - passed on sqlite `:memory:`.
+- Backend: `LOG_CHANNEL=stderr php artisan test --filter=Auth` - passed on sqlite `:memory:`.
+- Backend/manual: `POST http://127.0.0.1:8000/api/v1/auth/verify-email/97d92d02-194c-433c-ab56-44c646302bb2/email/verify/095bd199884f426af8ed425ccea6dbc5fa04fca19252099703ea07abc7cd7c67` - returned 200 and the user has `email_verified_at = 2026-07-26 20:19:00`.
+- Frontend/manual: `GET http://127.0.0.1:3002/auth/verify-email?user_id=97d92d02-194c-433c-ab56-44c646302bb2&hash=095bd199884f426af8ed425ccea6dbc5fa04fca19252099703ea07abc7cd7c67` - returned the React app HTML.
+- Backend: `composer phpstan` - passed.
+- React: `npm run check-types` - passed.
+- React: `npm run lint` - passed.
+- React: `npm test -- --run` - passed.
+- React: `npm run build` - passed with existing outdated `caniuse-lite` and large chunk warnings.
+
+PR/merge status: pending.
+
 ### 2026-07-26 07:36 - Reference Layout And Login Link Fix
 
 - Tightened the Laravel public landing layout toward the provided reference structure: dark two-column hero, product-process story section, process band with product preview, pricing preview, FAQ preview, and dark final CTA.
@@ -650,3 +785,23 @@ Problems/questions:
 - The reference contains a much broader single-file prototype than the current production app surface. This stage applies the shared style system to existing Laravel/React routes instead of copying prototype-only demo screens that have no backing routes yet.
 
 Verification: pending.
+
+### 2026-07-26 21:45 - Dashboard Alignment Step 1 Implemented
+
+- Made `/app/inquiries` the canonical inquiry workflow surface with list rows backed by the real inquiry API and optional `?inquiry=<id>` drawer opening.
+- Removed the separate frontend inquiry detail route builder and replaced dashboard inquiry links with `/app/inquiries?inquiry=<id>`.
+- Replaced preview-only inquiry drawer content with API-backed inquiry fields, messages, files, internal notes, status history, and linked offers from the existing offers contract.
+- Reworked the dashboard `Zapytania` tab away from local demo inquiries so dashboard inquiry actions route to the canonical list/drawer interaction.
+- Updated Laravel dashboard API hrefs and React MSW dashboard hrefs to match the canonical inquiry list/drawer route.
+
+Verification:
+
+- Backend: `php -l app/V1/Modules/Dashboard/Infrastructure/Repositories/DashboardRepository.php` - passed.
+- Backend: `LOG_CHANNEL=stderr php artisan test --filter=DashboardStaticPagesContractTest` - passed.
+- Backend: `composer phpstan` - passed.
+- React: `npm run check-types` - passed.
+- React: `npm run lint` - passed after formatting fix.
+- React: `npm test -- --run` - passed.
+- React: `npm run build` - passed with existing outdated `caniuse-lite` and large chunk warnings.
+
+PR/merge status: pending.
