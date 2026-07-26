@@ -2,11 +2,22 @@
 
 declare(strict_types=1);
 
-$frontendUrl = getenv('FRONTEND_URL');
-$frontendAppUrl = getenv('FRONTEND_APP_URL');
+$readStringEnv = static function (string $key): ?string {
+    $value = $_ENV[$key] ?? $_SERVER[$key] ?? getenv($key);
+
+    return is_string($value) && $value !== '' ? $value : null;
+};
+
+$frontendUrl = $readStringEnv('FRONTEND_URL');
+$frontendAppUrl = $readStringEnv('FRONTEND_APP_URL');
+$appUrl = config('app.url');
 
 return [
-    'url' => is_string($frontendUrl) && $frontendUrl !== ''
+    'url' => $frontendUrl !== null
         ? $frontendUrl
-        : (is_string($frontendAppUrl) && $frontendAppUrl !== '' ? $frontendAppUrl : config('app.url')),
+        : (
+            $frontendAppUrl !== null
+                ? $frontendAppUrl
+                : (is_string($appUrl) && $appUrl !== '' ? $appUrl : 'http://localhost')
+        ),
 ];

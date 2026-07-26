@@ -1,7 +1,7 @@
 # AGENTS_CODING_RULES.md
 
 ## Version
-v1.4.0
+v1.4.1
 
 ## Scope
 Portable coding/style/implementation standards intended to be reusable across projects.
@@ -37,6 +37,7 @@ Read documents in this exact order before implementation:
 - Config repository classes must follow the `{ModuleName}{ConfigScope}ConfigRepository` pattern.
 - Every concrete `*ConfigRepository` class must include a class-level PHPDoc `@see` pointing to the source config file path.
 - In base classes, place overridable extension hooks at the end of the class.
+- Base classes must access overridable constants and static configuration through late static binding (`static::`) instead of `self::` so child classes can actually override provider paths and extension values.
 
 ## Controllers, Handlers, Domain Flow
 - Prefer `Illuminate\Support\Collection` over raw PHP arrays for list/iterable flows whenever possible.

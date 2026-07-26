@@ -58,7 +58,7 @@ return [
         'stack' => [
             'driver' => 'stack',
             'channels' => explode(',', $logStack),
-            'ignore_exceptions' => false,
+            'ignore_exceptions' => true,
         ],
 
         'single' => [
