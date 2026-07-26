@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\V1\Modules\StaticPages\UI\Http\Controllers;
 
+use App\V1\Core\Domain\Domain\Services\FrontendEndpointService;
+use App\V1\Core\Domain\Enums\FrontEndRouteEnum;
 use App\V1\Core\UI\Http\Controllers\Controller;
 use App\V1\Modules\StaticPages\UI\Http\Requests\FrontContactRequest;
 use App\V1\Modules\StaticPages\UI\Mail\StaticContactLeadMail;
@@ -20,11 +22,32 @@ class FrontStaticPagesController extends Controller
 {
     public const LOCALES = ['pl', 'en', 'de'];
 
+    public function __construct(
+        private readonly FrontendEndpointService $frontendEndpointService
+    ) {
+    }
+
     public function redirectHome(Request $request): RedirectResponse
     {
         $locale = $request->cookie('zlecero_locale');
 
         return redirect('/'.(is_string($locale) && in_array($locale, self::LOCALES, true) ? $locale : 'pl'));
+    }
+
+    /**
+     * @throws Throwable
+     */
+    public function redirectLogin(): RedirectResponse
+    {
+        return redirect()->away($this->frontendEndpointService->route(FrontEndRouteEnum::AUTH_LOGIN));
+    }
+
+    /**
+     * @throws Throwable
+     */
+    public function redirectRegister(): RedirectResponse
+    {
+        return redirect()->away($this->frontendEndpointService->route(FrontEndRouteEnum::AUTH_REGISTER));
     }
 
     public function landing(Request $request): View
@@ -119,6 +142,12 @@ class FrontStaticPagesController extends Controller
             'content' => __('static_pages::messages.pages.'.$page),
             'shared' => __('static_pages::messages.shared'),
             'meta' => __('static_pages::messages.meta.'.$page),
+            'authLinks' => [
+                'login' => $this->frontendEndpointService->route(FrontEndRouteEnum::AUTH_LOGIN),
+                'register' => $this->frontendEndpointService->route(FrontEndRouteEnum::AUTH_REGISTER),
+            ],
+            'pricingPreview' => __('static_pages::messages.pages.pricing'),
+            'faqPreview' => __('static_pages::messages.pages.faq'),
         ]);
     }
 

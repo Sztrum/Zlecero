@@ -86,16 +86,27 @@ class DashboardStaticPagesContractTest extends TestCase
 
     public function test_public_pages_render_with_localized_paths(): void
     {
+        config(['core::frontend.url' => 'http://frontend.test']);
+
         $this->get('/')->assertRedirect('/pl');
         $this->get('/pl')
             ->assertOk()
             ->assertSee('Każde zapytanie z maila', false)
-            ->assertSee('href="/login"', false)
-            ->assertSee('href="/auth/register"', false);
+            ->assertSee('href="http://frontend.test/login"', false)
+            ->assertSee('href="http://frontend.test/auth/register"', false)
+            ->assertSee('Od pierwszego zapytania do realizacji', false);
         $this->get('/pl/pricing')->assertOk()->assertSee('Prosty cennik', false);
         $this->get('/pl/faq')->assertOk()->assertSee('FAQPage', false);
         $this->get('/pl/about')->assertOk()->assertSee('Zlecero powstaje', false);
         $this->get('/pl/contact')->assertOk()->assertSee('Wyślij zgłoszenie', false);
+    }
+
+    public function test_public_auth_entrypoints_redirect_to_react_frontend(): void
+    {
+        config(['core::frontend.url' => 'http://frontend.test']);
+
+        $this->get('/login')->assertRedirect('http://frontend.test/login');
+        $this->get('/auth/register')->assertRedirect('http://frontend.test/auth/register');
     }
 
     public function test_contact_form_validates_deduplicates_and_queues_message(): void

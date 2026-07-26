@@ -17,8 +17,8 @@
                     <a @class(['is-active' => $availableLocale === $locale]) href="{{ url('/'.$availableLocale.($page === 'landing' ? '' : '/'.$page)) }}">{{ strtoupper($availableLocale) }}</a>
                 @endforeach
             </div>
-            <a class="zp-nav__login" href="/login">{{ $shared['login'] }}</a>
-            <a class="zp-button zp-button--primary" href="/auth/register">{{ $shared['trial_cta'] }}</a>
+            <a class="zp-nav__login" href="{{ $authLinks['login'] }}">{{ $shared['login'] }}</a>
+            <a class="zp-button zp-button--primary" href="{{ $authLinks['register'] }}">{{ $shared['trial_cta'] }}</a>
         </div>
     </div>
 </nav>

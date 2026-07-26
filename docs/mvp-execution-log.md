@@ -568,6 +568,25 @@ Verification:
 
 PR/merge status: pending.
 
+### 2026-07-26 07:36 - Reference Layout And Login Link Fix
+
+- Tightened the Laravel public landing layout toward the provided reference structure: dark two-column hero, product-process story section, process band with product preview, pricing preview, FAQ preview, and dark final CTA.
+- Fixed public auth navigation so clicks from Laravel public pages resolve to the React app instead of hitting a missing Laravel GET `/login`.
+- Added Laravel GET `/login` and `/auth/register` redirect entrypoints that send users to the configured React frontend routes.
+- Updated frontend URL config to support the existing `FRONTEND_APP_URL` environment variable as a fallback when `FRONTEND_URL` is not set.
+
+Problems/questions:
+
+- The click-to-login behavior depends on `FRONTEND_URL` or `FRONTEND_APP_URL` pointing to the React app host. Local `.env` already contains `FRONTEND_APP_URL=http://localhost:5173`.
+
+Verification:
+
+- Backend: `LOG_CHANNEL=stderr php artisan test --filter=DashboardStaticPagesContractTest` - passed.
+- Backend: `npm run prod` - passed with existing Sass legacy API and outdated `caniuse-lite` warnings.
+- Backend: `vendor/bin/phpstan analyse --configuration=/tmp/zlecero-phpstan-reference-layout-login.neon --memory-limit=1G` - passed.
+
+PR/merge status: pending.
+
 ### 2026-07-26 07:10 - Reference Style Rollout Started
 
 - User provided the correct Zlecero visual reference in `agent-context/Execute instructions from file (1)`.

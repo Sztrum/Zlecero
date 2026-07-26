@@ -19,7 +19,7 @@
                         @foreach($plan['features'] as $feature)
                             <span>✓ {{ $feature }}</span>
                         @endforeach
-                        <a class="zp-button zp-button--primary" href="/auth/register">{{ $shared['trial_cta'] }}</a>
+                        <a class="zp-button zp-button--primary" href="{{ $authLinks['register'] }}">{{ $shared['trial_cta'] }}</a>
                     </article>
                 @endforeach
             </div>

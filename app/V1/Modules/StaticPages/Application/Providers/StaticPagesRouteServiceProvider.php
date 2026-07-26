@@ -19,6 +19,8 @@ class StaticPagesRouteServiceProvider extends FrontendRouteServiceProvider
     protected function registerRoutes(Registrar $router): void
     {
         $router->get('/', [FrontStaticPagesController::class, 'redirectHome'])->name('home.redirect');
+        $router->get('/login', [FrontStaticPagesController::class, 'redirectLogin'])->name('auth.login.redirect');
+        $router->get('/auth/register', [FrontStaticPagesController::class, 'redirectRegister'])->name('auth.register.redirect');
         $router->get('/{locale}', [FrontStaticPagesController::class, 'landing'])
             ->whereIn('locale', FrontStaticPagesController::LOCALES)
             ->name('home');
