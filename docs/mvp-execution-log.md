@@ -14,6 +14,11 @@ This file is the running implementation log for the Zlecero MVP. It records stag
 - Work is delivered in small stages on dedicated branches, with PRs kept synchronized and merged only when the stage is verified.
 - Any uncertainty that affects architecture, product scope, data ownership, external providers, security, or paid infrastructure is recorded here before implementation continues.
 
+## Latest Stage Notes
+
+- Stage 2 real-flow verification runs through the React app against the real Laravel API with MSW disabled. The flow covers company registration, email verification, login, current profile fetch, dashboard loading, inquiry creation/listing, `?inquiry=<id>` drawer opening, internal note creation, and reload/refetch persistence.
+- Fixed issues found by the real-flow run: React router provider/hook context mismatch, missing internal-note form in the canonical inquiry drawer, Laravel exception status normalization, and inquiry priority sorting that used MySQL-only `FIELD(...)` instead of sqlite-compatible SQL.
+
 ## MVP Definition From ClickUp
 
 MVP is complete when a company can:

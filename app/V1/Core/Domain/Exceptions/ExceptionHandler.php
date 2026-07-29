@@ -70,7 +70,7 @@ class ExceptionHandler extends Handler
     private function buildDefaultResponse(Throwable $e, bool $isDebug): JsonResponse
     {
         $responseData = [
-            'status' => $e->getCode() ?: Response::HTTP_INTERNAL_SERVER_ERROR,
+            'status' => $this->statusCodeFromThrowable($e),
             'message' => $e->getMessage(),
         ];
 
@@ -146,8 +146,19 @@ class ExceptionHandler extends Handler
     private function buildThrowableResponse(Throwable $e): array
     {
         return [
-            'status' => $e->getCode() ?: Response::HTTP_INTERNAL_SERVER_ERROR,
+            'status' => $this->statusCodeFromThrowable($e),
             'message' => $e->getMessage(),
         ];
+    }
+
+    private function statusCodeFromThrowable(Throwable $e): int
+    {
+        $code = $e->getCode();
+
+        if (is_int($code) && $code >= Response::HTTP_BAD_REQUEST && $code < Response::HTTP_INTERNAL_SERVER_ERROR) {
+            return $code;
+        }
+
+        return Response::HTTP_INTERNAL_SERVER_ERROR;
     }
 }

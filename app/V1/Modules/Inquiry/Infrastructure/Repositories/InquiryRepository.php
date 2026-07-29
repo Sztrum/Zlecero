@@ -67,7 +67,15 @@ class InquiryRepository extends EloquentModelRepository
             ->when($filters['queue'] ?? null, function (Builder $builder, string $queue): void {
                 $this->applyQueueFilter($builder, $queue);
             })
-            ->orderByRaw("FIELD(priority, 'urgent', 'high', 'normal', 'low')")
+            ->orderByRaw(
+                "CASE priority
+                    WHEN 'urgent' THEN 0
+                    WHEN 'high' THEN 1
+                    WHEN 'normal' THEN 2
+                    WHEN 'low' THEN 3
+                    ELSE 4
+                END"
+            )
             ->orderByRaw('response_due_at IS NULL')
             ->orderBy('response_due_at')
             ->orderByDesc('created_at')
