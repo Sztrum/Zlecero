@@ -374,10 +374,6 @@ class DemoDataSeeder extends Seeder
         /** @var InquiryRepository $inquiryRepository */
         $inquiryRepository = app(InquiryRepository::class);
 
-        $prepare = static function (Inquiry $inquiry) use ($inquiryRepository, $owner): void {
-            $inquiryRepository->changeStatus($inquiry, InquiryStatus::PREPARING_OFFER, $owner);
-        };
-
         $draft = $offers->createForInquiry($company, $inquiries['kaseton'], $owner, [
             'currency' => 'PLN',
             'issue_date' => now()->toDateString(),
@@ -406,7 +402,6 @@ class DemoDataSeeder extends Seeder
         ]);
         $offers->generatePdf($company, $draft);
 
-        $prepare($inquiries['banery']);
         $sent = $offers->createForInquiry($company, $inquiries['banery'], $owner, [
             'currency' => 'PLN',
             'issue_date' => now()->subDays(3)->toDateString(),
@@ -431,7 +426,6 @@ class DemoDataSeeder extends Seeder
         $offers->generatePdf($company, $sent);
         $offers->send($company, $sent, $owner);
 
-        $prepare($inquiries['oklejanie']);
         $accepted = $offers->createForInquiry($company, $inquiries['oklejanie'], $owner, [
             'currency' => 'PLN',
             'issue_date' => now()->subDays(6)->toDateString(),
@@ -464,7 +458,6 @@ class DemoDataSeeder extends Seeder
         $offers->send($company, $accepted, $owner);
         $offers->accept($company, $accepted, $owner);
 
-        $prepare($inquiries['witryna']);
         $rejected = $offers->createForInquiry($company, $inquiries['witryna'], $owner, [
             'currency' => 'PLN',
             'issue_date' => now()->subDays(20)->toDateString(),
@@ -488,7 +481,6 @@ class DemoDataSeeder extends Seeder
         $inquiries['witryna']->refresh();
         $inquiryRepository->changeStatus($inquiries['witryna'], InquiryStatus::REJECTED, $owner);
 
-        $prepare($inquiries['roll_up']);
         $expired = $offers->createForInquiry($company, $inquiries['roll_up'], $owner, [
             'currency' => 'PLN',
             'issue_date' => now()->subDays(30)->toDateString(),

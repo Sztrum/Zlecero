@@ -7,6 +7,7 @@ namespace App\V1\Modules\Offer\Infrastructure\Repositories;
 use App\V1\Core\Infrastructure\Repositories\Eloquent\EloquentModelRepository;
 use App\V1\Modules\Company\Domain\Models\Company;
 use App\V1\Modules\Inquiry\Domain\Enums\InquiryStatus;
+use App\V1\Modules\Inquiry\Domain\Exceptions\InvalidInquiryStatusTransitionException;
 use App\V1\Modules\Inquiry\Domain\Models\Inquiry;
 use App\V1\Modules\Inquiry\Infrastructure\Repositories\InquiryRepository;
 use App\V1\Modules\Offer\Domain\Enums\OfferDiscountType;
@@ -129,7 +130,7 @@ class OfferRepository extends EloquentModelRepository
                 'sent_at' => now(),
             ])->save();
 
-            $this->changeInquiryStatusIfPossible($offer->inquiry, InquiryStatus::OFFER_SENT, $user);
+            $this->advanceInquiryTo($offer->inquiry, InquiryStatus::OFFER_SENT, $user);
 
             return $this->findCompanyOffer($company, $offer->id);
         });
@@ -211,7 +212,7 @@ class OfferRepository extends EloquentModelRepository
                 ]);
             }
 
-            $this->changeInquiryStatusIfPossible($offer->inquiry, InquiryStatus::ACCEPTED, $user);
+            $this->advanceInquiryTo($offer->inquiry, InquiryStatus::ACCEPTED, $user);
 
             return $this->findCompanyOffer($company, $offer->id);
         });
@@ -417,12 +418,20 @@ class OfferRepository extends EloquentModelRepository
         return $pdf . "trailer << /Size " . (count($objects) + 1) . " /Root 1 0 R >>\nstartxref\n{$xrefOffset}\n%%EOF\n";
     }
 
-    private function changeInquiryStatusIfPossible(Inquiry $inquiry, InquiryStatus $status, User $user): void
+    /**
+     * Move the inquiry to $status, walking through every intermediate workflow
+     * stage so the change is always recorded instead of being silently skipped.
+     *
+     * @throws InvalidInquiryStatusTransitionException|Throwable
+     */
+    private function advanceInquiryTo(Inquiry $inquiry, InquiryStatus $status, User $user): void
     {
-        $currentStatus = InquiryStatus::from($inquiry->status);
+        $path = InquiryStatus::from($inquiry->status)->transitionPathTo($status);
 
-        if ($currentStatus->canTransitionTo($status)) {
-            $this->inquiryRepository->changeStatus($inquiry, $status, $user);
+        throw_if($path === null, InvalidInquiryStatusTransitionException::class);
+
+        foreach ($path as $nextStatus) {
+            $this->inquiryRepository->changeStatus($inquiry, $nextStatus, $user);
         }
     }
 

@@ -41,4 +41,48 @@ enum InquiryStatus: string
 
         return false;
     }
+
+    /**
+     * Shortest sequence of allowed transitions leading from this status to $target.
+     *
+     * Workflow steps such as PREPARING_OFFER are intermediate stages rather than
+     * barriers, so a caller that legitimately reaches a later stage should walk
+     * through them instead of being silently skipped.
+     *
+     * @return list<self>|null Ordered statuses to apply; empty when already at
+     *                         $target, null when $target cannot be reached.
+     */
+    public function transitionPathTo(self $target): ?array
+    {
+        if ($this === $target) {
+            return [];
+        }
+
+        $visited = [$this->value => true];
+        /** @var list<list<self>> $queue */
+        $queue = [[$this]];
+
+        while ($queue !== []) {
+            /** @var list<self> $path */
+            $path = array_shift($queue);
+            $current = $path[count($path) - 1];
+
+            foreach ($current->allowedNextStatuses() as $nextStatus) {
+                if (isset($visited[$nextStatus->value])) {
+                    continue;
+                }
+
+                $visited[$nextStatus->value] = true;
+                $nextPath = [...$path, $nextStatus];
+
+                if ($nextStatus === $target) {
+                    return array_slice($nextPath, 1);
+                }
+
+                $queue[] = $nextPath;
+            }
+        }
+
+        return null;
+    }
 }

@@ -1,93 +1,172 @@
-# Zlecero
+# Zlecero (backend)
 
-Zlecero is a Laravel-based project for managing service and production inquiries, offers, orders, customer communication, and related files in one operational workflow.
+Zlecero turns scattered customer enquiries into a tracked workflow: inquiry → offer → order. It targets companies that still coordinate work through email, phone calls and spreadsheets — the first niche being print shops and advertising-production businesses (vehicle wrapping, signage, foil, banners).
 
-The product is aimed at companies that still coordinate work through email, phone calls, spreadsheets, and manual status tracking. The first target niche is print shops and advertising-production businesses, including vehicle wrapping, signage, foil, banners, and similar custom production services.
+This repository is the **Laravel backend**: domain, persistence, API, queues, mail, and the public SEO pages. The authenticated application UI lives in a separate React repository, [`zlecero-app`](https://github.com/Sztrum/zlecero-app).
 
-## Product Workflow
+| Concern | Owner |
+| --- | --- |
+| Domain, persistence, API, queues, mail, files, PDF | this repository |
+| Public/SEO pages (landing, pricing, FAQ, about, contact) | this repository, Blade |
+| Company, admin and customer application UI | `zlecero-app` |
 
-The core business process is:
+---
 
-```txt
-customer email
--> inquiry
--> offer / estimate
--> customer approval
--> order
--> production status
--> contact history
+## Quick start
+
+Assumes the Laradock containers are already running (see [Laradock setup](#laradock-setup) for a first-time install).
+
+```bash
+composer install
+npm install
+cp .env.example .env
+php artisan key:generate
+php artisan migrate
+php artisan db:seed --class=DemoDataSeeder   # optional, see Demo data
+php artisan serve --host=127.0.0.1 --port=8000
 ```
 
-The first product version is intended to cover:
+Then start the frontend from the `zlecero-app` repository (`npm run dev`). Its `.env` points at `http://127.0.0.1:8000/api/v1` by default, which matches the `artisan serve` command above.
 
-- authentication,
-- organizations and users,
-- customers,
-- mailbox import,
-- inquiry creation from emails,
-- attachments,
-- statuses,
-- notes,
-- customer replies from the panel,
-- manual offer creation,
-- offer sending,
-- offer approval through a secure link,
-- order creation after offer approval.
+Verify the API is reachable before debugging the frontend:
 
-The first version is not intended to become a full ERP, warehouse system, invoicing system, accounting system, or advanced pricing engine.
+```bash
+curl -s http://127.0.0.1:8000/api/v1/countries -H 'Accept: application/json' | head -c 200
+```
 
-## Repository Scope
+> **On `http://zlecero.test`:** the `.env.example` sets `APP_URL=http://zlecero.test`, which assumes a hosts entry plus an nginx vhost pointing at the Laradock `nginx` container. If that vhost is missing or another local web server owns port 80, requests will hit the wrong server and the API will return 404 while the domain still answers. Confirm with the `curl` above against `zlecero.test/api/v1/countries`; if it fails, use `php artisan serve` and point the frontend at it.
 
-This repository contains the Laravel backend, public API foundation, persistence layer, queues, email-related infrastructure, and Laravel-served public/SEO frontend assets.
+---
 
-The client-facing application UI and admin UI are planned as a separate React project. This repository should keep API contracts and backend behavior ready for that future frontend without depending on React-side implementation details.
+## Demo data
 
-## Current Implementation
+`DemoDataSeeder` creates a complete company so every screen has something real to render. It is **not** registered in `DatabaseSeeder`, so a bare `php artisan db:seed` will never run it:
 
-The application is structured as a modular monolith under `app/V1/**`.
+```bash
+php artisan db:seed --class=DemoDataSeeder
+```
 
-Current shared areas:
+| Account | Email | Password | Role |
+| --- | --- | --- | --- |
+| Owner | `demo@zlecero.test` | `password` | `owner` |
+| Employee | `pracownik@zlecero.test` | `password` | `member` |
 
-- `app/V1/Core/**` for framework integration, command bus, base providers, shared HTTP foundations, translations, exceptions, and package adapters.
-- `app/V1/Shared/**` for shared migrations, value objects, traits, DTOs, scopes, requests, and resources.
+It creates the company *Reklama Wizual* with 6 customers (including a deliberate duplicate pair sharing a tax number, so duplicate detection has something to find), 6 inquiries spread across `new`, `preparing_offer`, `offer_sent`, `accepted` and `rejected`, 5 offers covering draft/sent/accepted/rejected plus one past its validity date, 1 order, inquiry messages, internal notes, status history and generated PDFs.
 
-Current modules:
+Re-running is idempotent: it deletes and recreates only the `zlecero-demo` company and the records owned by it, and never touches other companies. Offers are created through `OfferRepository` rather than inserted directly, so totals, tax, numbering and the offer-to-order conversion come from the same code paths as production.
 
-- `Auth` for login, registration, password reset, email verification, token responses, and authentication routes.
-- `User` for user persistence, registration handling, user events, user aggregate rules, and user email notifications.
-- `Country` for country configuration, country resources, validation rules, and country lookup behavior.
-- `Email` for shared email-sending service registration.
+---
 
-The main architectural direction is:
+## Architecture
+
+A modular monolith under `app/V1/**`.
 
 ```txt
 UI -> Application -> Domain
 Infrastructure = adapters
 ```
 
-Write-side behavior should follow command-based flow: controllers dispatch commands, and command handlers own the side effects. Domain validation belongs in aggregates or domain services.
+Controllers dispatch commands; command handlers own side effects. Domain rules belong in aggregates, enums, or domain services — not in controllers. Provider SDKs and storage drivers stay in `Infrastructure`.
 
-## Technology Stack
+**Shared areas**
 
-- Backend/API: Laravel 12, PHP 8.5+
-- Database: MySQL or a compatible database
-- Authentication: Laravel Sanctum
-- Debugging/inspection: Laravel Telescope
-- Queues/cache/session storage: Laravel database drivers by default, with Redis available in the local Docker setup
-- Frontend assets in this repository: Laravel Blade, TypeScript, SCSS, Tailwind, Vite
-- Planned client/admin UI: separate React, TypeScript, Tailwind, Vite project
+- `app/V1/Core/**` — framework integration, command bus, base providers, shared HTTP foundations, translations, exceptions, package adapters.
+- `app/V1/Shared/**` — shared migrations, value objects, traits, DTOs, scopes, requests, resources.
+
+**Modules** (`app/V1/Modules/**`)
+
+| Module | Responsibility |
+| --- | --- |
+| `Auth` | Login, registration, password reset, email verification, Sanctum tokens |
+| `User` | User persistence, registration handling, user events and notifications |
+| `Company` | Tenant, company profile, company users, roles and access isolation |
+| `Customer` | Customer profiles, contact data, duplicate detection |
+| `Inquiry` | Inquiries, statuses, priorities, owners, messages, notes, files |
+| `Offer` | Offer editor, totals, PDF generation, sending, acceptance |
+| `Order` | Orders created from accepted offers, production statuses |
+| `Dashboard` | Aggregated company and admin dashboard payloads |
+| `StaticPages` | Public Blade pages, localized (pl/en/de), contact form |
+| `Country` | Country configuration, resources, validation rules |
+| `Email` | Shared email-sending service registration |
+
+Every module owns its routes via a `*RouteServiceProvider`; there is no central `routes/` directory.
+
+### Workflow rules worth knowing
+
+Inquiry status transitions are defined in `InquiryStatus::allowedNextStatuses()` and are enforced, not advisory. Stages such as `preparing_offer` are intermediate steps rather than barriers: when sending or accepting an offer, `OfferRepository` walks the inquiry through every intermediate stage via `InquiryStatus::transitionPathTo()` and records each step in `inquiry_status_changes`. A target that genuinely cannot be reached — for example sending an offer for a `closed` inquiry — raises `InvalidInquiryStatusTransitionException` instead of being ignored.
+
+---
+
+## API
+
+All endpoints are prefixed with `/api/v1` and authenticated with a Sanctum bearer token, except the auth endpoints themselves.
+
+```txt
+POST   /auth/register                          POST   /auth/login
+GET    /auth/profile                           POST   /auth/logout
+POST   /auth/forgot-password                   POST   /auth/reset-password/{token}
+POST   /auth/user/{user}/new-password/{token}
+POST   /auth/verify-email/{user}/email/verify/{hash}
+
+GET    /companies/current                      PATCH  /companies/current
+GET    /companies/users                        POST   /companies/users
+PATCH  /companies/users/{user}/deactivate
+
+GET    /customers                              POST   /customers
+GET    /customers/{customer}                   PATCH  /customers/{customer}
+
+GET    /inquiries                              POST   /inquiries
+GET    /inquiries/{inquiry}                    PATCH  /inquiries/{inquiry}
+PATCH  /inquiries/{inquiry}/status             PATCH  /inquiries/{inquiry}/owner
+PATCH  /inquiries/{inquiry}/archive            PATCH  /inquiries/{inquiry}/restore
+POST   /inquiries/{inquiry}/messages           POST   /inquiries/{inquiry}/notes
+POST   /inquiries/{inquiry}/files              GET    /inquiries/{inquiry}/files/{file}/download
+
+GET    /offers                                 POST   /offers
+GET    /offers/{offer}                         PATCH  /offers/{offer}
+POST   /offers/{offer}/pdf                     GET    /offers/{offer}/pdf/download
+PATCH  /offers/{offer}/send                    POST   /offers/{offer}/accept
+
+GET    /orders                                 GET    /orders/{order}
+PATCH  /orders/{order}/status
+
+GET    /dashboard                              GET    /dashboard/admin
+GET    /countries
+```
+
+Every company-scoped endpoint resolves the company from the authenticated user. Company IDs are never accepted from the client.
+
+---
+
+## Testing and quality
+
+```bash
+php artisan test                 # feature + unit suite
+composer phpstan                 # static analysis
+vendor/bin/ecs check app         # code style
+composer ecs-fix                 # code style, autofix
+npm run prod                     # build public frontend assets
+```
+
+`phpunit.xml` pins the test database to sqlite `:memory:`, so `RefreshDatabase` can never touch the development database. Keep it that way — any test command that migrates must be isolated from a real database.
+
+---
 
 ## Requirements
 
 - PHP 8.5+
 - Composer
-- Node.js 22+
-- MySQL or compatible database
-- Redis when using the Laradock setup or Redis-backed local services
+- Node.js 20+ (the Laradock workspace image installs 22)
+- MySQL 8 or compatible
+- Redis (used by the Laradock setup)
 
-## Laradock Configuration
+Stack: Laravel 13, Sanctum for authentication, Telescope for inspection, database drivers for queues/cache/sessions by default, Blade + TypeScript + SCSS + Tailwind + Vite for the public pages.
 
-Important: disable Secure Boot in BIOS before using this setup.
+---
+
+## Laradock setup
+
+First-time container setup. **Disable Secure Boot in BIOS before using this setup.**
 
 1. Add Laradock:
 
@@ -160,68 +239,25 @@ Important: disable Secure Boot in BIOS before using this setup.
    sh start.sh
    ```
 
-## Project Configuration
+Create both databases before running migrations — Telescope uses its own:
 
-1. Install dependencies:
-
-   ```bash
-   composer install
-   npm install
-   ```
-
-2. Copy the environment file:
-
-   ```bash
-   cp .env.example .env
-   ```
-
-3. Create two databases, first for the main application and second for Telescope, then adjust database, app URL, mail, Telescope, Redis, and any local service settings in `.env`.
-
-   ```sql
-   CREATE DATABASE zlecero CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-   CREATE DATABASE zlecero_telescope CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-   ```
-
-4. Generate the application key:
-
-   ```bash
-   php artisan key:generate
-   ```
-
-5. Run migrations:
-
-   ```bash
-   php artisan migrate
-   ```
-
-6. Start local development:
-
-   ```bash
-   npm run dev
-   ```
-
-## Local URL Layout
-
-Use one local host for the Laravel monolith and its API:
-
-```txt
-http://zlecero.test/          -> Laravel-served public frontend
-http://zlecero.test/api/v1    -> versioned API
+```sql
+CREATE DATABASE zlecero CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+CREATE DATABASE zlecero_telescope CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 ```
 
-Prefer `zlecero.test/api/v1/...` over `api.zlecero.test`. This keeps local setup simpler with one `/etc/hosts` entry, one certificate/nginx/vhost, fewer CORS and Sanctum cookie/session-domain issues, and matches the current same-origin Laravel architecture. Consider `api.zlecero.test` only if the API becomes a separate deployment/service or cross-domain auth must be tested from the start.
+Services exposed by the Laradock setup: MySQL on `3306`, Redis on `6379`, phpMyAdmin on `8081`, MailHog on `8025` (all outgoing mail in local development lands there), nginx on `80`/`443`.
 
-## Useful Commands
+> The workspace container publishes ports `3000`, `3001`, `5173` and `8080`. The React dev server will therefore skip past `3000` and land on a higher port — read the URL it prints rather than assuming `localhost:3000`.
 
-```bash
-php artisan test
-npm run prod
-vendor/bin/ecs check app
-vendor/bin/ecs check app --fix
-```
+---
 
-## Notes
+## Not implemented yet
 
-- Telescope is enabled by default in `.env.example`.
-- `FRONTEND_APP_URL` points to the future separate frontend application.
-- The current repository is the source of truth for backend, API, persistence, queues, mail, and Laravel-served public frontend concerns.
+Honest status, so nobody assumes more than is there:
+
+- **Mailbox import.** Inquiries are created manually. There is no Gmail/IMAP/M365 connector; the `Email` module only registers outgoing mail.
+- **Customer-facing offer approval.** `PATCH /offers/{offer}/send` flips the status to `sent` and does not email the customer, and `POST /offers/{offer}/accept` is an authenticated employee action. There is no public secure-link route for a customer to approve an offer themselves.
+- **Offer PDF is a placeholder.** `OfferRepository::minimalPdf()` hand-writes a minimal PDF using the base Helvetica font. It has no layout and does not render Polish diacritics. A real templating/PDF library is still needed.
+- **Billing, AI assistance and realtime updates** are deliberately deferred; no provider is integrated.
+- **Platform administration** exposes aggregate counters and alerts only (`GET /dashboard/admin`). Subscriptions, payments, plans and feature flags have no backend.
