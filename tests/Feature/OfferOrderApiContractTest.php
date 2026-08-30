@@ -10,6 +10,7 @@ use App\V1\Modules\Company\Domain\Models\Company;
 use App\V1\Modules\Customer\Domain\Enums\CustomerType;
 use App\V1\Modules\Customer\Domain\Models\Customer;
 use App\V1\Modules\Inquiry\Domain\Enums\InquiryPriority;
+use App\V1\Modules\Inquiry\Domain\Enums\InquiryStatus;
 use App\V1\Modules\Offer\Domain\Enums\OfferDiscountType;
 use App\V1\Modules\Offer\Domain\Enums\OfferStatus;
 use App\V1\Modules\Order\Domain\Enums\OrderStatus;
@@ -86,6 +87,21 @@ class OfferOrderApiContractTest extends TestCase
             ->assertJsonPath('data.status', OfferStatus::SENT->value)
             ->assertJsonPath('data.sentAt', fn ($value) => is_string($value));
 
+        $this->assertDatabaseHas('inquiries', [
+            'id' => $inquiryId,
+            'status' => InquiryStatus::OFFER_SENT->value,
+        ]);
+        $this->assertDatabaseHas('inquiry_status_changes', [
+            'inquiry_id' => $inquiryId,
+            'from_status' => InquiryStatus::NEW->value,
+            'to_status' => InquiryStatus::PREPARING_OFFER->value,
+        ]);
+        $this->assertDatabaseHas('inquiry_status_changes', [
+            'inquiry_id' => $inquiryId,
+            'from_status' => InquiryStatus::PREPARING_OFFER->value,
+            'to_status' => InquiryStatus::OFFER_SENT->value,
+        ]);
+
         Auth::forgetGuards();
 
         $this->flushHeaders()
@@ -105,6 +121,10 @@ class OfferOrderApiContractTest extends TestCase
         $orderId = $acceptedResponse->json('data.orderId');
 
         self::assertIsString($orderId);
+        $this->assertDatabaseHas('inquiries', [
+            'id' => $inquiryId,
+            'status' => InquiryStatus::ACCEPTED->value,
+        ]);
         $this->assertDatabaseHas('orders', [
             'id' => $orderId,
             'company_id' => $company->id,

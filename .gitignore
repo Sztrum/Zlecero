@@ -25,3 +25,7 @@ public/vite/*
 public/hot-vite
 laravel_error.log
 laravel_access.log
+
+# agent docs (local only)
+AGENTS*.md
+/docs/

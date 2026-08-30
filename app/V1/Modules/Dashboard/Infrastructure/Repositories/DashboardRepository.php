@@ -99,10 +99,10 @@ class DashboardRepository extends EloquentModelRepository
                 'activeInquiries' => $this->inquiryBaseQuery($company, $ownerUserId)
                     ->whereNotIn('status', [InquiryStatus::CLOSED->value, InquiryStatus::REJECTED->value])
                     ->count(),
-                'sentOffersGrossCents' => $this->offerBaseQuery($company, $ownerUserId)
+                'sentOffersGrossCents' => (int) $this->offerBaseQuery($company, $ownerUserId)
                     ->where('status', OfferStatus::SENT->value)
                     ->sum('total_gross_cents'),
-                'acceptedOffersGrossCents' => $this->offerBaseQuery($company, $ownerUserId)
+                'acceptedOffersGrossCents' => (int) $this->offerBaseQuery($company, $ownerUserId)
                     ->where('status', OfferStatus::ACCEPTED->value)
                     ->sum('total_gross_cents'),
                 'activeOrders' => $this->orderBaseQuery($company, $ownerUserId)
